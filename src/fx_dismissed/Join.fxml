@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="fx.JoinController">
+  <children>
+    <FlowPane layoutX="14.0" layoutY="14.0" prefHeight="372.0" prefWidth="572.0">
+      <children>
+        <Label styleClass="h1" text="Join the WBL Community" />
+        <Label prefWidth="550.0" text="Want to play the role of a general manager making decisions that can lead your franchise &#10;to the championship?  Write the game previews and recaps for your favorite team? Or &#10;maybe make analysis of things that happen around the league?&#10;&#10;You can play one of those three roles in the World League Basketball, a basketball &#10;simulation community created for those who love basketball not only on the court.&#10;&#10;Fill in the form below to join the action:" wrapText="true" />
+        <Region prefHeight="13.0" prefWidth="200.0" />
+        <GridPane alignment="TOP_RIGHT" hgap="5.0" prefWidth="536.0" vgap="5.0">
+          <children>
+            <Label styleClass="boldLabel" text="Name:" textAlignment="LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label styleClass="boldLabel" text="E-mail:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label styleClass="boldLabel" text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label styleClass="boldLabel" text="Confirmation:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label styleClass="boldLabel" text="Role:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="264.0" minWidth="10.0" prefWidth="108.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="423.0" minWidth="10.0" prefWidth="423.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="5.0" prefHeight="29.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="5.0" prefHeight="29.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="5.0" prefHeight="29.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+      </children>
+    </FlowPane>
+  </children>
+  <stylesheets>
+    <URL value="@styles.css" />
+  </stylesheets>
+</AnchorPane>

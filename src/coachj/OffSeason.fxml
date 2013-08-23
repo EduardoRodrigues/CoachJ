@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="" fx:id="mainContent" prefHeight="680.0" prefWidth="860.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.OffSeasonController">
+  <children>
+    <Label styleClass="h1" text="%ch_fora_temporada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <GridPane gridLinesVisible="false" prefHeight="-1.0" prefWidth="-1.0" styleClass="centeredGridPane" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="70.0">
+      <children>
+        <Label styleClass="h2" text="%ch_entidades" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="0" />
+        <Label styleClass="boldLabel" text="%ch_paises" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label styleClass="boldLabel" text="%ch_cidades" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <ImageView id="availableCountriesCountLabel" fx:id="availableCountriesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="availableCitiesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableCountriesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <Label id="createdFranchisesCount" fx:id="availableCitiesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <Button id="gotoPreSeasonButton" fx:id="proceedButton" defaultButton="true" disable="true" mnemonicParsing="false" onMouseClicked="#proceed" text="%ch_prosseguir" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+        <Label styleClass="boldLabel" text="%ch_franquias" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="3" />
+        <ImageView fx:id="availableFranchisesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableFranchisesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        <Label prefWidth="138.0" styleClass="boldLabel" text="%ch_primeiros_nomes" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <Label styleClass="boldLabel" text="%ch_sobrenomes" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <ImageView fx:id="availableFirstNamesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="availableLastNamesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableFirstNamesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+        <Label id="createdFranchisesCount" fx:id="availableLastNamesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+        <Label styleClass="boldLabel" text="%ch_gerentes" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="6" />
+        <ImageView fx:id="availableGeneralManagersCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableGeneralManagersCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+        <Button id="generateCoachButton" fx:id="generateGeneralManagerButton" mnemonicParsing="false" onMouseClicked="#generateGeneralManagers" styleClass="generateEntityButton, actionButton" text="" GridPane.columnIndex="3" GridPane.rowIndex="6">
+          <tooltip>
+            <Tooltip text="%ch_gerar_gerentes" />
+          </tooltip>
+        </Button>
+        <Label styleClass="boldLabel" text="%ch_tecnicos" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="7" />
+        <ImageView fx:id="availableCoachesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="7">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableCoachesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+        <Button fx:id="generateCoachButton" mnemonicParsing="false" onMouseClicked="#generateCoaches" styleClass="generateEntityButton, actionButton" text="" GridPane.columnIndex="3" GridPane.rowIndex="7">
+          <tooltip>
+            <Tooltip text="%ch_gerar_tecnicos" />
+          </tooltip>
+        </Button>
+        <Label styleClass="boldLabel" text="%ch_atletas" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="8" />
+        <ImageView fx:id="availablePlayersCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="8">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availablePlayersCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+        <Button id="generateCoachButton" fx:id="generatePlayerButton" mnemonicParsing="false" onMouseClicked="#generatePlayers" styleClass="generateEntityButton, actionButton" text="" GridPane.columnIndex="3" GridPane.rowIndex="8">
+          <tooltip>
+            <Tooltip text="%ch_gerar_jogadores" />
+          </tooltip>
+        </Button>
+        <Label styleClass="boldLabel" text="%ch_recrutas" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+        <ImageView fx:id="availableDrafteesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="9">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableDrafteesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+        <Label styleClass="boldLabel" text="%ch_arenas" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="10" />
+        <ImageView fx:id="availableArenasCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="10">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableArenasCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+        <Label styleClass="boldLabel" text="%ch_arbitros" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+        <ImageView id="availableArenasCountImageView" fx:id="availableRefereesCountImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="11">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Label id="createdFranchisesCount" fx:id="availableRefereesCountLabel" styleClass="numberLabel" text="00" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+        <Label styleClass="h2" text="%ch_sua_franquia" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+        <ComboBox fx:id="franchiseComboBox" onAction="#updateFranchiseInfo" prefHeight="21.0" prefWidth="327.0" promptText="%ch_escolha_franquia" visibleRowCount="5" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+        <ProgressIndicator fx:id="entityGenerationProgressIndicator" progress="0.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="13" GridPane.rowSpan="1" />
+        <Label fx:id="entityGenerationLabel" styleClass="boldLabel" text="%ch_gerando_entidades" visible="false" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
+        <Button cancelButton="true" mnemonicParsing="false" onMouseClicked="#exit" text="%ch_sair" GridPane.columnIndex="7" GridPane.rowIndex="13" />
+        <Button id="generateCoachButton" fx:id="generateRefereeButton" mnemonicParsing="false" onMouseClicked="#generateReferees" styleClass="generateEntityButton, actionButton" text="" GridPane.columnIndex="3" GridPane.rowIndex="11">
+          <tooltip>
+            <Tooltip text="%ch_gerar_arbitros" />
+          </tooltip>
+        </Button>
+        <Label styleClass="h2" text="%ch_situacao_financeira" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+        <Label id="coachNameLabel" styleClass="boldLabel" text="%ch_recursos_financeiros" GridPane.columnIndex="5" GridPane.columnSpan="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+        <Label styleClass="boldLabel" text="%ch_folha_pagamento" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+        <Label fx:id="financialAssetsLabel" styleClass="numberLabel" text="0.00" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+        <Label fx:id="payrollLabel" styleClass="numberLabel" text="0.00" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+        <Label styleClass="boldLabel" text="%ch_total_atletas_elenco" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+          <tooltip>
+            <Tooltip text="%ch_total_atletas_elenco_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_total_atletas_ativos" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+        <Label id="rosterPlayersCount" fx:id="rosterPlayersCountLabel" styleClass="numberLabel" text="-" GridPane.columnIndex="7" GridPane.rowIndex="6" />
+        <Label id="activePlayersCount" fx:id="activePlayersCountLabel" styleClass="numberLabel" text="-" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+        <Label styleClass="h2" text="%ch_staff" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="9" />
+        <Label styleClass="boldLabel" text="%ch_tecnico" GridPane.columnIndex="5" GridPane.rowIndex="11" />
+        <Label styleClass="boldLabel" text="%ch_gerente" GridPane.columnIndex="5" GridPane.rowIndex="10" />
+        <ImageView id="availableArenasCountImageView" fx:id="franchiseHasCoachImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="11">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <ImageView id="availableArenasCountImageView" fx:id="franchiseHasGeneralManagerImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="10">
+          <image>
+            <Image url="@img/ok16_off.png" />
+          </image>
+        </ImageView>
+        <Button id="generateCoachButton" fx:id="coachContractNegotationButton" mnemonicParsing="false" onMouseClicked="#gotoCoachNegotiationContract" styleClass="actionButton, negotiationButton" text="" GridPane.columnIndex="7" GridPane.rowIndex="11">
+          <tooltip>
+            <Tooltip text="%ch_negociar_contrato_tecnico" />
+          </tooltip>
+        </Button>
+        <Button id="generateCoachButton" fx:id="generalManagerContractNegotationButton" mnemonicParsing="false" onMouseClicked="#gotoGeneralManagerNegotiationContract" styleClass="actionButton, negotiationButton" text="" GridPane.columnIndex="7" GridPane.rowIndex="10">
+          <tooltip>
+            <Tooltip text="%ch_negociar_contrato_general_manager" />
+          </tooltip>
+        </Button>
+        <Label fx:id="additionalMessagesLabel" styleClass="boldLabel" text="messages" visible="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="12" />
+        <Button id="fireCoachLabel" fx:id="fireCoachButton" disable="true" mnemonicParsing="false" onMouseClicked="#confirmFireCoach" styleClass="actionButton, fireButton" text="" GridPane.columnIndex="8" GridPane.rowIndex="11">
+          <tooltip>
+            <Tooltip text="%ch_despedir_tecnico_tip" />
+          </tooltip>
+        </Button>
+        <Button id="fireCoachLabel" fx:id="fireGeneralManagerButton" disable="true" mnemonicParsing="false" onMouseClicked="#confirmFireGeneralManager" styleClass="actionButton, fireButton" text="" GridPane.columnIndex="8" GridPane.rowIndex="10">
+          <tooltip>
+            <Tooltip text="%ch_despedir_tecnico_tip" />
+          </tooltip>
+        </Button>
+        <ProgressIndicator id="franchisesHiringProgressIndicator" fx:id="franchisesHiringStaffProgressIndicator" progress="0.0" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="12" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="28.0" prefWidth="-1.0" />
+        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="5.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="10.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="5.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="4.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="28.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="5.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="10.0" prefWidth="-1.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" percentWidth="5.0" prefWidth="-1.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="5.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" percentHeight="-1.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

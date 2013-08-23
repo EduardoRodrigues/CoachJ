@@ -1,0 +1,137 @@
+/* 
+    Document   : layout
+    Created on : 23/07/2013, 17:35:48
+    Author     : Eduardo
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* layout */
+.root {
+    -fx-font-family: 'Candara';
+    -fx-font-size: 14px;    
+}
+
+.menu-bar {
+    -fx-padding: 3px 0px 0px 0px;
+    -fx-margin: 0;  
+    -fx-height: 30px;
+}
+
+.menu-item {    
+    -fx-margin: 0;
+}
+
+.testpane {
+    -fx-background-color: #0000cc;    
+}
+/* cores */
+
+.mainFxmlClass, .tab-pane, .tab {
+    -fx-background-color: #FDF5E6;    
+}
+
+.menu-bar, .menu-item, .menu {   
+    -fx-background-color: linear-gradient(#4A708B 0%, #36648B 50%); 
+    -fx-text-fill: rgb(238,238,238);
+}
+
+.boldLabel {
+    -fx-text-fill: rgb(10, 10, 10);
+}
+
+.label, .combo-box {
+    -fx-font: 14px 'Candara';     
+}
+
+.numberLabel, .text-input {
+    -fx-font: bold 14px 'Consolas';   
+    -fx-text-fill: #4F94CD;
+}
+
+.boldLabel {
+    -fx-font: bold 14px 'Candara';   
+}
+
+.lightLabel {
+    -fx-font: 14px 'Candara';
+    -fx-text-fill: rgb(238,238,238);
+}
+
+.lightBoldLabel {
+    -fx-font: bold 14px 'Candara';
+    -fx-text-fill: rgb(238,238,238);
+}
+
+.h1 {
+    -fx-font: bold 28px 'Tahoma'; 
+    -fx-text-fill: #FFFAFA;
+    -fx-padding: 10px 0px 12px 60px;
+    -fx-background-color: linear-gradient(#4F94CD 0%, #36648B 50%);
+}
+
+.h1_img {
+   -fx-margin: 5px;
+}
+
+.h2 {
+    -fx-font: bold 23px 'Tahoma';  
+    -fx-text-fill: #4F94CD;
+}
+
+.h3 {
+    -fx-font: bold 20px 'Tahoma';  
+    -fx-text-fill: #4F94CD;
+}
+
+.button {
+    -fx-text-alignment: center;
+    -fx-label-padding: 4px 0px 0px 0px;
+    -fx-font: bold 13px 'Candara';
+    -fx-alignment: center;
+    -fx-background-color: linear-gradient(#BFBFBF 0%, #9E9E9E 50%);
+}
+
+.actionButton {
+    -fx-height:16px;
+    -fx-width:16px;    
+    -fx-background-position: center, center;
+    -fx-background-repeat: no-repeat;    
+}
+
+.generateEntityButton {    
+    -fx-background-image: url("../img/add16.png");   
+}
+
+.negotiationButton {
+    -fx-background-image: url("../img/negotiation16.png");
+}
+
+.fireButton {
+    -fx-background-image: url("../img/fire16.png");
+}
+
+.releaseButton {
+    -fx-background-image: url("../img/release16.png");
+}
+
+.makeOfferButton {
+    -fx-background-image: url("../img/offer16.png");
+}
+
+.backButton {
+    -fx-background-image: url("../img/back16.png");
+}
+
+.centeredGridPane {
+    -fx-alignment: center;
+}
+
+.combo-box {
+    -fx-padding: 2px;
+}
+
+.table-cell {
+     -fx-padding: 4px 0px 0px 2px;
+     -fx-font: 13px 'Consolas';
+}

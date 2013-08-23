@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="638.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.DraftController">
+  <children>
+    <Label styleClass="h1" text="%ch_recrutamento" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="90.0">
+      <tabs>
+        <Tab text="%ch_lista_recrutas">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="drafteesTableView" onMouseClicked="#updatePlayerPanel" prefHeight="297.0" prefWidth="760.0" tableMenuButtonVisible="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_identificador" fx:id="idTableColumn" />
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_posicao_abreviatura" fx:id="positionTableColumn" />
+                    <TableColumn editable="false" minWidth="120.0" prefWidth="120.0" text="%ch_nome" fx:id="firstNameTableColumn" />
+                    <TableColumn minWidth="120.0" prefWidth="120.0" text="%ch_sobrenome" fx:id="lastNameTableColumn" />
+                    <TableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_idade" fx:id="ageTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_altura" fx:id="heightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_peso" fx:id="weightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ataque" fx:id="offenseDedicationTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_defesa" fx:id="defenseDedicationTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_valor" fx:id="marketValueTableColumn" />
+                  </columns>
+                </TableView>
+                <Label id="playerPosition" fx:id="playerPositionLabel" layoutY="316.0" styleClass="h2" text="--" AnchorPane.leftAnchor="10.0" />
+                <GridPane layoutY="353.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                  <children>
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_defesa" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_ataque" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_arremesso_quadra" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_arremesso_tres_pontos" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_lance_livre" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_controle_bola" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_visao_quadra" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_passe" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_roubo_bola" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_toco" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_rebote_defensivo" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_rebote_ofensivo" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label fx:id="playerDefenseDedicationLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label fx:id="playerOffenseDedicationLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label fx:id="playerFieldGoalsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label fx:id="playerThreePointersLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label fx:id="playerFreeThrowsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label fx:id="playerBallHandlingLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label fx:id="playerCourtVisionLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label fx:id="playerPassLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label fx:id="playerStealLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                    <Label fx:id="playerBlockLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label fx:id="playerDefensiveReboundLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label fx:id="playerOffensiveReboundLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+                <Label id="playerName" fx:id="playerNameLabel" layoutY="316.0" styleClass="h2" text="---" AnchorPane.leftAnchor="52.0" />
+                <Button fx:id="draftPlayerButton" disable="true" mnemonicParsing="false" onMouseClicked="#userDraftPick" styleClass="actionButton, makeOfferButton" text="" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                  <tooltip>
+                    <Tooltip text="%ch_draft_player" />
+                  </tooltip>
+                </Button>
+                <Button defaultButton="true" layoutX="12.0" layoutY="471.0" mnemonicParsing="false" onMouseClicked="#proceedDraft" text="%ch_prosseguir" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_resumo_draft">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="draftSummaryTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_rodada" fx:id="draftRoundTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_escolha" fx:id="draftPickTableColumn" />
+                    <TableColumn maxWidth="240.0" minWidth="240.0" prefWidth="240.0" text="%ch_franquia" fx:id="draftFranchiseTableColumn" />
+                    <TableColumn minWidth="400.0" prefWidth="400.0" text="%ch_atleta" fx:id="draftPlayerTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_plantel_atual_sua_franquia">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="rosterTableView" onMouseClicked="#updatePlayerPanel" prefHeight="297.0" prefWidth="760.0" tableMenuButtonVisible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_identificador" fx:id="rosterIdTableColumn" />
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_posicao_abreviatura" fx:id="rosterPositionTableColumn" />
+                    <TableColumn editable="false" minWidth="120.0" prefWidth="120.0" text="%ch_nome" fx:id="rosterFirstNameTableColumn" />
+                    <TableColumn minWidth="120.0" prefWidth="120.0" text="%ch_sobrenome" fx:id="rosterLastNameTableColumn" />
+                    <TableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_idade" fx:id="rosterAgeTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_altura" fx:id="rosterHeightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_peso" fx:id="rosterWeightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ataque" fx:id="rosterOffenseDedicationTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_defesa" fx:id="rosterDefenseDedicationTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_valor" fx:id="rosterMarketValueTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+    <Label fx:id="draftRoundPickLabel" styleClass="h2" text="-------" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="60.0" />
+    <Label fx:id="nextPickLabel" layoutX="398.0" styleClass="h2" text="Label" AnchorPane.topAnchor="60.0" />
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

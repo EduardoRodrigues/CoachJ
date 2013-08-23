@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="700.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="coachj.PreSeasonController">
+  <children>
+    <Label styleClass="h1" text="%ch_pre_temporada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <Label fx:id="completeFranchiseNameLabel" styleClass="h2" text="franquiaLabel" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="60.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <TabPane fx:id="preSeasonTabPane" prefHeight="350.0" prefWidth="780.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="90.0">
+      <tabs>
+        <Tab text="%ch_plantel_atual_sua_franquia">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <TableView fx:id="rosterTableView" onMouseClicked="#rosterTableViewClick" prefHeight="297.0" prefWidth="760.0" tableMenuButtonVisible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_identificador" fx:id="rosterIdTableColumn" />
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_posicao_abreviatura" fx:id="rosterPositionTableColumn" />
+                    <TableColumn editable="false" minWidth="120.0" prefWidth="120.0" text="%ch_nome" fx:id="rosterFirstNameTableColumn" />
+                    <TableColumn minWidth="120.0" prefWidth="120.0" text="%ch_sobrenome" fx:id="rosterLastNameTableColumn" />
+                    <TableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_idade" fx:id="rosterAgeTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_altura" fx:id="rosterHeightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_peso" fx:id="rosterWeightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ataque" fx:id="rosterOffenseDedicationTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_defesa" fx:id="rosterDefenseDedicationTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_valor" fx:id="rosterMarketValueTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_agentes_livres">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <TableView id="drafteesTableView" fx:id="freeAgentsTableView" onMouseClicked="#freeAgentsTableViewClick" prefHeight="297.0" prefWidth="760.0" tableMenuButtonVisible="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_identificador" fx:id="idTableColumn" />
+                    <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_posicao_abreviatura" fx:id="positionTableColumn" />
+                    <TableColumn editable="false" minWidth="120.0" prefWidth="120.0" text="%ch_nome" fx:id="firstNameTableColumn" />
+                    <TableColumn minWidth="120.0" prefWidth="120.0" text="%ch_sobrenome" fx:id="lastNameTableColumn" />
+                    <TableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%ch_idade" fx:id="ageTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_altura" fx:id="heightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_peso" fx:id="weightTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ataque" fx:id="offenseDedicationTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_defesa" fx:id="defenseDedicationTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_valor" fx:id="marketValueTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab fx:id="negotiationTableTab" text="%ch_mesa_negociacao">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <GridPane alignment="TOP_RIGHT" prefWidth="525.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_idade" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_temporadas" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+                    <Label id="coachAgeLabel" fx:id="playerAgeLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label id="coachSeasonsLabel" fx:id="playerSeasonsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_titulos" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_valor_mercado" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_salario_anual" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="6" />
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_vencimentos_carreira" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="5" />
+                    <Label id="coachSeasonsLabel" fx:id="playerTitlesLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label id="coachSeasonsLabel" fx:id="playerMarketValueLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                    <Label id="coachSeasonsLabel" fx:id="playerSalaryLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                    <Label id="coachSeasonsLabel" fx:id="playerTotalEarningsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                    <Label styleClass="h3" text="%ch_resumo_carreira" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                    <Label styleClass="boldLabel" text="%ch_anos_restante_contrato" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                    <Label styleClass="boldLabel" text="%ch_tentativas_renovacao" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                    <Label styleClass="boldLabel" text="%ch_proposta_atleta" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                    <Label styleClass="boldLabel" text="%ch_proposta_franquia" GridPane.columnIndex="3" GridPane.rowIndex="5">
+                      <labelFor>
+                        <TextField id="franchiseProposalTextField" alignment="CENTER_RIGHT" prefWidth="200.0" text="0" />
+                      </labelFor>
+                    </Label>
+                    <Label styleClass="boldLabel" text="%ch_recursos_financeiros" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                    <Label styleClass="boldLabel" text="%ch_duracao_contrato" GridPane.columnIndex="3" GridPane.rowIndex="6">
+                      <labelFor>
+                        <TextField id="franchiseProposalTextField" alignment="CENTER_RIGHT" prefWidth="200.0" text="0" />
+                      </labelFor>
+                    </Label>
+                    <ProgressBar fx:id="failedContractAttemptsProgressBar" prefWidth="116.0" progress="0.0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                    <ComboBox fx:id="contractLengthComboBox" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                      <items>
+                        <FXCollections fx:factory="observableArrayList" />
+                      </items>
+                    </ComboBox>
+                    <Label prefWidth="800.0" styleClass="h3" text="%ch_termos_contrato" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+                    <Button id="makeOfferLabel" fx:id="makeOfferButton" disable="true" mnemonicParsing="false" onMouseClicked="#makeOffer" styleClass="actionButton, makeOfferButton" text="" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+                      <tooltip>
+                        <Tooltip text="%ch_fazer_proposta_tecnico_tip" />
+                      </tooltip>
+                    </Button>
+                    <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_salario_projetado" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="7" />
+                    <Label id="coachSeasonsLabel" fx:id="playerProjectedSalaryLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                    <Label id="coachAgeLabel" fx:id="playerRemainingYearsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                    <Label id="coachAgeLabel" fx:id="playerProposalLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                    <Label id="coachAgeLabel" fx:id="franchiseAssetsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                    <Label id="coachAgeLabel" fx:id="franchiseProposalLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="-Infinity" percentWidth="25.0" />
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+    <Label id="playerPosition" fx:id="playerPositionLabel" layoutX="23.0" layoutY="444.0" styleClass="h2" text="--" />
+    <Label id="playerName" fx:id="playerNameLabel" layoutX="65.0" layoutY="444.0" styleClass="h2" text="---" />
+    <GridPane prefWidth="760.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="480.0">
+      <children>
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_defesa" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_ataque" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_arremesso_quadra" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_arremesso_tres_pontos" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_lance_livre" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_controle_bola" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_visao_quadra" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_passe" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_roubo_bola" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_toco" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_rebote_defensivo" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label alignment="CENTER_RIGHT" styleClass="boldLabel" text="%ch_rebote_ofensivo" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label fx:id="playerDefenseDedicationLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label fx:id="playerOffenseDedicationLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label fx:id="playerFieldGoalsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label fx:id="playerThreePointersLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label fx:id="playerFreeThrowsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label fx:id="playerBallHandlingLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label fx:id="playerCourtVisionLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label fx:id="playerPassLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label fx:id="playerStealLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <Label fx:id="playerBlockLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label fx:id="playerDefensiveReboundLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label fx:id="playerOffensiveReboundLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label fx:id="messageLabel" styleClass="boldLabel" text="Label" visible="false" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+        <ProgressBar fx:id="taskCompletionProgressBar" prefWidth="200.0" progress="0.0" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <Button fx:id="waivePlayerButton" disable="true" layoutX="22.0" mnemonicParsing="false" onMouseClicked="#confirmFirePlayer" text="%ch_demitir_atleta" AnchorPane.bottomAnchor="10.0" />
+    <Button fx:id="releasePlayerButton" disable="true" layoutX="159.0" mnemonicParsing="false" onMouseClicked="#confirmReleasePlayer" text="%ch_liberar_atleta" AnchorPane.bottomAnchor="10.0" />
+    <Button fx:id="negotiatePlayerContractButton" disable="true" layoutX="296.0" mnemonicParsing="false" onMouseClicked="#gotoNegotiationTable" text="%ch_negociar_contrato_atleta" AnchorPane.bottomAnchor="10.0" />
+    <Button fx:id="proceedButton" mnemonicParsing="false" onMouseClicked="#gotoRegularSeason" text="%ch_prosseguir" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

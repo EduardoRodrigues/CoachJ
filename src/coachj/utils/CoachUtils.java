@@ -1,0 +1,808 @@
+package coachj.utils;
+
+import coachj.dao.DatabaseDirectConnection;
+import coachj.models.Coach;
+import coachj.structures.CoachCurrentContract;
+import coachj.structures.CoachTransactionRecord;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * Utility class for coaches
+ *
+ * @author Eduardo M. Rodrigues
+ * @version 1.0
+ * @date 05/08/2013
+ */
+public class CoachUtils {
+
+    /**
+     * Returns contract data for the given coach
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static CoachCurrentContract getCoachContractSummary(short coachId,
+            DatabaseDirectConnection connection) {
+        /*
+         * Variables that connect to the database, retrieve the resultset, store 
+         * the sql statement and franchise's complete name
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT firstName, lastName, remainingYears, salary "
+                + "FROM coach "
+                + "WHERE id = " + coachId;
+        CoachCurrentContract contract = new CoachCurrentContract(coachId);
+
+        try {
+            /**
+             * Opening database connection
+             */
+            connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            contract.setFirstName(resultSet.getString("firstName"));
+            contract.setLastName(resultSet.getString("lastName"));
+            contract.setRemainingYears(resultSet.getShort("remainingYears"));
+            contract.setSalary(resultSet.getInt("salary"));
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+
+        return contract;
+    }
+
+    /**
+     * Returns if the coach agrees with the proposal or not
+     *
+     * @param coach Coach to whom the proposal is sent
+     * @param coachProposal Proposal's values
+     * @param franchiseOffer Franchise's offer
+     * @return
+     */
+    public static boolean agreeWithTerms(Coach coach, int coachProposal,
+            CoachTransactionRecord offer) {
+        /**
+         * Variables that return the coach's response and the percentual
+         * difference between the coach's proposal and the franchise's offer
+         */
+        boolean agreeWithTerms;
+        double differenceRate;
+
+        /**
+         * Comparing the franchise's offer with the coach's proposal
+         */
+        if (offer.getSalary() >= coachProposal) {
+            agreeWithTerms = true;
+        } else {
+            differenceRate = (1 - (double) offer.getSalary() / coachProposal) * 100;
+            if (differenceRate < coach.getGreed() + offer.getLength()) {
+                agreeWithTerms = false;
+            } else {
+                agreeWithTerms = true;
+            }
+        }
+
+        return agreeWithTerms;
+    }
+
+    /**
+     * Hires a coach, binding him to a franchise
+     *
+     * @param contract Contract's parameters
+     * @param connection Database connection used to retrieve data
+     */
+    public static void hireCoach(CoachTransactionRecord contract,
+            DatabaseDirectConnection connection) {
+        /**
+         * Variables to store the database connection and the sql statement
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        String sqlStatement;
+
+        /**
+         * Opening database connection
+         */
+        connection.open();
+
+        /**
+         * Recording contract transaction
+         */
+        sqlStatement = "INSERT INTO coach_transaction (season, coach, "
+                + "franchise, type, date, contractLength, salary) VALUES ("
+                + contract.getSeason() + ", " + contract.getCoach() + ", "
+                + contract.getFranchise() + ", '" + contract.getType() + "', '"
+                + contract.getDate() + "', " + contract.getLength() + ", "
+                + contract.getSalary() + ")";
+        System.out.println(sqlStatement); //delete
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating coach's record
+         */
+        sqlStatement = "UPDATE coach SET salary = " + contract.getSalary() + ", "
+                + "remainingYears = " + contract.getLength() + ", failedContractAttempts = 0 "
+                + " WHERE id = " + contract.getCoach();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating franchise's record
+         */
+        sqlStatement = "UPDATE franchise SET coach = " + contract.getCoach()
+                + " WHERE id = " + contract.getFranchise();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+
+    /**
+     * Records a failed attempt to either sign or resign a coach
+     *
+     * @param coach Coach's id
+     * @param connection Database connection used to retrieve data
+     */
+    public static void recordFailedContractAttempt(int coach,
+            DatabaseDirectConnection connection) {
+        /**
+         * Variables to store the database connection and the sql statement
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        String sqlStatement;
+
+        /**
+         * Opening database connection
+         */
+        connection.open();
+
+        /**
+         * Updating coach's record
+         */
+        sqlStatement = "UPDATE coach SET failedContractAttempts = failedContractAttempts + 1 "
+                + " WHERE id = " + coach;
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+
+    /**
+     * Returns the current salary for the given coach
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getCoachSalary(short coachId,
+            DatabaseDirectConnection connection) {
+        /*
+         * Variables that connect to the database, retrieve the resultset, store 
+         * the sql statement and franchise's complete name
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        ResultSet resultSet;
+        String sqlStatement = "SELECT salary FROM coach WHERE id = " + coachId;
+        int salary = 0;
+
+        try {
+            /**
+             * Opening database connection
+             */
+            connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            salary = resultSet.getInt("salary");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+
+        return salary;
+    }
+
+    /**
+     * Returns the draft method for the given coach
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static short getCoachDraftMethod(short coachId,
+            DatabaseDirectConnection connection) {
+        /*
+         * Variables that connect to the database, retrieve the resultset, store 
+         * the sql statement and coach's draft method
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        ResultSet resultSet;
+        String sqlStatement = "SELECT draftMethod FROM coach WHERE id = " + coachId;
+        short draftMethod = 0;
+
+        try {
+            /**
+             * Opening database connection
+             */
+            connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            draftMethod = resultSet.getShort("draftMethod");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+
+        return draftMethod;
+    }
+
+    /**
+     * Returns the franchise for the given coach
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static short getCoachFranchiseId(short coachId,
+            DatabaseDirectConnection connection) {
+        /*
+         * Variables that connect to the database, retrieve the resultset, store 
+         * the sql statement and coach's franchise
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        ResultSet resultSet;
+        String sqlStatement = "SELECT id FROM franchise WHERE coach = " + coachId;
+        short franchiseId = 0;
+
+        try {
+            /**
+             * Opening database connection
+             */
+            connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            franchiseId = resultSet.getShort("id");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+
+        return franchiseId;
+    }
+
+    /**
+     * Releases a coach, unbinding him from a franchise
+     *
+     * @param contract Contract's parameters
+     * @param connection Database connection used to retrieve data
+     */
+    public static void releaseCoach(CoachTransactionRecord contract,
+            DatabaseDirectConnection connection) {
+        /**
+         * Variables to store the database connection and the sql statement
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        String sqlStatement;
+
+        /**
+         * Opening database connection
+         */
+        connection.open();
+
+        /**
+         * Recording transaction
+         */
+        sqlStatement = "INSERT INTO coach_transaction (season, coach, "
+                + "franchise, type, date, contractLength, salary) VALUES ("
+                + contract.getSeason() + ", " + contract.getCoach() + ", "
+                + contract.getFranchise() + ", '" + contract.getType() + "', '"
+                + contract.getDate() + "', " + contract.getLength() + ", "
+                + contract.getSalary() + ")";
+        System.out.println(sqlStatement); //delete
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating coach's record
+         */
+        sqlStatement = "UPDATE coach SET remainingYears = 0, failedContractAttempts = 0, "
+                + " salary = marketValue * 4000 WHERE id = " + contract.getCoach();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating franchise's record
+         */
+        sqlStatement = "UPDATE franchise SET coach = NULL"
+                + " WHERE id = " + contract.getFranchise();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+
+    /**
+     * Fires a coach, unbinding him from a franchise
+     *
+     * @param contract Contract's parameters
+     * @param connection Database connection used to retrieve data
+     */
+    public static void fireCoach(CoachTransactionRecord contract,
+            DatabaseDirectConnection connection) {
+        /**
+         * Variables to store the database connection and the sql statement
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        String sqlStatement;
+
+        /**
+         * Opening database connection
+         */
+        connection.open();
+
+        /**
+         * Recording transaction
+         */
+        sqlStatement = "INSERT INTO coach_transaction (season, coach, "
+                + "franchise, type, date, contractLength, salary) VALUES ("
+                + contract.getSeason() + ", " + contract.getCoach() + ", "
+                + contract.getFranchise() + ", '" + contract.getType() + "', '"
+                + contract.getDate() + "', " + contract.getLength() + ", "
+                + contract.getSalary() + ")";
+        System.out.println(sqlStatement); //delete
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating coach's record
+         */
+        sqlStatement = "UPDATE coach SET remainingYears = 0, failedContractAttempts = 0, "
+                + " salary = marketValue * 4000, totalEarnings = totalEarnings + "
+                + contract.getSalary() + " WHERE id = " + contract.getCoach();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Updating franchise's record
+         */
+        sqlStatement = "UPDATE franchise SET coach = NULL, assets = assets - "
+                + contract.getSalary() + " WHERE id = " + contract.getFranchise();
+        connection.executeSQL(sqlStatement);
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+
+    /**
+     * Returns the id of the best unemployed coach
+     *
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static short getBestUnemployedCoachId(DatabaseDirectConnection connection) {
+        /**
+         * Variables to store the database connection, the sql statement, the
+         * resultset and the general manager's id
+         */
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        String sqlStatement = "SELECT id FROM coach "
+                + "WHERE retired = false AND id NOT IN (SELECT coach "
+                + "FROM franchise WHERE coach IS NOT NULL) "
+                + "ORDER BY marketValue, RAND() LIMIT 1";
+        ResultSet resultSet;
+        short coachId = 0;
+
+        /**
+         * Opening the connection, retrieving the general manager's id and
+         * returning it
+         */
+        try {
+            connection.open();
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            coachId = resultSet.getShort("id");
+        } catch (SQLException ex) {
+            Logger.getLogger(GeneralManagerUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return coachId;
+    }
+
+    /**
+     * Processes coach's contract
+     *
+     * @param contract Contract data
+     */
+    public static void processCoachContract(CoachTransactionRecord contract) {
+
+        /**
+         * Checking the type of contract to process it
+         */
+        if (contract.getType().equalsIgnoreCase("C")
+                || contract.getType().equalsIgnoreCase("R")) {
+            CoachUtils.hireCoach(contract, null);
+        } else if (contract.getType().equalsIgnoreCase("W")) {
+            CoachUtils.fireCoach(contract, null);
+        } else {
+            CoachUtils.releaseCoach(contract, null);
+        }
+    }
+
+    /**
+     * Returns the SQL statement that selects a player for drafting based on
+     * coach's drafting method attribute, as follows:
+     *
+     * 0 - player with greatest market value, any position <br />
+     * 1 - player with greatest rate in coach's favorite attribute, any position
+     * <br />
+     * 2 - player with greatest market value, worst starter position <br />
+     * 3 - player with greatest rate in coach's favorite attribute, worst
+     * starter position <br />
+     * 4 - player with greatest market value, worst reserve position <br />
+     * 5 - player with greatest rate in coach's favorite attribute, worst
+     * reserve position
+     *
+     * To assure teams have balanced rosters, the algorithm for the SQL prevents
+     * the selection of a player with the same position that already has 3
+     * players on the roster
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getCoachDraftingSQL(short coachId,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            connection.open();
+        }
+
+        String coachDraftingSQL = null;
+        String randomPosition = PositionUtils.getRandomPosition();
+        short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
+        short franchiseId = CoachUtils.getCoachFranchiseId(coachId, connection);
+
+        if (coachDraftingMethod == 0) {
+            /* 0 - player with greatest market value, any position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 1) {
+            /* 1 - player with greatest rate in coach's favorite attribute, any position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection) + " DESC, "
+                    + "marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 2) {
+            /* 2 - player with greatest market value, worst starter position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
+                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 3) {
+            /* 3 - player with greatest rate in coach's favorite attribute, worst
+             starter position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
+                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " DESC, marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 4) {
+            /* 4 - player with greatest market value, worst reserve position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
+                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 5) {
+            /* 3 - player with greatest rate in coach's favorite attribute, worst
+             reserve position */
+            coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
+                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
+                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " DESC, marketValue DESC LIMIT 1";
+        }
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+
+        return coachDraftingSQL;
+    }
+
+    /**
+     * Returns the SQL statement that selects a player for signing based on
+     * coach's drafting method attribute, as follows:
+     *
+     * 0 - player with greatest market value, any position <br />
+     * 1 - player with greatest rate in coach's favorite attribute, any position
+     * <br />
+     * 2 - player with greatest market value, worst starter position <br />
+     * 3 - player with greatest rate in coach's favorite attribute, worst
+     * starter position <br />
+     * 4 - player with greatest market value, worst reserve position <br />
+     * 5 - player with greatest rate in coach's favorite attribute, worst
+     * reserve position
+     *
+     * To assure teams have balanced rosters, the algorithm for the SQL prevents
+     * the selection of a player with the same position that already has 3
+     * players on the roster
+     *
+     * @param coachId Coach's id
+     * @param maximumOffer Sets the highest salary that can be retrieved
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getCoachFreeAgentSelectSQL(short coachId, int maximumOffer,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            connection.open();
+        }
+
+        String coachFreeAgentSelectSQL = null;
+        String randomPosition = PositionUtils.getRandomPosition();
+        short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
+        short franchiseId = CoachUtils.getCoachFranchiseId(coachId, connection);
+
+        if (coachDraftingMethod == 0) {
+            /* 0 - player with greatest market value, any position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 1) {
+            /* 1 - player with greatest rate in coach's favorite attribute, any position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection) + " DESC, "
+                    + "marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 2) {
+            /* 2 - player with greatest market value, worst starter position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
+                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 3) {
+            /* 3 - player with greatest rate in coach's favorite attribute, worst
+             starter position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
+                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " DESC, marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 4) {
+            /* 4 - player with greatest market value, worst reserve position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
+                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "ORDER BY marketValue DESC LIMIT 1";
+        } else if (coachDraftingMethod == 5) {
+            /* 3 - player with greatest rate in coach's favorite attribute, worst
+             reserve position */
+            coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
+                    + "AND retired = false AND salary <= " + maximumOffer
+                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
+                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
+                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " DESC, marketValue DESC LIMIT 1";
+        }
+
+        return coachFreeAgentSelectSQL;
+    }
+
+    /**
+     * Returns the preferred attribute that the given coach seeks in a player
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getCoachPreferredAttribute(short coachId,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        TreeMap<Short, String> attributesMap = getCoachAttributesMap(coachId,
+                connection);
+
+        return attributesMap.lastEntry().getValue();
+    }
+
+    /**
+     * Builds a TreeMap with the attributes for the given coach
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    private static TreeMap<Short, String> getCoachAttributesMap(short coachId,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        String sqlStatement = "SELECT shoot, pass, rebound, defense, technique FROM coach "
+                + "WHERE id = " + coachId + " LIMIT 1";
+        ResultSet resultSet;
+        TreeMap<Short, String> attributesMap = new TreeMap<>();
+
+        /**
+         * Opening the connection, retrieving the coach's attributes and
+         * returning the preferred one
+         */
+        try {
+            connection.open();
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            attributesMap.put(resultSet.getShort("rebound"),
+                    "(offensiveRebound + defensiveRebound - injuryImpact)");
+            attributesMap.put(resultSet.getShort("technique"),
+                    "technique - injuryImpact");
+            attributesMap.put(resultSet.getShort("pass"), "pass - injuryImpact");
+            attributesMap.put(resultSet.getShort("shoot"),
+                    "(fieldGoals + threePointers - injuryImpact)");
+            attributesMap.put(resultSet.getShort("defense"),
+                    "(contest + oneOnOneDefense + helpDefense - injuryImpact)");
+        } catch (SQLException ex) {
+            Logger.getLogger(GeneralManagerUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return attributesMap;
+    }
+
+    /**
+     * Returns the SQL ORDER BY clause that's used by the given coach to reorder
+     * his team's roster
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getCoachRosterOrderingString(short coachId,
+            DatabaseDirectConnection connection) {
+        String coachRosterOrderingString = null;
+
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        NavigableMap<Short, String> attributesMap = getCoachAttributesMap(coachId,
+                connection).descendingMap();
+
+        for (String item : attributesMap.values()) {
+            if (coachRosterOrderingString == null) {
+                coachRosterOrderingString = item + " DESC";
+            } else {
+                coachRosterOrderingString += ", " + item + " DESC";
+            }
+
+        }
+
+        return coachRosterOrderingString;
+
+    }
+} // end CoachUtils

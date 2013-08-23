@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="CoachJPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>coachj.models.CourtPart</class>
+    <class>coachj.models.Referee</class>
+    <class>coachj.models.PositionProfile</class>
+    <class>coachj.models.GeneralManagerTransaction</class>
+    <class>coachj.models.FranchiseSeasonLog</class>
+    <class>coachj.models.PlayoffSeries</class>
+    <class>coachj.models.PlayerAward</class>
+    <class>coachj.models.PlayerLog</class>
+    <class>coachj.models.Award</class>
+    <class>coachj.models.CourtZone</class>
+    <class>coachj.models.LastName</class>
+    <class>coachj.models.CoachAwards</class>
+    <class>coachj.models.Event</class>
+    <class>coachj.models.League</class>
+    <class>coachj.models.Season</class>
+    <class>coachj.models.FirstName</class>
+    <class>coachj.models.Coach</class>
+    <class>coachj.models.Draft</class>
+    <class>coachj.models.Arena</class>
+    <class>coachj.models.Player</class>
+    <class>coachj.models.Country</class>
+    <class>coachj.models.GeneralManager</class>
+    <class>coachj.models.GeneralManagerAward</class>
+    <class>coachj.models.PlayerTransaction</class>
+    <class>coachj.models.PlayLog</class>
+    <class>coachj.models.GameNews</class>
+    <class>coachj.models.Narration</class>
+    <class>coachj.models.PlayType</class>
+    <class>coachj.models.Franchise</class>
+    <class>coachj.models.Title</class>
+    <class>coachj.models.CoachTransaction</class>
+    <class>coachj.models.City</class>
+    <class>coachj.models.Game</class>
+    <class>coachj.models.Event_1</class>
+    <class>coachj.models.Player_1</class>
+    <class>coachj.models.CoachTransaction_1</class>
+    <class>coachj.models.GeneralManager_1</class>
+    <class>coachj.models.PlayoffSeries_1</class>
+    <class>coachj.models.PlayerLog_1</class>
+    <class>coachj.models.Game_1</class>
+    <class>coachj.models.Draft_1</class>
+    <class>coachj.models.GameNews_1</class>
+    <class>coachj.models.PlayerTransaction_1</class>
+    <class>coachj.models.Country_1</class>
+    <class>coachj.models.Coach_1</class>
+    <class>coachj.models.City_1</class>
+    <class>coachj.models.CoachAwards_1</class>
+    <class>coachj.models.Season_1</class>
+    <class>coachj.models.Arena_1</class>
+    <class>coachj.models.League_1</class>
+    <class>coachj.models.Referee_1</class>
+    <class>coachj.models.Narration_1</class>
+    <class>coachj.models.GeneralManagerTransaction_1</class>
+    <class>coachj.models.CourtZone_1</class>
+    <class>coachj.models.Award_1</class>
+    <class>coachj.models.FranchiseSeasonLog_1</class>
+    <class>coachj.models.LastName_1</class>
+    <class>coachj.models.Title_1</class>
+    <class>coachj.models.FirstName_1</class>
+    <class>coachj.models.Franchise_1</class>
+    <class>coachj.models.PlayType_1</class>
+    <class>coachj.models.PlayerAward_1</class>
+    <class>coachj.models.PositionProfile_1</class>
+    <class>coachj.models.GeneralManagerAward_1</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/coach_j?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.password" value="playmobil"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="eclipselink.jpa.uppercase-column-names" value="true"/>
+      <property name="javax.persistence.schema-generation.scripts.create-target" value="DropInvalidate"/>
+      <property name="eclipselink.logging.level" value="INFO"/>
+    </properties>
+  </persistence-unit>
+</persistence>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="content" prefHeight="700.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.MainSceneController">
+  <children>
+    <MenuBar maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <menus>
+        <Menu id="" mnemonicParsing="false" text="%ch_liga" fx:id="leagueMenu">
+          <items>
+            <MenuItem id="" mnemonicParsing="false" text="%ch_configuracoes" fx:id="leagueSettingsMenuItem">
+              <accelerator>
+                <KeyCodeCombination alt="DOWN" code="F2" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu id="" mnemonicParsing="false" text="%ch_diretorios" fx:id="directoriesMenu">
+          <items>
+            <MenuItem mnemonicParsing="false" text="%ch_atletas" />
+          </items>
+        </Menu>
+        <Menu id="" mnemonicParsing="false" text="%ch_pre_temporada" fx:id="preSeasonMenu" />
+        <Menu disable="false" id="" mnemonicParsing="false" text="%ch_temporada_regular" fx:id="seasonMenu" />
+        <Menu disable="false" id="" mnemonicParsing="false" text="%ch_playoffs" fx:id="playoffsMenu" />
+        <Menu id="" mnemonicParsing="false" text="%ch_aplicativo" fx:id="applicationMenu">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#exit" text="%ch_sair" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane id="" fx:id="mainContent" prefHeight="-1.0" prefWidth="-1.0" styleClass="testpane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

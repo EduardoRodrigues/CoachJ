@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.CoachContractNegotiationController">
+  <children>
+    <Label styleClass="h1" text="%ch_mesa_negociacao" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/negotiation64.png" />
+      </image>
+    </ImageView>
+    <Button mnemonicParsing="false" onMouseClicked="#gotoOffSeason" styleClass="actionButton, backButton" text="" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="8.0">
+      <tooltip>
+        <Tooltip text="%ch_tela_anterior" />
+      </tooltip>
+    </Button>
+    <Label layoutX="14.0" layoutY="114.0" styleClass="boldLabel" text="%ch_tecnico" />
+    <ComboBox fx:id="coachesComboBox" layoutY="109.0" onAction="#updateNegotiationPanel" prefWidth="669.0" promptText="%ch_tecnicos" AnchorPane.rightAnchor="19.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList" />
+      </items>
+    </ComboBox>
+    <Label fx:id="franchiseNameLabel" layoutY="63.0" styleClass="h2" text="Label" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" />
+    <GridPane layoutY="152.0" prefWidth="525.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+      <children>
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_idade" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_temporadas" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+        <Label fx:id="coachAgeLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label fx:id="coachSeasonsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_titulos" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_valor_mercado" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_salario_anual" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="5" />
+        <Label alignment="TOP_LEFT" styleClass="boldLabel" text="%ch_vencimentos_carreira" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="6" />
+        <Label id="coachSeasonsLabel" fx:id="coachTitlesLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label id="coachSeasonsLabel" fx:id="coachMarketValueLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+        <Label id="coachSeasonsLabel" fx:id="coachSalaryLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+        <Label id="coachSeasonsLabel" fx:id="coachTotalEarningsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+        <Label styleClass="h3" text="%ch_resumo_carreira" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+        <Label styleClass="h3" text="%ch_atributos" GridPane.columnIndex="3" GridPane.columnSpan="5" GridPane.rowIndex="0" />
+        <Label id="coachRotationUseLabel" styleClass="boldLabel" text="%ch_uso_reservas" GridPane.columnIndex="3" GridPane.rowIndex="1">
+          <tooltip>
+            <Tooltip text="%ch_uso_reservas_tip" />
+          </tooltip>
+        </Label>
+        <Label id="coachPatienceLabel" styleClass="boldLabel" text="%ch_paciencia" GridPane.columnIndex="3" GridPane.rowIndex="2">
+          <tooltip>
+            <Tooltip text="%ch_paciencia_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_tecnica" GridPane.columnIndex="3" GridPane.rowIndex="3">
+          <tooltip>
+            <Tooltip text="%ch_tecnica_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_disciplina" GridPane.columnIndex="3" GridPane.rowIndex="4">
+          <tooltip>
+            <Tooltip text="%ch_disciplina_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_etica_trabalho" GridPane.columnIndex="3" GridPane.rowIndex="5">
+          <tooltip>
+            <Tooltip text="%ch_etica_trabalho_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_arremesso" GridPane.columnIndex="3" GridPane.rowIndex="6">
+          <tooltip>
+            <Tooltip text="%ch_arremesso_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_passe" GridPane.columnIndex="6" GridPane.rowIndex="1">
+          <tooltip>
+            <Tooltip text="%ch_passe_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_rebote" GridPane.columnIndex="6" GridPane.rowIndex="2">
+          <tooltip>
+            <Tooltip text="%ch_rebote_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_defesa" GridPane.columnIndex="6" GridPane.rowIndex="3">
+          <tooltip>
+            <Tooltip text="%ch_defesa_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_jogo_fisico" GridPane.columnIndex="6" GridPane.rowIndex="4">
+          <tooltip>
+            <Tooltip text="%ch_fisico_tip" />
+          </tooltip>
+        </Label>
+        <Label styleClass="boldLabel" text="%ch_ritmo_jogo" GridPane.columnIndex="6" GridPane.rowIndex="5">
+          <tooltip>
+            <Tooltip text="%ch_ritmo_jogo_tip" />
+          </tooltip>
+        </Label>
+        <Label id="coachAgeLabel" fx:id="coachRotationUseLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label id="coachAgeLabel" fx:id="coachPatienceLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label id="coachAgeLabel" fx:id="coachTechniqueLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label id="coachAgeLabel" fx:id="coachDisciplineLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+        <Label id="coachAgeLabel" fx:id="coachWorkEthicLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+        <Label id="coachAgeLabel" fx:id="coachShootLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+        <Label id="coachAgeLabel" fx:id="coachPassLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+        <Label id="coachAgeLabel" fx:id="coachReboundLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label id="coachAgeLabel" fx:id="coachDefenseLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label id="coachAgeLabel" fx:id="coachPhysicalityLabel" prefHeight="48.0" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+        <Label id="coachAgeLabel" fx:id="coachTempoLabel" prefHeight="30.0" styleClass="numberLabel" text="0" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="-Infinity" percentWidth="23.974358974358974" />
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="12.435897435897436" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="4.487179487179487" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="18.205128205128204" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.102564102564102" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="4.487179487179487" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="18.205128205128204" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.102564102564102" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <Label layoutY="368.0" styleClass="h1" text="%ch_termos_contrato" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" layoutY="376.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <GridPane layoutY="433.0" prefWidth="768.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+      <children>
+        <Label styleClass="boldLabel" text="%ch_anos_restante_contrato" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Label styleClass="boldLabel" text="%ch_tentativas_renovacao" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label styleClass="boldLabel" text="%ch_proposta_franquia" GridPane.columnIndex="3" GridPane.rowIndex="0">
+          <labelFor>
+            <TextField fx:id="franchiseProposalTextField" alignment="CENTER_RIGHT" prefWidth="200.0" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+          </labelFor>
+        </Label>
+        <ProgressBar fx:id="failedContractAttemptsProgressBar" prefWidth="116.0" progress="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label fx:id="coachRemainingYearsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+        <fx:reference source="franchiseProposalTextField" />
+        <Label styleClass="boldLabel" text="%ch_recursos_financeiros" GridPane.columnIndex="3" GridPane.columnSpan="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+        <Label fx:id="franchiseAssetsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label styleClass="boldLabel" text="%ch_proposta_tecnico" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Label fx:id="coachProposalLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label styleClass="boldLabel" text="%ch_duracao_contrato" GridPane.columnIndex="3" GridPane.rowIndex="1">
+          <labelFor>
+            <TextField id="franchiseProposalTextField" alignment="CENTER_RIGHT" prefWidth="200.0" text="0" />
+          </labelFor>
+        </Label>
+        <ComboBox fx:id="contractLengthComboBox" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList" />
+          </items>
+        </ComboBox>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" percentWidth="30.0" prefWidth="269.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.0" minWidth="0.0" percentWidth="19.0" prefWidth="62.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="98.0" minWidth="0.0" percentWidth="2.0" prefWidth="62.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.0" minWidth="0.0" percentWidth="30.0" prefWidth="62.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.0" minWidth="0.0" percentWidth="19.0" prefWidth="62.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <Button id="makeOfferLabel" fx:id="makeOfferButton" mnemonicParsing="false" onMouseClicked="#makeOffer" styleClass="actionButton, makeOfferButton" text="" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="8.0">
+      <tooltip>
+        <Tooltip text="%ch_fazer_proposta_tecnico_tip" />
+      </tooltip>
+    </Button>
+    <Button id="makeOfferLabel" fx:id="releaseCoachButton" mnemonicParsing="false" onMouseClicked="#releaseCoach" styleClass="actionButton, releaseButton" text="" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="46.0">
+      <tooltip>
+        <Tooltip text="%ch_liberar_tecnico_tip" />
+      </tooltip>
+    </Button>
+    <Button id="fireCoachLabel" fx:id="fireCoachButton" mnemonicParsing="false" styleClass="actionButton, fireButton" text="" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="82.0">
+      <tooltip>
+        <Tooltip text="%ch_despedir_tecnico_tip" />
+      </tooltip>
+    </Button>
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>
