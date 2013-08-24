@@ -89,6 +89,8 @@ public class DatabaseDirectConnection {
         /**
          * Opens connection and executes statement
          */
+        
+        System.out.println("Execute SQL:" + sqlStatement); // delete     
         try {
             if (connection.isClosed()) {
                 this.connection = open();
@@ -111,12 +113,13 @@ public class DatabaseDirectConnection {
         /**
          * Opens connection and executes statement
          */
-        ResultSet resultSet = null;       
-                
+        ResultSet resultSet = null;
+        System.out.println("Get ResultSet:" + sqlStatement); // delete      
         try {
             if (connection.isClosed()) {
                 this.connection = open();
             }
+
             this.sqlStatement = this.connection.createStatement();
             resultSet = this.sqlStatement.executeQuery(sqlStatement);
 
@@ -126,5 +129,4 @@ public class DatabaseDirectConnection {
 
         return resultSet;
     }
-    
 } // end DatabaseDirectConnection class

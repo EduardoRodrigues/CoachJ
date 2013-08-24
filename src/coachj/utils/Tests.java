@@ -4,8 +4,6 @@
  */
 package coachj.utils;
 
-import java.util.TreeMap;
-
 /**
  *
  * @author Eduardo M. Rodrigues
@@ -16,14 +14,10 @@ public class Tests {
 
     public static void main(String[] args) {
 
-        TreeMap<Short, String> map = new TreeMap<>();
-
-        map.put((short) 89, "fieldGoals DESC, threePointers DESC, freeThrows DESC");
-        map.put((short) 90, "pass DESC");
-        map.put((short) 89, "(defensiveRebound + offensiveRebound) DESC");
-
-        System.out.println(map.firstEntry().getValue());
-        System.out.println(map.lastEntry().getValue());
-        
+        String baseDate = "2013-02-01";        
+        System.out.println("Base Date:" + baseDate);
+        System.out.println("2 days before:" + DateUtils.calculateDate(baseDate, -2));
+        System.out.println("1 day before:" + DateUtils.calculateDate(baseDate, -1));
+        System.out.println("1 day after:" + DateUtils.calculateDate(baseDate, 1));
     }
 } // end Tests

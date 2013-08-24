@@ -841,7 +841,8 @@ public class PreSeasonController implements Initializable {
                 /**
                  * Removing all previous games for the given season
                  */
-                ScheduleUtils.removeSeasonPreviousGames(season, connection);
+                //remove comment
+                //ScheduleUtils.removeSeasonPreviousGames(season, connection);
 
                 /**
                  * Retrieving the id's of all registered franchises and
@@ -863,7 +864,7 @@ public class PreSeasonController implements Initializable {
                     /**
                      * Auxiliary variables
                      */
-                    int gamesCount = franchises.size() * (franchises.size() - 1);
+                    int gamesCount = franchises.size() * (franchises.size() - 1) * 2;
 
                     /**
                      * Iterating through the list to generate games
@@ -874,6 +875,9 @@ public class PreSeasonController implements Initializable {
                     String gameType = "R";
                     String gameTime = "20:00:00";
 
+                    /**
+                     * Generating games
+                     */
                     for (int i = 0; i < franchises.size(); i++) {
                         homeTeam = (String) franchises.get(i);
                         arena = String.valueOf(FranchiseUtils.getFranchiseArenaId(Integer.parseInt(homeTeam),
@@ -887,7 +891,8 @@ public class PreSeasonController implements Initializable {
                                         + "arena, type, time) VALUES (" + season + ", "
                                         + homeTeam + ", " + awayTeam + ", " + arena + ", '"
                                         + gameType + "', '" + gameTime + "')";
-                                connection.executeSQL(sqlStatement);
+                                //remove comment
+                                //connection.executeSQL(sqlStatement);
                                 System.out.println(sqlStatement); // delete
 
                                 generatedGames++;
@@ -896,6 +901,23 @@ public class PreSeasonController implements Initializable {
                         }
                     }
 
+                    /**
+                     * Scheduling games
+                     */
+                    int failedAttempts = 0; //auxiliary variable
+                    
+                    while (generatedGames < gamesCount) {
+                        if (ScheduleUtils.scheduleNextGame(season, failedAttempts,
+                                connection)) {
+                            generatedGames++;
+                            failedAttempts = 0;
+                            System.out.println("Generated games: " + generatedGames);
+                        } else {
+                            failedAttempts++;
+                        }                   
+                        updateProgress(generatedGames, gamesCount);
+                    }
+                    
                 } catch (SQLException ex) {
                     Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
                 }
