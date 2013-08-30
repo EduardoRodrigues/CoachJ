@@ -406,20 +406,18 @@ public class DraftController implements Initializable {
             String franchiseName = FranchiseUtils.getFranchiseCompleteName(nextFranchise,
                     connection);
 
-            SceneUtils.warning(resources.getString("ch_rodada") + ": "
+            /*SceneUtils.warning(resources.getString("ch_rodada") + ": "
                     + round + "\n" + resources.getString("ch_escolha") + ": "
                     + pick + "\n" + resources.getString("ch_franquia")
                     + ": " + franchiseName,
-                    resources.getString("ch_atencao"));
-
-            System.out.println(draftSQL); // delete
+                    resources.getString("ch_atencao"));*/            
 
             try {
 
                 /**
                  * Retrieving the picked player and executing draft operation
                  */
-                connection.open();
+                // // connection.open();
                 resultSet = connection.getResultSet(draftSQL);
                 resultSet.first();
                 playerId = resultSet.getInt("id");
@@ -445,7 +443,7 @@ public class DraftController implements Initializable {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -478,8 +476,9 @@ public class DraftController implements Initializable {
          * it
          */
         if (connection == null) {
-            connection = new DatabaseDirectConnection();           
+            connection = new DatabaseDirectConnection();
         }
+
         /**
          * Retrieving franchise's and player's name, only to displaying purposes
          */
@@ -504,12 +503,12 @@ public class DraftController implements Initializable {
         DraftUtils.recordDraft(draftOperation, connection);
         draftSummaryList.add(draftOperation);
 
-        SceneUtils.warning(resources.getString("ch_rodada") + ": "
+        /*SceneUtils.warning(resources.getString("ch_rodada") + ": "
                 + round + "\n" + resources.getString("ch_escolha") + ": "
                 + pick + "\n" + resources.getString("ch_franquia")
                 + ": " + franchiseName + "\n" + resources.getString("ch_atleta_recrutado")
                 + ": " + playerName,
-                resources.getString("ch_atencao"));
+                resources.getString("ch_atencao"));*/
 
         /**
          * Taking selected player off from the draftees pool
@@ -520,6 +519,7 @@ public class DraftController implements Initializable {
          * Updating drafting summary
          */
         updateDraftSummary(connection);
+        proceedDraft();
     }
 
     /**
@@ -534,14 +534,14 @@ public class DraftController implements Initializable {
          * controlled by the user, add the player to its roster table view as
          * well
          */
-        for (int i = 0; i < rosterList.size(); i++) {
-            Player currentPlayer = rosterList.get(i);
+        for (int i = 0; i < drafteesList.size(); i++) {
+            Player currentPlayer = drafteesList.get(i);
             if (currentPlayer.getId() == playerId) {
-                rosterList.remove(i);
-
                 if (nextFranchise == userFranchiseId) {
+                    System.out.println("Next Franchise: " + nextFranchise); // delete
                     rosterList.add(currentPlayer);
                 }
+                drafteesList.remove(i);
                 return;
             }
         }
@@ -623,7 +623,7 @@ public class DraftController implements Initializable {
                  * Opening connection, populating resultset and positioning
                  * before its beginning
                  */
-                connection.open();
+                // // connection.open();
                 resultSet = connection.getResultSet(sqlStatement);
                 resultSet.beforeFirst();
 

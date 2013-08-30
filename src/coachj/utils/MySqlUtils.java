@@ -172,7 +172,7 @@ public class MySqlUtils {
         /**
          * Opening database connection and checking tables
          */
-        connection.open();
+        // connection.open();
 
         for (int i = 0; i < tableNames.size(); i++) {
 

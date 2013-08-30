@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +57,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -103,7 +104,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -153,7 +154,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -203,7 +204,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -249,7 +250,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Retrieving players payroll
@@ -297,7 +298,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -345,7 +346,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -370,7 +371,7 @@ public class FranchiseUtils {
      * @return
      */
     public static short getFranchiseArenaId(int franchiseId,
-            DatabaseDirectConnection connection) {       
+            DatabaseDirectConnection connection) {
         /**
          * Checking if there's an active database connection, otherwise, create
          * it
@@ -387,7 +388,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -402,8 +403,92 @@ public class FranchiseUtils {
             connection.close();
         }
         return arenaId;
-    }    
-    
+    }
+
+    /**
+     * Returns the number of ticket holders for the given franchise
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getFranchiseTicketHolders(int franchiseId,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        ResultSet resultSet;
+        String sqlStatement = "SELECT ticketHolders FROM franchise "
+                + "WHERE id = " + franchiseId;
+        int ticketHolders = 0;
+
+        try {
+            /**
+             * Opening database connection
+             */
+            // // connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            ticketHolders = resultSet.getInt("ticketHolders");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+        return ticketHolders;
+    }
+
+    /**
+     * Returns the current season record for the given franchise
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static double getFranchiseRecord(int franchiseId,
+            DatabaseDirectConnection connection) {
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+        ResultSet resultSet;
+        String sqlStatement = "SELECT record FROM franchise "
+                + "WHERE id = " + franchiseId;
+        double record = 0;
+
+        try {
+            /**
+             * Opening database connection
+             */
+            // // connection.open();
+
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            record = resultSet.getDouble("record");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+        return record;
+    }
+
     /**
      * Indicates if the given franchise has a coach
      *
@@ -434,7 +519,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -495,7 +580,7 @@ public class FranchiseUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -541,7 +626,7 @@ public class FranchiseUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
         /**
          * Auxiliary variables
@@ -651,7 +736,7 @@ public class FranchiseUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
         /**
          * Auxiliary variables
@@ -741,14 +826,14 @@ public class FranchiseUtils {
      */
     public static short getAvailableJerseyNumber(int franchiseId,
             DatabaseDirectConnection connection) {
-        
+
         /**
          * Checking if there's an active database connection, otherwise, create
          * it
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
         /**
          * Auxiliary variables
@@ -756,7 +841,7 @@ public class FranchiseUtils {
         Random generator = new Random();
         short availableJerseyNumber = (short) (generator.nextInt(51));
         ResultSet resultSet;
-        String sqlStatement;        
+        String sqlStatement;
 
         /**
          * Loop to find an available jersey number
@@ -781,5 +866,97 @@ public class FranchiseUtils {
         }
 
         return availableJerseyNumber;
+    }
+
+    /**
+     * Returns the position with fewest players within the given franchise's
+     * roster
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getFranchiseFewestPosition(short franchiseId, DatabaseDirectConnection connection) {
+
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            // // connection.open();
+        }
+
+        /**
+         * Retrieving position count for the franchise
+         */
+        String franchiseFewestPosition = "PG";
+        TreeMap<Short, String> positionsCountMap = new TreeMap<>();
+        short pointGuardCount = getFranchisePositionPlayersCount(franchiseId, "PG",
+                connection);
+        short shootingGuardCount = getFranchisePositionPlayersCount(franchiseId, "SG",
+                connection);
+        short smallForwardCount = getFranchisePositionPlayersCount(franchiseId, "SF",
+                connection);
+        short powerForwardCount = getFranchisePositionPlayersCount(franchiseId, "PF",
+                connection);
+        short centerCount = getFranchisePositionPlayersCount(franchiseId, "C",
+                connection);
+
+        /**
+         * Populating the map
+         */
+        positionsCountMap.put(pointGuardCount, "PG");
+        positionsCountMap.put(shootingGuardCount, "SG");
+        positionsCountMap.put(smallForwardCount, "SF");
+        positionsCountMap.put(powerForwardCount, "PF");
+        positionsCountMap.put(centerCount, "C");
+
+        /**
+         * Retrieving the values of the lowest and highest entries, if they're equal
+         * a random position is selected to foster diversity
+         */
+        short lowestPositionCount = positionsCountMap.firstEntry().getKey();
+        short highestPositionCount = positionsCountMap.lastEntry().getKey();
+        
+        if (highestPositionCount - lowestPositionCount < 2) {
+            franchiseFewestPosition = PositionUtils.getRandomPosition();
+        } else {
+            franchiseFewestPosition = positionsCountMap.firstEntry().getValue();
+        }
+
+        return franchiseFewestPosition;
+    }
+
+    /**
+     * Returns the number of players that primarily play at that given position
+     * in the given franchise
+     *
+     * @param franchiseId Franchise's id
+     * @param position Player's position
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static short getFranchisePositionPlayersCount(short franchiseId, String position,
+            DatabaseDirectConnection connection) {
+
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            // // connection.open();
+        }
+
+        ResultSet resultSet;
+        String sqlStatement;
+        short franchisePositionPlayersCount = 0;
+
+        try {
+            sqlStatement = "SELECT COUNT(position) AS positionCount FROM player "
+                    + "WHERE isActive = true AND franchise = " + franchiseId
+                    + " AND position = '" + position + "'";
+            resultSet = connection.getResultSet(sqlStatement);
+            if (resultSet.next()) {
+                franchisePositionPlayersCount = resultSet.getShort("positionCount");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchisePositionPlayersCount;
     }
 } // end FranchiseUtils

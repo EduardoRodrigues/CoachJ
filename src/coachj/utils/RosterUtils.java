@@ -5,6 +5,7 @@ import coachj.structures.PlayerTransactionRecord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +33,7 @@ public class RosterUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -81,7 +82,7 @@ public class RosterUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -112,7 +113,7 @@ public class RosterUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -182,7 +183,7 @@ public class RosterUtils {
          * it
          */
         if (connection == null) {
-            connection = new DatabaseDirectConnection();           
+            connection = new DatabaseDirectConnection();
         }
 
         /**
@@ -225,7 +226,7 @@ public class RosterUtils {
                 /**
                  * Retrieving the selected player and signing him
                  */
-                connection.open();
+                // // connection.open();
                 resultSet = connection.getResultSet(freeAgentSigningSQL);
                 resultSet.first();
                 playerId = resultSet.getInt("id");

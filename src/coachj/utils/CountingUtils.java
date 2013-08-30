@@ -301,7 +301,7 @@ public class CountingUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // connection.open();
 
             /**
              * Executing query, retrieving result and returning

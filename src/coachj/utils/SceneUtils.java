@@ -93,7 +93,7 @@ public class SceneUtils {
      *
      * @param application Reference to the application main thread
      * @param object Class of the controller for the fxml file
-     * @param fxmlFile Path to the fxml file
+     * @param fxmlFile Path to the fxml file     
      */
     public static void loadScene(CoachJ application, Object object, String fxmlFile) {
         /**
@@ -105,7 +105,10 @@ public class SceneUtils {
                     .replaceSceneContent(application.getStage(), fxmlFile);
             Field app = scene.getClass().getDeclaredField("application");
             app.setAccessible(true);
-            app.set(scene, application);
+            app.set(scene, application);            
+            Field connection = scene.getClass().getDeclaredField("connection");
+            connection.setAccessible(true);
+            connection.set(scene, application.getConnection());
             application.fullSizeScene();
             application.showMainStage();
         } catch (Exception ex) {

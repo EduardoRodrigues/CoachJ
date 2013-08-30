@@ -167,7 +167,7 @@ public class PlayerBuilder {
         /**
          * retrieving position's profile values
          */
-        connection.open();
+        // // connection.open();
 
         ResultSet positionProfile = connection.getResultSet("SELECT * FROM position_profile"
                 + " WHERE position ='" + this.position + "'");
@@ -688,6 +688,7 @@ public class PlayerBuilder {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
+            // // connection.open();
         }
 
         ResultSet resultSet;
@@ -695,11 +696,6 @@ public class PlayerBuilder {
                 + "WHERE id = " + playerId;
 
         try {
-            /**
-             * Opening database connection
-             */
-            connection.open();
-
             /**
              * Executing query, retrieving result and setting attributes
              */

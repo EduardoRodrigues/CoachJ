@@ -44,7 +44,7 @@ public class PlayerUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -89,7 +89,7 @@ public class PlayerUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -133,7 +133,7 @@ public class PlayerUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -209,7 +209,7 @@ public class PlayerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording contract transaction
@@ -231,7 +231,7 @@ public class PlayerUtils {
         sqlStatement = "UPDATE player SET salary = " + contract.getSalary() + ", "
                 + "remainingYears = " + contract.getLength() + ", failedContractAttempts = 0, "
                 + "jersey = " + jersey + ", franchise = " + contract.getFranchise() 
-                +  ", isActive = true WHERE id = " + contract.getPlayer();
+                +  ", isActive = true, gamesWithTeam = 0 WHERE id = " + contract.getPlayer();
         connection.executeSQL(sqlStatement);        
 
         /**
@@ -261,7 +261,7 @@ public class PlayerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Updating player's record
@@ -299,7 +299,7 @@ public class PlayerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction
@@ -350,7 +350,7 @@ public class PlayerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction

@@ -70,7 +70,7 @@
         </Tab>
       </tabs>
     </TabPane>
-    <Button id="gameCenterButton" fx:id="gotoNextGameButton" disable="true" mnemonicParsing="false" onMouseClicked="#gotoNextGame" text="%ch_ir_proximo_jogo" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+    <Button id="gameCenterButton" fx:id="gotoNextGameButton" disable="true" mnemonicParsing="false" onMouseClicked="#playGame" text="%ch_ir_proximo_jogo" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
     <Button fx:id="gameCenterButton" disable="true" layoutX="160.0" mnemonicParsing="false" text="%ch_detalhes_jogo" AnchorPane.bottomAnchor="10.0" />
   </children>
   <stylesheets>

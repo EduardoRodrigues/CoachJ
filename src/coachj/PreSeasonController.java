@@ -1,9 +1,9 @@
 package coachj;
 
 import coachj.dao.DatabaseDirectConnection;
+import coachj.enums.SeasonStatus;
 import coachj.models.Player;
 import coachj.structures.PlayerTransactionRecord;
-import coachj.utils.CountingUtils;
 import coachj.utils.FranchiseUtils;
 import coachj.utils.GeneralManagerUtils;
 import coachj.utils.ListUtils;
@@ -178,6 +178,10 @@ public class PreSeasonController implements Initializable {
      */
     private CoachJ application;
     /**
+     * Keeps a reference to the application's database connection
+     */
+    private DatabaseDirectConnection connection;
+    /**
      * Reference to resources file
      */
     private ResourceBundle resources;
@@ -224,12 +228,7 @@ public class PreSeasonController implements Initializable {
          * Creates a reference to the resources file
          */
         this.resources = rb;
-
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
+       
         /*
          * Retrieving franchise id, getting name and displaying it in the appropriate label 
          */
@@ -333,6 +332,15 @@ public class PreSeasonController implements Initializable {
         this.application = application;
     }
 
+     /**
+     * Creates a reference to the application's database connection
+     * 
+     * @param connection Connection used to retrieve data
+     */
+    public void setDatabaseConnection(DatabaseDirectConnection connection) {
+        this.connection = connection;
+    }
+    
     /**
      * Updates the information panel with data about the player selected in the
      * roster table view
@@ -475,13 +483,12 @@ public class PreSeasonController implements Initializable {
         freeAgentsTableView.setItems(freeAgentsList);
     }
 
+    /**
+     * Makes an offer to the selected player and checks whether he accepts it or
+     * not
+     */
     @FXML
-    private void makeOffer() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
+    private void makeOffer() {       
         /**
          * Checking whether the franchise had already made the maximum of three
          * offer to the player
@@ -661,11 +668,7 @@ public class PreSeasonController implements Initializable {
      * Releases the player, asking confirmation before
      */
     @FXML
-    private void confirmReleasePlayer() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
+    private void confirmReleasePlayer() {        
 
         if (SceneUtils.confirm(resources.getString("ch_deseja_liberar_atleta"),
                 resources.getString("ch_confirmar")) == 0) {
@@ -696,11 +699,7 @@ public class PreSeasonController implements Initializable {
      * Releases the player, asking confirmation before
      */
     @FXML
-    private void confirmFirePlayer() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
+    private void confirmFirePlayer() {       
 
         if (SceneUtils.confirm(resources.getString("ch_deseja_demitir_atleta"),
                 resources.getString("ch_confirmar")) == 0) {
@@ -755,13 +754,7 @@ public class PreSeasonController implements Initializable {
      * If there are teams with incomplete rosters, they're completed.
      */
     @FXML
-    private void gotoRegularSeason() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-        connection.open();
-
+    private void generateRegularSeasonSchedule() {       
         /**
          * Checking whether the franchise has the required number of active
          * player in its roster
@@ -782,26 +775,19 @@ public class PreSeasonController implements Initializable {
          * Generating games
          */
         invokeScheduleGeneratingTask();
-
-        /**
-         * Loading regular season scene
-         */
-        //SettingsUtils.setSetting("seasonStatus",
-        //              String.valueOf(SeasonStatus.SEASON.getStatus()));
-        //SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
-        //"Season.fxml");
-    }    
+    }
 
     /**
      * Invokes the task that generates the regular season schedule
      */
+    @FXML
     private void invokeScheduleGeneratingTask() {
         /**
          * Creates a new task, binds its progress to the progress indicator and
          * starts it
          */
         task = null;
-        task = generateSchedule();
+        task = generateRegularScheduleTask();
         taskCompletionProgressBar.progressProperty().unbind();
         taskCompletionProgressBar.progressProperty().bind(task.progressProperty());
         new Thread(task).start();
@@ -812,7 +798,7 @@ public class PreSeasonController implements Initializable {
      *
      * @return
      */
-    private Task<Integer> generateSchedule() {
+    private Task<Integer> generateRegularScheduleTask() {
         /**
          * Displaying controls that show the progress of the task
          */
@@ -835,14 +821,13 @@ public class PreSeasonController implements Initializable {
                 short season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
                         String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
                 DatabaseDirectConnection connection = new DatabaseDirectConnection();
-                connection.open();
+                // // connection.open();
                 int generatedGames = 0;
 
                 /**
                  * Removing all previous games for the given season
                  */
-                //remove comment
-                //ScheduleUtils.removeSeasonPreviousGames(season, connection);
+                ScheduleUtils.removeSeasonPreviousGames(season, connection);
 
                 /**
                  * Retrieving the id's of all registered franchises and
@@ -873,7 +858,7 @@ public class PreSeasonController implements Initializable {
                     String awayTeam;
                     String arena;
                     String gameType = "R";
-                    String gameTime = "20:00:00";
+                    String gameTime = "23:00:00";
 
                     /**
                      * Generating games
@@ -891,9 +876,8 @@ public class PreSeasonController implements Initializable {
                                         + "arena, type, time) VALUES (" + season + ", "
                                         + homeTeam + ", " + awayTeam + ", " + arena + ", '"
                                         + gameType + "', '" + gameTime + "')";
-                                //remove comment
-                                //connection.executeSQL(sqlStatement);
-                                System.out.println(sqlStatement); // delete
+
+                                connection.executeSQL(sqlStatement);
 
                                 generatedGames++;
                                 updateProgress(generatedGames, gamesCount);
@@ -902,10 +886,18 @@ public class PreSeasonController implements Initializable {
                     }
 
                     /**
+                     * Calling stored procedures that update the time for the
+                     * games based on the city where they happen and that reset
+                     * the stats for the franchises
+                     */
+                    connection.executeSQL("CALL updateGameTime");
+                    connection.executeSQL("CALL resetFranchiseStats");
+
+                    /**
                      * Scheduling games
                      */
                     int failedAttempts = 0; //auxiliary variable
-                    
+
                     while (generatedGames < gamesCount) {
                         if (ScheduleUtils.scheduleNextGame(season, failedAttempts,
                                 connection)) {
@@ -914,10 +906,10 @@ public class PreSeasonController implements Initializable {
                             System.out.println("Generated games: " + generatedGames);
                         } else {
                             failedAttempts++;
-                        }                   
+                        }
                         updateProgress(generatedGames, gamesCount);
                     }
-                    
+
                 } catch (SQLException ex) {
                     Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -929,12 +921,13 @@ public class PreSeasonController implements Initializable {
              */
             @Override
             protected void succeeded() {
+                System.out.println("Completed!");
                 mainContent.setCursor(Cursor.DEFAULT);
                 SceneUtils.warning(resources.getString("ch_tabela_gerada"),
                         resources.getString("ch_atencao"));
                 messageLabel.setVisible(false);
                 taskCompletionProgressBar.setVisible(false);
-                System.out.println("Completed!");
+                gotoRegularSeason();
             }
 
             @Override
@@ -961,5 +954,15 @@ public class PreSeasonController implements Initializable {
         };
 
         return generatingScheduleTask;
+    }
+
+    /**
+     * Loads regular season scene
+     */
+    private void gotoRegularSeason() {
+        SettingsUtils.setSetting("seasonStatus",
+                String.valueOf(SeasonStatus.SEASON.getStatus()));
+        SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
+                "Season.fxml");
     }
 }

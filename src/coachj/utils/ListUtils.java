@@ -6,6 +6,7 @@ import coachj.dao.DatabaseDirectConnection;
 import coachj.lists.IdDescriptionListItem;
 import coachj.models.Player;
 import coachj.structures.DraftSummary;
+import coachj.structures.ScheduledGame;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -57,7 +58,7 @@ public class ListUtils {
          * Opening connection, checking if there are records retrieved and, if
          * so, looping through the resulset to fill the observable list
          */
-        connection.open();
+        // // connection.open();
         resultSet = connection.getResultSet(sqlStatement);
 
         try {
@@ -141,7 +142,7 @@ public class ListUtils {
         /**
          * opening connection and retrieving data into the resultset
          */
-        connection.open();
+        // // connection.open();
         resultSet = connection.getResultSet(sqlStatement);
 
         /**
@@ -166,11 +167,11 @@ public class ListUtils {
         }
 
         return observableList;
-    }    
-    
+    }
+
     /**
-     * Populates an ObservableList with DraftSummary objects, retrieving the data from
-     * the resultset returned by a sql statement
+     * Populates an ObservableList with DraftSummary objects, retrieving the
+     * data from the resultset returned by a sql statement
      *
      * @param sqlStatement SQL statement that retrieves the records
      * @param connection Database connection used to retrieve data
@@ -203,7 +204,7 @@ public class ListUtils {
         /**
          * opening connection and retrieving data into the resultset
          */
-        connection.open();
+        // // connection.open();
         resultSet = connection.getResultSet(sqlStatement);
 
         /**
@@ -213,7 +214,7 @@ public class ListUtils {
             resultSet.beforeFirst();
 
             while (resultSet.next()) {
-               draftOperation = new DraftSummary();
+                draftOperation = new DraftSummary();
                 draftOperation.setDraftPick(resultSet.getShort("pick"));
                 draftOperation.setDraftRound(resultSet.getShort("round"));
                 draftOperation.setFranchiseId(resultSet.getShort("franchise"));
@@ -223,6 +224,72 @@ public class ListUtils {
                 draftOperation.setPlayerName(PlayerUtils.getPlayerCompleteName(
                         resultSet.getShort("player"), connection));
                 observableList.add(draftOperation);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DraftController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            /**
+             * Closing connection
+             */
+            connection.close();
+        }
+
+        return observableList;
+    }
+
+    /**
+     * Populates an ObservableList with ScheduledGame objects, retrieving the
+     * data from the resultset returned by a sql statement
+     *
+     * @param sqlStatement SQL statement that retrieves the records
+     * @param connection Database connection used to retrieve data
+     */
+    public static ObservableList<ScheduledGame> fillScheduledGameListFromSQL(String sqlStatement,
+            DatabaseDirectConnection connection) {
+
+        ObservableList<ScheduledGame> observableList = FXCollections
+                .observableArrayList();
+
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+        }
+
+        /**
+         * Variables that store the database connection, resultset, sql
+         * statement, ScheduledGame object instance and its fields
+         */
+        ResultSet resultSet;
+        ScheduledGame game;       
+
+        /**
+         * opening connection and retrieving data into the resultset
+         */
+        // // connection.open();
+        resultSet = connection.getResultSet(sqlStatement);
+
+        /**
+         * Populating table view
+         */
+        try {
+            resultSet.beforeFirst();
+
+            while (resultSet.next()) {
+                game = new ScheduledGame();
+                game.setId(resultSet.getInt("id"));
+                game.setDate(resultSet.getString("date"));
+                game.setTime(resultSet.getString("time"));
+                game.setPlayed(resultSet.getBoolean("played"));
+                game.setAwayScore(resultSet.getShort("awayScore"));
+                game.setAwayTeam(FranchiseUtils.getFranchiseCompleteName(
+                        resultSet.getShort("awayTeam"), connection));
+                game.setHomeScore(resultSet.getShort("homeScore"));
+                game.setHomeTeam(FranchiseUtils.getFranchiseCompleteName(
+                        resultSet.getShort("homeTeam"), connection));
+                observableList.add(game);
             }
         } catch (SQLException ex) {
             Logger.getLogger(DraftController.class.getName()).log(Level.SEVERE, null, ex);

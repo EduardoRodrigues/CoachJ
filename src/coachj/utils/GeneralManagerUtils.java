@@ -76,7 +76,7 @@ public class GeneralManagerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording contract transaction
@@ -135,7 +135,7 @@ public class GeneralManagerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Updating coach's record
@@ -173,7 +173,7 @@ public class GeneralManagerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction
@@ -230,7 +230,7 @@ public class GeneralManagerUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction
@@ -295,7 +295,7 @@ public class GeneralManagerUtils {
          * returning it
          */
         try {
-            connection.open();
+            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             generalManagerId = resultSet.getShort("id");
@@ -336,7 +336,7 @@ public class GeneralManagerUtils {
          * franchise and returning them
          */
         try {
-            connection.open();
+            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             generalManagerPerformance.setYearsWithFranchise(resultSet.getShort("years"));
             generalManagerPerformance.setPerformanceRate(resultSet.getDouble("performanceRate"));
@@ -389,7 +389,7 @@ public class GeneralManagerUtils {
          * returning it
          */
         try {
-            connection.open();
+            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             generalManagerDealingStrategy = resultSet.getShort("dealingStrategy");

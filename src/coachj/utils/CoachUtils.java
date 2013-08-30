@@ -29,10 +29,7 @@ public class CoachUtils {
      */
     public static CoachCurrentContract getCoachContractSummary(short coachId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
+
         /**
          * Checking if there's an active database connection, otherwise, create
          * it
@@ -51,7 +48,7 @@ public class CoachUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -129,7 +126,7 @@ public class CoachUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording contract transaction
@@ -188,7 +185,7 @@ public class CoachUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Updating coach's record
@@ -231,7 +228,7 @@ public class CoachUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -276,7 +273,7 @@ public class CoachUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -321,7 +318,7 @@ public class CoachUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -361,7 +358,7 @@ public class CoachUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction
@@ -418,7 +415,7 @@ public class CoachUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Recording transaction
@@ -483,7 +480,7 @@ public class CoachUtils {
          * returning it
          */
         try {
-            connection.open();
+            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             coachId = resultSet.getShort("id");
@@ -544,58 +541,49 @@ public class CoachUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         String coachDraftingSQL = null;
-        String randomPosition = PositionUtils.getRandomPosition();
         short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
         short franchiseId = CoachUtils.getCoachFranchiseId(coachId, connection);
+        String franchiseFewestPosition = FranchiseUtils.getFranchiseFewestPosition(franchiseId,
+                connection);
 
         if (coachDraftingMethod == 0) {
             /* 0 - player with greatest market value, any position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 1) {
             /* 1 - player with greatest rate in coach's favorite attribute, any position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection) + " DESC, "
                     + "marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 2) {
             /* 2 - player with greatest market value, worst starter position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
-                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 3) {
             /* 3 - player with greatest rate in coach's favorite attribute, worst
              starter position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
-                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
-                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
                     + " DESC, marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 4) {
             /* 4 - player with greatest market value, worst reserve position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
-                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 5) {
             /* 3 - player with greatest rate in coach's favorite attribute, worst
              reserve position */
             coachDraftingSQL = "SELECT id FROM player WHERE franchise IS NULL AND isActive = false "
-                    + "AND retired = false AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
-                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
-                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + "AND retired = false AND position = '" + franchiseFewestPosition + "' "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
                     + " DESC, marketValue DESC LIMIT 1";
         }
 
@@ -638,64 +626,55 @@ public class CoachUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         String coachFreeAgentSelectSQL = null;
-        String randomPosition = PositionUtils.getRandomPosition();
         short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
         short franchiseId = CoachUtils.getCoachFranchiseId(coachId, connection);
+        String franchiseFewestPosition = FranchiseUtils.getFranchiseFewestPosition(franchiseId,
+                connection);
 
         if (coachDraftingMethod == 0) {
             /* 0 - player with greatest market value, any position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + " AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 1) {
             /* 1 - player with greatest rate in coach's favorite attribute, any position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " HAVING COUNT(position) < 3) "
+                    + " AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection) + " DESC, "
                     + "marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 2) {
             /* 2 - player with greatest market value, worst starter position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
-                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + " AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 3) {
             /* 3 - player with greatest rate in coach's favorite attribute, worst
              starter position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition < 6 "
-                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
-                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " AND position = '" + franchiseFewestPosition + "' "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
                     + " DESC, marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 4) {
             /* 4 - player with greatest market value, worst reserve position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
-                    + "HAVING COUNT(position) < 3 ORDER BY marketValue) "
+                    + " AND position = '" + franchiseFewestPosition + "' "
                     + "ORDER BY marketValue DESC LIMIT 1";
         } else if (coachDraftingMethod == 5) {
             /* 3 - player with greatest rate in coach's favorite attribute, worst
              reserve position */
             coachFreeAgentSelectSQL = "SELECT id FROM player WHERE isActive = false "
                     + "AND retired = false AND salary <= " + maximumOffer
-                    + " AND position NOT IN (SELECT IFNULL(position, '" + randomPosition + "') "
-                    + "FROM player WHERE franchise = " + franchiseId + " AND rosterPosition > 5 "
-                    + "HAVING COUNT(position) < 3 ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
-                    + ") ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
+                    + " AND position = '" + franchiseFewestPosition + "' "
+                    + "ORDER BY " + CoachUtils.getCoachPreferredAttribute(coachId, connection)
                     + " DESC, marketValue DESC LIMIT 1";
         }
 
@@ -751,7 +730,7 @@ public class CoachUtils {
          * returning the preferred one
          */
         try {
-            connection.open();
+            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             attributesMap.put(resultSet.getShort("rebound"),

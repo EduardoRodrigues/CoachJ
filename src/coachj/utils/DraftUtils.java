@@ -48,7 +48,7 @@ public class DraftUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -114,7 +114,7 @@ public class DraftUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -190,7 +190,7 @@ public class DraftUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -246,7 +246,7 @@ public class DraftUtils {
         /**
          * Opening database connection
          */
-        connection.open();
+        // // connection.open();
 
         /**
          * Registering player into the franchise
@@ -264,8 +264,6 @@ public class DraftUtils {
                 + "VALUES (" + draftYear + ", " + playerId + ", " + franchiseId + ", "
                 + draftOperation.getDraftRound() + ", " + draftOperation.getDraftPick()
                 + ")";
-        connection.executeSQL(sqlStatement);
-
-        connection.close();
+        connection.executeSQL(sqlStatement);       
     }
 } // end DraftUtils

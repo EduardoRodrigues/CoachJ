@@ -1,6 +1,7 @@
 package coachj.utils;
 
 import coachj.dao.DatabaseDirectConnection;
+import coachj.structures.ScheduledGame;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
@@ -16,6 +17,12 @@ import java.util.logging.Logger;
  */
 public class ScheduleUtils {
 
+    /**
+     * Delete all previously created games of the given season from the database
+     *
+     * @param season Season to remove games from
+     * @param connection Database connection used to retrieve data
+     */
     public static void removeSeasonPreviousGames(short season,
             DatabaseDirectConnection connection) {
 
@@ -25,7 +32,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -35,6 +42,15 @@ public class ScheduleUtils {
         connection.executeSQL(sqlStatement);
     }
 
+    /**
+     * Schedules an unscheduled games for the given season
+     *
+     * @param season Season to schedule game
+     * @param failedAttempts Number of the failed attempts to schedule a game,
+     * if it's greater than 30, tries to find a alternative date
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     public static boolean scheduleNextGame(short season, int failedAttempts,
             DatabaseDirectConnection connection) {
 
@@ -50,7 +66,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -97,7 +113,7 @@ public class ScheduleUtils {
          * There's a not scheduled game between teams, schedule it
          */
         if (gameId != 0) {
-            scheduledGame(gameId, gameDay, connection);
+            scheduleGame(gameId, gameDay, connection);
             gameScheduled = true;
             System.out.println("Game Scheduled: " + gameDay + ", id: " + gameId);
         }
@@ -105,6 +121,13 @@ public class ScheduleUtils {
         return gameScheduled;
     }
 
+    /**
+     * Returns the last day with a scheduled game
+     *
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     private static String getLastScheduledDate(short season,
             DatabaseDirectConnection connection) {
 
@@ -114,7 +137,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         String lastScheduledDate = null;
@@ -135,6 +158,86 @@ public class ScheduleUtils {
         return lastScheduledDate;
     }
 
+    /**
+     * Returns the next day with a scheduled game
+     *
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getNextScheduledDate(short season,
+            DatabaseDirectConnection connection) {
+
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            // // connection.open();
+        }
+
+        String nextScheduledDate = null;
+        String sqlStatement = "SELECT date FROM game WHERE season = " + season
+                + " AND date IS NOT NULL ORDER BY date LIMIT 1";
+        ResultSet resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            if (resultSet.next()) {
+                nextScheduledDate = resultSet.getString("date");
+            } else {
+                nextScheduledDate = getLastScheduledDate(season, connection);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return nextScheduledDate;
+    }
+    
+    /**
+     * Returns the id for the next game to be played
+     *
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getNextGameId(short season,
+            DatabaseDirectConnection connection) {
+
+        /**
+         * Checking if there's an active database connection, otherwise, create
+         * it
+         */
+        if (connection == null) {
+            connection = new DatabaseDirectConnection();
+            // // connection.open();
+        }
+
+        int nextGameId = 0;
+        String sqlStatement = "SELECT id FROM game WHERE season = " + season
+                + " AND played = FALSE ORDER BY date, time LIMIT 1";
+        ResultSet resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            if (resultSet.next()) {
+                nextGameId = resultSet.getInt("id");
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return nextGameId;
+    }
+    
+    
+    /**
+     * Returns the number of games already schedule in the given date
+     *
+     * @param date Date to count scheduled games
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     private static short getGamesScheduledDate(String date,
             DatabaseDirectConnection connection) {
 
@@ -144,7 +247,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         short gamesScheduledDate = 0;
@@ -165,6 +268,15 @@ public class ScheduleUtils {
         return gamesScheduledDate;
     }
 
+    /**
+     * Tries to find a team that hasn't played 2 games in the 2 previous days
+     * from the base date
+     *
+     * @param date Base date
+     * @param excludedId Id not to be included in the search
+     * @param connection Database connection used to retrieve data
+     * @return <b>0</b> if no team is found, or the id of the found team
+     */
     private static short findTeam(String date, short excludedId,
             DatabaseDirectConnection connection) {
 
@@ -175,7 +287,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -202,6 +314,14 @@ public class ScheduleUtils {
         return teamId;
     }
 
+    /**
+     * Tries to find a not scheduled game between the given teams
+     *
+     * @param homeTeam Home team id
+     * @param awayTeam Away team id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     private static short findNotScheduledGameBetweenTeams(short homeTeam, short awayTeam,
             DatabaseDirectConnection connection) {
 
@@ -212,7 +332,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -233,7 +353,14 @@ public class ScheduleUtils {
         return gameId;
     }
 
-    private static void scheduledGame(int gameId, String date,
+    /**
+     * Effectively schedule the game in the database
+     *
+     * @param gameId Game's id
+     * @param date Date to schedule the game
+     * @param connection Database connection used to retrieve data
+     */
+    private static void scheduleGame(int gameId, String date,
             DatabaseDirectConnection connection) {
 
         /**
@@ -242,7 +369,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         String sqlStatement = "UPDATE game SET date = '" + date + "' WHERE id = "
@@ -250,6 +377,15 @@ public class ScheduleUtils {
         connection.executeSQL(sqlStatement);
     }
 
+    /**
+     * Returns whether the given team already has a scheduled game in the given
+     * date
+     *
+     * @param date Date to schedule the game
+     * @param teamId Team's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     private static boolean teamHasGameThisDay(String date, short teamId,
             DatabaseDirectConnection connection) {
 
@@ -260,7 +396,7 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         /**
@@ -280,7 +416,14 @@ public class ScheduleUtils {
 
         return teamHasGame;
     }
-    
+
+    /**
+     * Returns a ramdom date from the given season's schedule
+     *
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
     private static String getRandomScheduleDate(short season,
             DatabaseDirectConnection connection) {
 
@@ -290,11 +433,11 @@ public class ScheduleUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         String randomScheduleDate = null;
-        String sqlStatement = "SELECT date FROM game " 
+        String sqlStatement = "SELECT date FROM game "
                 + "WHERE season = " + season + " AND date IS NOT NULL "
                 + "ORDER BY RAND() LIMIT 1";
         ResultSet resultSet = connection.getResultSet(sqlStatement);
@@ -310,5 +453,6 @@ public class ScheduleUtils {
         }
 
         return randomScheduleDate;
-    }
+    }    
+    
 } // end class ScheduleUtils

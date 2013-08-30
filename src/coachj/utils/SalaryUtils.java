@@ -26,7 +26,7 @@ public class SalaryUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
-            connection.open();
+            // // connection.open();
         }
 
         try {

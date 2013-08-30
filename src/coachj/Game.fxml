@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainContent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.GameController">
+  <children>
+    <Button id="returnButton" fx:id="goBackButton" mnemonicParsing="false" onMouseClicked="#goBack" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <Label fx:id="scoreboardPeriodLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardShot" text="1" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+        <Label fx:id="scoreboardTimeLeftLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardClock" text="00:00" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardShot" text="%ch_arremesso" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <Label fx:id="scoreboardShotClockLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardShotClock" text="24" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        <Label fx:id="scoreboardAwayTeamScoreLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardScore" text="000" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+          <GridPane.margin>
+            <Insets />
+          </GridPane.margin>
+        </Label>
+        <Label fx:id="scoreboardHomeTeamScoreLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardScore" text="000" GridPane.columnIndex="3" GridPane.rowIndex="0" GridPane.rowSpan="2" />
+        <Label fx:id="scoreboardAwayTeamTimeoutsLabel" styleClass="numberLabel" text="3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label fx:id="scoreboardAwayTeamFoulsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label fx:id="scoreboardHomeTeamTimeoutsLabel" styleClass="numberLabel" text="3" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+        <Label fx:id="scoreboardHomeTeamFoulsLabel" styleClass="numberLabel" text="0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+        <Label styleClass="boldLabel" text="%ch_tempos" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+        <Label styleClass="boldLabel" text="%ch_faltas" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+        <Label styleClass="boldLabel" text="%ch_tempos" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+        <Label styleClass="boldLabel" text="%ch_faltas" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+        <Label fx:id="scoreboardAwayTeamLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardTeam" text="Label" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+        <Label fx:id="scoreboardHomeTeamLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardTeam" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="130.0">
+      <tabs>
+        <Tab text="%ch_informacoes_jogo">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane prefWidth="445.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label styleClass="boldLabel" text="%ch_data" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label styleClass="boldLabel" text="%ch_horario" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label styleClass="boldLabel" text="%ch_local" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label styleClass="boldLabel" text="%ch_publico" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label styleClass="boldLabel" text="%ch_arbitro" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label fx:id="gameDateLabel" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <Label fx:id="gameTimeLabel" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <Label fx:id="arenaLabel" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                    <Label fx:id="attendanceLabel" minHeight="13.0" prefHeight="13.0" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                    <Label fx:id="refereeLabel" minHeight="13.0" prefHeight="13.0" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="55.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <padding>
+                    <Insets />
+                  </padding>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab fx:id="awayTeamTab" text="------">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="awayTeamBoxScoreTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" text="%ch_numero" fx:id="awayTeamPlayerJerseyTableColumn" />
+                    <TableColumn minWidth="75.0" prefWidth="200.0" text="%ch_atleta" fx:id="awayTeamPlayerCompleteNameTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab fx:id="homeTeamTab" text="------">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="homeTeamBoxScoreTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn maxWidth="35.0" minWidth="35.0" prefWidth="35.0" text="%ch_numero" fx:id="homeTeamPlayerJerseyTableColumn" />
+                    <TableColumn minWidth="75.0" prefWidth="200.0" text="%ch_atleta" fx:id="homeTeamPlayerCompleteNameTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

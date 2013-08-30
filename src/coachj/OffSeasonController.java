@@ -872,7 +872,7 @@ public class OffSeasonController implements Initializable {
                  * Opening connection, populating resultset and positioning
                  * before its beginning
                  */
-                connection.open();
+                // // connection.open();
                 resultSet = connection.getResultSet(sqlStatement);
                 resultSet.beforeFirst();
 

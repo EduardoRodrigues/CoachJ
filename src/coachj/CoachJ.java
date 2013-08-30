@@ -1,6 +1,6 @@
 package coachj;
 
-import coachj.enums.SeasonStatus;
+import coachj.dao.DatabaseDirectConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -24,7 +24,8 @@ public class CoachJ extends Application {
      * Field used to keep reference to the main stage
      */
     private Stage stage;
-
+    private DatabaseDirectConnection connection;
+    
     public static void main(String[] args) {
         Application.launch(CoachJ.class, (java.lang.String[]) null);
     }
@@ -59,6 +60,7 @@ public class CoachJ extends Application {
         SettingsUtils.setSetting("databaseTables", String.valueOf(databaseTables));
         SettingsUtils.setSetting("databaseIntegrity", String.valueOf(databaseIntegrity));        
         
+        connection = new DatabaseDirectConnection();
         /*
          * Setting window's properties and calling postloader
          * scene
@@ -134,6 +136,7 @@ public class CoachJ extends Application {
         try {
             PostLoaderController postLoader = (PostLoaderController) SceneUtils.replaceSceneContent(this.stage, "PostLoader.fxml");
             postLoader.setApp(this);
+            postLoader.setDatabaseConnection(connection);
         } catch (Exception ex) {
             Logger.getLogger(CoachJ.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -149,4 +152,11 @@ public class CoachJ extends Application {
         setMainStageLocation(0, 0);
         setResizableStage(true);        
     }
+    
+    /**
+     * Getters 
+     */
+    public DatabaseDirectConnection getConnection() {
+        return connection;
+    }    
 }

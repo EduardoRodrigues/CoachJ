@@ -38,7 +38,7 @@ public class AutomaticEntitiesGenerator {
         /**
          * Opening database connection and generating that necessary coaches
          */
-        connection.open();
+        // // connection.open();
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("coach", connection);
@@ -84,7 +84,7 @@ public class AutomaticEntitiesGenerator {
         /**
          * Opening database connection and generating that necessary coaches
          */
-        connection.open();
+        // // connection.open();
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("general_manager", connection);
@@ -131,7 +131,7 @@ public class AutomaticEntitiesGenerator {
         /**
          * Opening database connection and generating that necessary coaches
          */
-        connection.open();
+        // // connection.open();
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("referee", connection);
@@ -179,7 +179,7 @@ public class AutomaticEntitiesGenerator {
         /**
          * Opening database connection and generating that necessary coaches
          */
-        connection.open();
+        // // connection.open();
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("player", connection);

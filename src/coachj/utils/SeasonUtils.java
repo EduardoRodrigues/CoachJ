@@ -44,7 +44,7 @@ public class SeasonUtils {
             /**
              * Opening database connection
              */
-            connection.open();
+            // connection.open();
 
             /**
              * Checking if there's a record in the database, if yes and it's
@@ -98,7 +98,7 @@ public class SeasonUtils {
         /**
          * generating new season and setting the current date
          */
-        connection.open();
+        // // connection.open();
         sqlStatement = "INSERT INTO season (year, finished) " +
                 "VALUES(" + newSeason + ", false)";
         connection.executeSQL(sqlStatement);

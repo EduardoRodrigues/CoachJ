@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="700.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="coachj.PreSeasonController">
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="700.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.PreSeasonController">
   <children>
     <Label styleClass="h1" text="%ch_pre_temporada" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
     <Label fx:id="completeFranchiseNameLabel" styleClass="h2" text="franquiaLabel" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="60.0" />
@@ -194,7 +194,7 @@
     <Button fx:id="waivePlayerButton" disable="true" layoutX="22.0" mnemonicParsing="false" onMouseClicked="#confirmFirePlayer" text="%ch_demitir_atleta" AnchorPane.bottomAnchor="10.0" />
     <Button fx:id="releasePlayerButton" disable="true" layoutX="159.0" mnemonicParsing="false" onMouseClicked="#confirmReleasePlayer" text="%ch_liberar_atleta" AnchorPane.bottomAnchor="10.0" />
     <Button fx:id="negotiatePlayerContractButton" disable="true" layoutX="296.0" mnemonicParsing="false" onMouseClicked="#gotoNegotiationTable" text="%ch_negociar_contrato_atleta" AnchorPane.bottomAnchor="10.0" />
-    <Button fx:id="proceedButton" mnemonicParsing="false" onMouseClicked="#gotoRegularSeason" text="%ch_prosseguir" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <Button fx:id="proceedButton" mnemonicParsing="false" onMouseClicked="#invokeScheduleGeneratingTask" text="%ch_prosseguir" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />

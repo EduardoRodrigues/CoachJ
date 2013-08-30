@@ -1,5 +1,6 @@
 package coachj;
 
+import coachj.dao.DatabaseDirectConnection;
 import coachj.enums.SeasonStatus;
 import coachj.utils.SettingsUtils;
 import java.net.URL;
@@ -45,6 +46,11 @@ public class PostLoaderController implements Initializable {
      * Keeps a reference to the application's thread
      */
     private CoachJ application;
+    
+    /**
+     * Keeps a reference to the application's database connection
+     */
+    private DatabaseDirectConnection connection;
 
     /**
      * Initializes the controller class.
@@ -64,6 +70,15 @@ public class PostLoaderController implements Initializable {
      */
     public void setApp(CoachJ application) {
         this.application = application;
+    }
+    
+    /**
+     * Creates a reference to the application's database connection
+     * 
+     * @param connection Connection used to retrieve data
+     */
+    public void setDatabaseConnection(DatabaseDirectConnection connection) {
+        this.connection = connection;
     }
 
     /**
@@ -136,7 +151,7 @@ public class PostLoaderController implements Initializable {
     @FXML
     private void proceed() {
         /**
-         * Retrieving the season status to define content
+         * Retrieving the season status to define scene content
          */
         int seasonStatus = Integer.parseInt(SettingsUtils.getSetting("seasonStatus", "0"));
 
@@ -144,7 +159,7 @@ public class PostLoaderController implements Initializable {
             SceneUtils.loadScene(this.application, OffSeasonController.class.getClass(),
                     "OffSeason.fxml");
         } else if (seasonStatus == SeasonStatus.PRE_SEASON.getStatus()) {
-            SceneUtils.loadScene(this.application, PreSeasonController.class,
+            SceneUtils.loadScene(this.application, PreSeasonController.class.getClass(),
                     "PreSeason.fxml");
         } else if (seasonStatus == SeasonStatus.DRAFT.getStatus()) {
             SceneUtils.loadScene(this.application, DraftController.class.getClass(),
@@ -153,6 +168,5 @@ public class PostLoaderController implements Initializable {
             SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
                 "Season.fxml");
         }
-
     }
 }

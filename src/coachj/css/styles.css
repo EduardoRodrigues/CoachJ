@@ -71,7 +71,7 @@
 }
 
 .h1_img {
-   -fx-margin: 5px;
+    -fx-margin: 5px;
 }
 
 .h2 {
@@ -132,6 +132,48 @@
 }
 
 .table-cell {
-     -fx-padding: 4px 0px 0px 2px;
-     -fx-font: 13px 'Consolas';
+    -fx-padding: 4px 0px 0px 2px;
+    -fx-font: 13px 'Consolas';
+}
+
+.date_bar {
+    -fx-background-color: #838B8B;
+    -fx-padding: 4px 0px 0px 10px;
+    -fx-font: 13px 'Consolas';
+    -fx-text-fill: #FFFFFF;
+}
+
+.scoreboardScore {
+    -fx-background-color: #E0EEEE;
+    -fx-font: 30px 'Consolas';
+    -fx-text-fill: #000000;
+    -fx-alignment:center;
+}
+
+.scoreboardTeam {
+    -fx-font: 30px 'Candara';
+    -fx-background-color: #36648B;
+    -fx-text-fill: #FFFFFF;
+    -fx-alignment:center;
+}
+
+.scoreboardClock {
+    -fx-background-color: #000000;
+    -fx-font: 20px 'Consolas';
+    -fx-text-fill: #FFD700;
+    -fx-alignment:center;
+}
+
+.scoreboardShot {
+    -fx-background-color: #000000;
+    -fx-font: bold 15px 'Consolas';
+    -fx-text-fill: #FFFFFF;
+    -fx-alignment:center;
+}
+
+.scoreboardShotClock {
+    -fx-background-color: #000000;
+    -fx-font: bold 20px 'Consolas';
+    -fx-text-fill: #EE0000;
+    -fx-alignment:center;
 }
