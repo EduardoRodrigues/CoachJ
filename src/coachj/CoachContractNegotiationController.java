@@ -90,51 +90,56 @@ public class CoachContractNegotiationController implements Initializable {
     private Label franchiseAssetsLabel;
     @FXML
     private ComboBox contractLengthComboBox;
+    
     /**
      * provides list for the coaches combobox
      */
     private ObservableList<IdDescriptionListItem> coachesObservableList;
+    
     /**
      * Keeps a reference to the application's thread
      */
     private CoachJ application;
+    
+    /**
+     * Database connection
+     */
+    private DatabaseDirectConnection connection;
+    
     /**
      * Stores franchise's id
      */
     private short userFranchiseId;
+    
     /**
      * Stores franchise's coach's id
      */
     private short userFranchiseCoachId;
+    
     /**
      * Stores franchise's financial assets
      */
     private long franchiseAssets;
+    
     /**
      * Store franchise's proposal
      */
     private int franchiseOffer;
+    
     /**
      * Stores coach's proposal
      */
     private int coachProposal;
+    
     /**
      * Stores coach's reference
      */
     Coach coach;
+    
     /**
      * Reference to resources file
      */
     private ResourceBundle resources;
-
-    /**
-     * Creates a reference to the application's thread
-     *
-     * @param application Reference to the CoachJ thread
-     */
-    public void setApp(CoachJ application) {
-        this.application = application;
-    }
 
     /**
      * Initializes the controller class.
@@ -142,14 +147,15 @@ public class CoachContractNegotiationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+        
+        /**
          * Creates a reference to the resources file
          */
         this.resources = rb;
-
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
         
         /**
          * Variables that store franchise's coach's id, franchise's complete
@@ -204,7 +210,26 @@ public class CoachContractNegotiationController implements Initializable {
         franchiseCoachIndex = ListUtils.selectComboBoxItem(coachesObservableList,
                 userFranchiseCoachId);
         coachesComboBox.getSelectionModel().select(franchiseCoachIndex);
-        updateNegotiationPanel();
+        updateNegotiationPanel();       
+        
+    }
+
+    /**
+     * Creates a reference to the application's thread
+     *
+     * @param application Reference to the CoachJ thread
+     */
+    public void setApp(CoachJ application) {
+        this.application = application;
+    }
+    
+    /**
+     * Loads the offseason scene
+     */
+    @FXML
+    private void gotoOffSeason() {
+        SceneUtils.loadScene(this.application, OffSeasonController.class.getClass(),
+                "OffSeason.fxml");
         
         /**
          * Closing connection
@@ -213,24 +238,11 @@ public class CoachContractNegotiationController implements Initializable {
     }
 
     /**
-     * Loads the offseason scene
-     */
-    @FXML
-    private void gotoOffSeason() {
-        SceneUtils.loadScene(this.application, OffSeasonController.class.getClass(),
-                "OffSeason.fxml");
-    }
-
-    /**
      * Updates information for the negotiation panel
      */
     @FXML
     private void updateNegotiationPanel() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-        
+                
         /**
          * Updating whenever a coach is selected from the combobox
          */
@@ -365,12 +377,12 @@ public class CoachContractNegotiationController implements Initializable {
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
 
         if (CoachUtils.agreeWithTerms(coach, coachProposal, offer)) {
-            CoachUtils.hireCoach(offer, null);
+            CoachUtils.hireCoach(offer, connection);
             SceneUtils.warning(resources.getString("ch_aceitou_oferta"),
                     resources.getString("ch_atencao"));
             gotoOffSeason();
         } else {
-            CoachUtils.recordFailedContractAttempt(coach.getId(), null);
+            CoachUtils.recordFailedContractAttempt(coach.getId(), connection);
             SceneUtils.warning(resources.getString("ch_rejeitou_oferta"),
                     resources.getString("ch_atencao"));
             updateNegotiationPanel();
@@ -399,7 +411,7 @@ public class CoachContractNegotiationController implements Initializable {
             currentContract.setSeason(Short.parseShort(SettingsUtils.getSetting("currentSeason",
                     String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
             
-            CoachUtils.releaseCoach(currentContract, null);
+            CoachUtils.releaseCoach(currentContract, connection);
             coachesComboBox.setDisable(false);
             
             /* updating negotiation panel */

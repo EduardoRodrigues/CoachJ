@@ -34,6 +34,7 @@ public class SeasonUtils {
          */
         if (connection == null) {
             connection = new DatabaseDirectConnection();
+            connection.open();
         }
         ResultSet resultSet;
         String sqlStatement = "SELECT year, finished FROM season "                
@@ -44,7 +45,7 @@ public class SeasonUtils {
             /**
              * Opening database connection
              */
-            // connection.open();
+            // 
 
             /**
              * Checking if there's a record in the database, if yes and it's
@@ -60,9 +61,7 @@ public class SeasonUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
        
         return lastSeason;
     }
@@ -94,16 +93,12 @@ public class SeasonUtils {
         } else {
             newSeason = ++lastSeason;
         }
-        
-        /**
-         * generating new season and setting the current date
-         */
-        // // connection.open();
+                
         sqlStatement = "INSERT INTO season (year, finished) " +
                 "VALUES(" + newSeason + ", false)";
         connection.executeSQL(sqlStatement);
         SettingsUtils.setSetting("currentDate", newSeason + "-01-01");
         SettingsUtils.setSetting("currentSeason", String.valueOf(newSeason));
-        connection.close();
+        
     }
 } // end class SeasonUtils

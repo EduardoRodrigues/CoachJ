@@ -47,8 +47,8 @@ public class PostLoaderController implements Initializable {
      */
     private CoachJ application;
     
-    /**
-     * Keeps a reference to the application's database connection
+   /**
+     * Database connection
      */
     private DatabaseDirectConnection connection;
 
@@ -57,6 +57,12 @@ public class PostLoaderController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        /**
+         * Creating and opening database connection 
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+        
         /**
          * Checking database
          */
@@ -71,15 +77,7 @@ public class PostLoaderController implements Initializable {
     public void setApp(CoachJ application) {
         this.application = application;
     }
-    
-    /**
-     * Creates a reference to the application's database connection
-     * 
-     * @param connection Connection used to retrieve data
-     */
-    public void setDatabaseConnection(DatabaseDirectConnection connection) {
-        this.connection = connection;
-    }
+       
 
     /**
      * Checks database's connections, tables and data integrity
@@ -136,8 +134,8 @@ public class PostLoaderController implements Initializable {
          */
         if (SettingsUtils.getSetting("currentSeason", "0").equalsIgnoreCase("0")
                 || SettingsUtils.getSetting("currentSeason", "0")
-                .equalsIgnoreCase(String.valueOf(SeasonUtils.lastSeason(null)))) {
-            SeasonUtils.generateNewSeason(null);
+                .equalsIgnoreCase(String.valueOf(SeasonUtils.lastSeason(connection)))) {
+            SeasonUtils.generateNewSeason(connection);
         }
 
         /**
@@ -168,5 +166,10 @@ public class PostLoaderController implements Initializable {
             SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
                 "Season.fxml");
         }
+        
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 }

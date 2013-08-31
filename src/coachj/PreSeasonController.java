@@ -173,22 +173,27 @@ public class PreSeasonController implements Initializable {
     private Tab negotiationTableTab;
     @FXML
     private TabPane preSeasonTabPane;
+    
     /**
      * Keeps a reference to the application's thread
      */
     private CoachJ application;
+    
     /**
      * Keeps a reference to the application's database connection
      */
     private DatabaseDirectConnection connection;
+    
     /**
      * Reference to resources file
      */
     private ResourceBundle resources;
+    
     /**
      * task runner
      */
     Task task;
+    
     /**
      * Observable lists to store information about roster and free agents
      */
@@ -196,6 +201,7 @@ public class PreSeasonController implements Initializable {
             .observableArrayList();
     private ObservableList<Player> freeAgentsList = FXCollections
             .observableArrayList();
+    
     /**
      * Auxiliary fields
      */
@@ -207,6 +213,7 @@ public class PreSeasonController implements Initializable {
     Player selectedPlayer;
     private short minimumPlayersPerTeam = Short.parseShort(SettingsUtils
             .getSetting("minimumPlayersPerTeam", "15"));
+    
     /**
      * Salary projection fields
      */
@@ -225,10 +232,16 @@ public class PreSeasonController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+        
+        /**
          * Creates a reference to the resources file
          */
         this.resources = rb;
-       
+
         /*
          * Retrieving franchise id, getting name and displaying it in the appropriate label 
          */
@@ -330,17 +343,8 @@ public class PreSeasonController implements Initializable {
      */
     public void setApp(CoachJ application) {
         this.application = application;
-    }
+    }    
 
-     /**
-     * Creates a reference to the application's database connection
-     * 
-     * @param connection Connection used to retrieve data
-     */
-    public void setDatabaseConnection(DatabaseDirectConnection connection) {
-        this.connection = connection;
-    }
-    
     /**
      * Updates the information panel with data about the player selected in the
      * roster table view
@@ -415,7 +419,8 @@ public class PreSeasonController implements Initializable {
                 : (playerMarketPointValue * playerSalaryAdjusterFactor)
                 * player.getMarketValue();
         playerProposal = playerProjectedSalary * ((1 + (double) player.getGreed() / 100));
-        franchiseOffer = playerProjectedSalary * ((1 + (double) generator.nextInt(franchiseGeneralManagerDealingStrategy) / 100));
+        franchiseOffer = playerProjectedSalary * ((1 + (double) generator.nextInt(
+                franchiseGeneralManagerDealingStrategy) / 100));
 
         /**
          * Updating proposal values
@@ -446,7 +451,7 @@ public class PreSeasonController implements Initializable {
         /**
          * Franchise's players
          */
-        if (PlayerUtils.getPlayerFranchiseId(player.getId(), null) == userFranchiseId) {
+        if (PlayerUtils.getPlayerFranchiseId(player.getId(), connection) == userFranchiseId) {
             waivePlayerButton.setDisable(!(player.getRemainingYears() > 0));
             releasePlayerButton.setDisable(!(player.getRemainingYears() == 0));
             negotiatePlayerContractButton.setDisable(!(player.getRemainingYears() == 0));
@@ -488,7 +493,7 @@ public class PreSeasonController implements Initializable {
      * not
      */
     @FXML
-    private void makeOffer() {       
+    private void makeOffer() {
         /**
          * Checking whether the franchise had already made the maximum of three
          * offer to the player
@@ -668,7 +673,7 @@ public class PreSeasonController implements Initializable {
      * Releases the player, asking confirmation before
      */
     @FXML
-    private void confirmReleasePlayer() {        
+    private void confirmReleasePlayer() {
 
         if (SceneUtils.confirm(resources.getString("ch_deseja_liberar_atleta"),
                 resources.getString("ch_confirmar")) == 0) {
@@ -699,7 +704,7 @@ public class PreSeasonController implements Initializable {
      * Releases the player, asking confirmation before
      */
     @FXML
-    private void confirmFirePlayer() {       
+    private void confirmFirePlayer() {
 
         if (SceneUtils.confirm(resources.getString("ch_deseja_demitir_atleta"),
                 resources.getString("ch_confirmar")) == 0) {
@@ -754,7 +759,7 @@ public class PreSeasonController implements Initializable {
      * If there are teams with incomplete rosters, they're completed.
      */
     @FXML
-    private void generateRegularSeasonSchedule() {       
+    private void generateRegularSeasonSchedule() {
         /**
          * Checking whether the franchise has the required number of active
          * player in its roster
@@ -820,14 +825,14 @@ public class PreSeasonController implements Initializable {
                  */
                 short season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
                         String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
-                DatabaseDirectConnection connection = new DatabaseDirectConnection();
-                // // connection.open();
+                DatabaseDirectConnection taskConnection = new DatabaseDirectConnection();
+                taskConnection.open();                
                 int generatedGames = 0;
 
                 /**
                  * Removing all previous games for the given season
                  */
-                ScheduleUtils.removeSeasonPreviousGames(season, connection);
+                ScheduleUtils.removeSeasonPreviousGames(season, taskConnection);
 
                 /**
                  * Retrieving the id's of all registered franchises and
@@ -835,7 +840,7 @@ public class PreSeasonController implements Initializable {
                  */
                 String sqlStatement = "SELECT id FROM franchise WHERE registered = true "
                         + "ORDER BY id";
-                ResultSet resultSet = connection.getResultSet(sqlStatement);
+                ResultSet resultSet = taskConnection.getResultSet(sqlStatement);
                 ArrayList franchises = new ArrayList();
 
 
@@ -866,7 +871,7 @@ public class PreSeasonController implements Initializable {
                     for (int i = 0; i < franchises.size(); i++) {
                         homeTeam = (String) franchises.get(i);
                         arena = String.valueOf(FranchiseUtils.getFranchiseArenaId(Integer.parseInt(homeTeam),
-                                connection));
+                                taskConnection));
 
                         for (int j = 0; j < franchises.size(); j++) {
                             awayTeam = (String) franchises.get(j);
@@ -877,7 +882,7 @@ public class PreSeasonController implements Initializable {
                                         + homeTeam + ", " + awayTeam + ", " + arena + ", '"
                                         + gameType + "', '" + gameTime + "')";
 
-                                connection.executeSQL(sqlStatement);
+                                taskConnection.executeSQL(sqlStatement);
 
                                 generatedGames++;
                                 updateProgress(generatedGames, gamesCount);
@@ -890,8 +895,8 @@ public class PreSeasonController implements Initializable {
                      * games based on the city where they happen and that reset
                      * the stats for the franchises
                      */
-                    connection.executeSQL("CALL updateGameTime");
-                    connection.executeSQL("CALL resetFranchiseStats");
+                    taskConnection.executeSQL("CALL updateGameTime");
+                    taskConnection.executeSQL("CALL resetFranchiseStats");
 
                     /**
                      * Scheduling games
@@ -900,7 +905,7 @@ public class PreSeasonController implements Initializable {
 
                     while (generatedGames < gamesCount) {
                         if (ScheduleUtils.scheduleNextGame(season, failedAttempts,
-                                connection)) {
+                                taskConnection)) {
                             generatedGames++;
                             failedAttempts = 0;
                             System.out.println("Generated games: " + generatedGames);
@@ -913,6 +918,8 @@ public class PreSeasonController implements Initializable {
                 } catch (SQLException ex) {
                     Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                taskConnection.close();
                 return generatedGames;
             }
 
@@ -964,5 +971,9 @@ public class PreSeasonController implements Initializable {
                 String.valueOf(SeasonStatus.SEASON.getStatus()));
         SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
                 "Season.fxml");
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 }

@@ -5,7 +5,6 @@ import coachj.structures.PlayerTransactionRecord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,15 +25,6 @@ public class RosterUtils {
      */
     public static void reorderRoster(short franchiseId,
             DatabaseDirectConnection connection) {
-
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
 
         /**
          * Retrieving franchise's coach's id and his ordering string
@@ -77,15 +67,6 @@ public class RosterUtils {
             DatabaseDirectConnection connection) {
 
         /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
-
-        /**
          * Resetting roster positions
          */
         String sqlStatement = "UPDATE player SET rosterPosition = 0 "
@@ -107,16 +88,7 @@ public class RosterUtils {
             String playerPosition, String orderingString,
             DatabaseDirectConnection connection) {
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
-
-        /**
+       /**
          * Retrieving player for that position, first trying a native one, then
          * trying a player that has that second position, then, finally, getting
          * the best one remaining that is able to play
@@ -179,14 +151,6 @@ public class RosterUtils {
             DatabaseDirectConnection connection) {
 
         /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
-        /**
          * Retrieving franchise financial data to calculate the maximum offer it
          * can make
          */
@@ -213,8 +177,7 @@ public class RosterUtils {
 
         ResultSet resultSet;
         short coachId = FranchiseUtils.getFranchiseCoachId(franchiseId, connection);
-        String freeAgentSigningSQL = CoachUtils.getCoachFreeAgentSelectSQL(coachId,
-                maximumOffer, connection);
+        String freeAgentSigningSQL;
         int playerId;
 
         System.out.println("Signing players..."); // delete
@@ -225,8 +188,9 @@ public class RosterUtils {
 
                 /**
                  * Retrieving the selected player and signing him
-                 */
-                // // connection.open();
+                 */         
+                freeAgentSigningSQL = CoachUtils.getCoachFreeAgentSelectSQL(coachId,
+                maximumOffer, connection);
                 resultSet = connection.getResultSet(freeAgentSigningSQL);
                 resultSet.first();
                 playerId = resultSet.getInt("id");

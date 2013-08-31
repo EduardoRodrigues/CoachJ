@@ -140,36 +140,48 @@ public class DraftController implements Initializable {
     private Label messageLabel;
     @FXML
     private ProgressBar taskCompletionProgressBar;
+    
     /**
      * Keeps a reference to the application's thread
      */
     private CoachJ application;
+    
+    /**
+     * Database connection
+     */
+    private DatabaseDirectConnection connection;
+    
     /**
      * Reference to resources file
      */
     private ResourceBundle resources;
+    
     /**
      * task runner
      */
     Task task;
+    
     /**
      * Provides a list of available draftees
      */
     private ObservableList<Player> drafteesList = FXCollections.observableArrayList();
+    
     /**
      * Provides a list for the user's franchise current roster
      */
     private ObservableList<Player> rosterList = FXCollections.observableArrayList();
+    
     /**
      * Provides a list for the draft summary
      */
     private ObservableList<DraftSummary> draftSummaryList = FXCollections.observableArrayList();
+    
     /**
      * Auxiliary fields
      */
     private short round = 0;
     private short pick = 0;
-    private short totalRounds = DraftUtils.getTotalDraftRounds();
+    private short totalRounds;
     private short totalPicks = Short.parseShort(SettingsUtils.getSetting("requiredFranchises", "32"));
     private short season = Short.parseShort(SettingsUtils.getSetting("currentSeason", "0"));
     private short nextFranchise;
@@ -183,6 +195,13 @@ public class DraftController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+
         /**
          * Creates a reference to the resources file and calls the method that
          * retrieves off-season stats
@@ -190,9 +209,9 @@ public class DraftController implements Initializable {
         this.resources = rb;
 
         /**
-         * Database connection
+         * Retrieving data
          */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
+        totalRounds = DraftUtils.getTotalDraftRounds(connection);
 
         /**
          * Allowing tableViews to resize and fit properly
@@ -255,7 +274,6 @@ public class DraftController implements Initializable {
         rosterMarketValueTableColumn.setCellValueFactory(
                 new PropertyValueFactory<Player, Short>("marketValue"));
 
-
         /**
          * Filling tableviews with draftees, previous draft picks and current
          * roster
@@ -268,11 +286,6 @@ public class DraftController implements Initializable {
          * Updating draft summary
          */
         updateDraftSummary(connection);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -392,11 +405,6 @@ public class DraftController implements Initializable {
                     + " Pick: " + pick); // delete
 
             /**
-             * Database connection
-             */
-            DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
-            /**
              * Variables to store auxiliary data
              */
             ResultSet resultSet;
@@ -407,10 +415,10 @@ public class DraftController implements Initializable {
                     connection);
 
             /*SceneUtils.warning(resources.getString("ch_rodada") + ": "
-                    + round + "\n" + resources.getString("ch_escolha") + ": "
-                    + pick + "\n" + resources.getString("ch_franquia")
-                    + ": " + franchiseName,
-                    resources.getString("ch_atencao"));*/            
+             + round + "\n" + resources.getString("ch_escolha") + ": "
+             + pick + "\n" + resources.getString("ch_franquia")
+             + ": " + franchiseName,
+             resources.getString("ch_atencao"));*/
 
             try {
 
@@ -504,11 +512,11 @@ public class DraftController implements Initializable {
         draftSummaryList.add(draftOperation);
 
         /*SceneUtils.warning(resources.getString("ch_rodada") + ": "
-                + round + "\n" + resources.getString("ch_escolha") + ": "
-                + pick + "\n" + resources.getString("ch_franquia")
-                + ": " + franchiseName + "\n" + resources.getString("ch_atleta_recrutado")
-                + ": " + playerName,
-                resources.getString("ch_atencao"));*/
+         + round + "\n" + resources.getString("ch_escolha") + ": "
+         + pick + "\n" + resources.getString("ch_franquia")
+         + ": " + franchiseName + "\n" + resources.getString("ch_atleta_recrutado")
+         + ": " + playerName,
+         resources.getString("ch_atencao"));*/
 
         /**
          * Taking selected player off from the draftees pool
@@ -566,7 +574,7 @@ public class DraftController implements Initializable {
          */
         Player selectedPlayer = drafteesTableView.getSelectionModel().getSelectedItem();
         int playerId = selectedPlayer.getId();
-        makeDraft(playerId, null);
+        makeDraft(playerId, connection);
         draftPlayerButton.setDisable(true);
     }
 
@@ -607,24 +615,28 @@ public class DraftController implements Initializable {
         Task<Integer> signingPlayersTask = new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
+                /**
+                 * Database connection
+                 */
+                DatabaseDirectConnection taskConnection = new DatabaseDirectConnection();
+                taskConnection.open(); 
+                
                 short userFranchiseId = Short.parseShort(SettingsUtils
-                        .getSetting("userFranchise", "0"));
-                DatabaseDirectConnection connection = new DatabaseDirectConnection();
+                        .getSetting("userFranchise", "0"));                
                 String sqlStatement = "SELECT id FROM franchise "
                         + "WHERE registered = 1 AND id != " + userFranchiseId
                         + " ORDER BY record, RAND()";
                 ResultSet resultSet;
                 int iterations = 0;
                 long computerRegisteredFranchisesCount = CountingUtils
-                        .computerControlledFranchisesCount();
+                        .computerControlledFranchisesCount(taskConnection);
                 short currentFranchiseId;
 
                 /**
                  * Opening connection, populating resultset and positioning
                  * before its beginning
-                 */
-                // // connection.open();
-                resultSet = connection.getResultSet(sqlStatement);
+                 */                
+                resultSet = taskConnection.getResultSet(sqlStatement);
                 resultSet.beforeFirst();
 
                 /**
@@ -643,9 +655,9 @@ public class DraftController implements Initializable {
                      * If the current franchise already has the required number
                      * of players, skip it
                      */
-                    if (FranchiseUtils.getActivePlayers(currentFranchiseId, connection)
+                    if (FranchiseUtils.getActivePlayers(currentFranchiseId, taskConnection)
                             < minimumPlayersPerTeam) {
-                        RosterUtils.signPlayers(currentFranchiseId, connection);
+                        RosterUtils.signPlayers(currentFranchiseId, taskConnection);
                     }
 
                     /**
@@ -655,7 +667,8 @@ public class DraftController implements Initializable {
                     iterations++;
                     updateProgress(iterations, computerRegisteredFranchisesCount);
                 }
-
+                
+                taskConnection.close();
                 return iterations;
             }
 
@@ -707,5 +720,10 @@ public class DraftController implements Initializable {
                 String.valueOf(SeasonStatus.PRE_SEASON.getStatus()));
         SceneUtils.loadScene(this.application, PreSeasonController.class.getClass(),
                 "PreSeason.fxml");
+        
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 }

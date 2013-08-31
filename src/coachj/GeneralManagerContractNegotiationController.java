@@ -68,38 +68,52 @@ public class GeneralManagerContractNegotiationController implements Initializabl
     private Label franchiseAssetsLabel;
     @FXML
     private ComboBox contractLengthComboBox;
+    
     /**
-     * provides list for the generalManageres combobox
+     * provides list for the generalManagers combobox
      */
     private ObservableList<IdDescriptionListItem> generalManagersObservableList;
+    
     /**
      * Keeps a reference to the application's thread
      */
     private CoachJ application;
+    
     /**
-     * Stores franchise's id
+     * Database connection
+     */
+    private DatabaseDirectConnection connection;
+    
+    /**
+     * Stores user franchise's id
      */
     private short userFranchiseId;
+   
     /**
      * Stores franchise's generalManager's id
      */
     private short userFranchiseGeneralManagerId;
+    
     /**
      * Stores franchise's financial assets
      */
     private long franchiseAssets;
+    
     /**
      * Store franchise's proposal
      */
     private int franchiseOffer;
+    
     /**
      * Stores generalManager's proposal
      */
     private int generalManagerProposal;
+   
     /**
      * Stores generalManager's reference
      */
     GeneralManager generalManager;
+    
     /**
      * Reference to resources file
      */
@@ -120,14 +134,16 @@ public class GeneralManagerContractNegotiationController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+        
+        /**
          * Creates a reference to the resources file
          */
         this.resources = rb;
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
+        
         /**
          * Variables that store franchise's general manager's id, franchise's
          * complete name and franchise's assets
@@ -183,12 +199,7 @@ public class GeneralManagerContractNegotiationController implements Initializabl
         franchiseGeneralManagerIndex = ListUtils.selectComboBoxItem(generalManagersObservableList,
                 userFranchiseGeneralManagerId);
         generalManagersComboBox.getSelectionModel().select(franchiseGeneralManagerIndex);
-        updateNegotiationPanel();
-
-        /**
-         * Closing connection
-         */
-        connection.close();
+        updateNegotiationPanel();        
     }
 
     /**
@@ -198,23 +209,25 @@ public class GeneralManagerContractNegotiationController implements Initializabl
     private void gotoOffSeason() {
         SceneUtils.loadScene(this.application, OffSeasonController.class.getClass(),
                 "OffSeason.fxml");
+        
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 
     /**
      * Updates information for the negotiation panel
      */
     @FXML
-    private void updateNegotiationPanel() {
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
+    private void updateNegotiationPanel() {        
 
         /**
          * Updating whenever a general manager is selected from the combobox
          */
         if (generalManagersComboBox.getSelectionModel().getSelectedIndex() != -1) {
-            IdDescriptionListItem selectedGeneralManager = (IdDescriptionListItem) generalManagersComboBox.getSelectionModel().getSelectedItem();
+            IdDescriptionListItem selectedGeneralManager = (IdDescriptionListItem) 
+                    generalManagersComboBox.getSelectionModel().getSelectedItem();
             short generalManagerId = (short) selectedGeneralManager.getId();
             GeneralManagerBuilder generalManagerBuilder = new GeneralManagerBuilder();
             generalManagerBuilder.fillAttributesFromDatabase(generalManagerId,
@@ -256,11 +269,6 @@ public class GeneralManagerContractNegotiationController implements Initializabl
                     && userFranchiseGeneralManagerId == generalManager.getId()));
             makeOfferButton.setDisable(FranchiseUtils.franchiseHasGeneralManager(userFranchiseId,
                     connection));
-
-            /**
-             * Closing connection
-             */
-            connection.close();
         }
     }
 
@@ -339,11 +347,6 @@ public class GeneralManagerContractNegotiationController implements Initializabl
         offer.setSeason(Short.parseShort(SettingsUtils.getSetting("currentSeason",
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
 
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
         if (GeneralManagerUtils.agreeWithTerms(generalManager, generalManagerProposal, offer)) {
             GeneralManagerUtils.hireGeneralManager(offer, connection);
             SceneUtils.warning(resources.getString("ch_aceitou_oferta"),
@@ -356,11 +359,6 @@ public class GeneralManagerContractNegotiationController implements Initializabl
                     resources.getString("ch_atencao"));
             updateNegotiationPanel();
         }
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -386,7 +384,7 @@ public class GeneralManagerContractNegotiationController implements Initializabl
             currentContract.setSeason(Short.parseShort(SettingsUtils.getSetting("currentSeason",
                     String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
 
-            GeneralManagerUtils.releaseGeneralManager(currentContract, null);
+            GeneralManagerUtils.releaseGeneralManager(currentContract, connection);
             generalManagersComboBox.setDisable(false);
 
             /* updating negotiation panel */

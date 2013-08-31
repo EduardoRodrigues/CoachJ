@@ -44,19 +44,15 @@ public class Team {
     private short currentLead = 0;
     private short largestLead = 0;
     private ArrayList<InGamePlayer> players = new ArrayList<>();
-    DatabaseDirectConnection connection = new DatabaseDirectConnection();
+    DatabaseDirectConnection connection;
 
     /**
      * Constructor
      */
-    public Team(short id) {
-        this.id = id;
-
-        /**
-         * Database connection
-         */
-        // // connection.open();
-
+    public Team(short id, DatabaseDirectConnection connection) {
+        this.id = id;       
+        this.connection = connection;
+        
         /**
          * Retrieving data from database
          */
@@ -70,11 +66,6 @@ public class Team {
          * Filling roster
          */
         fillRoster();
-        
-        /**
-         * Closing database connection
-         */
-        connection.close();
     }
 
     private void fillRoster() {
@@ -95,7 +86,7 @@ public class Team {
         try {
             while (resultSet.next()) {
                 playerId = resultSet.getShort("id");
-                player = new InGamePlayer(playerId);
+                player = new InGamePlayer(playerId, connection);
                 players.add(player);            
             }
         } catch (SQLException ex) {

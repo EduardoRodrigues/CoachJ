@@ -30,14 +30,6 @@ public class CoachUtils {
     public static CoachCurrentContract getCoachContractSummary(short coachId,
             DatabaseDirectConnection connection) {
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
         ResultSet resultSet;
         String sqlStatement = "SELECT firstName, lastName, remainingYears, salary "
                 + "FROM coach "
@@ -45,11 +37,6 @@ public class CoachUtils {
         CoachCurrentContract contract = new CoachCurrentContract(coachId);
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -61,8 +48,6 @@ public class CoachUtils {
             contract.setSalary(resultSet.getInt("salary"));
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return contract;
@@ -110,23 +95,8 @@ public class CoachUtils {
      */
     public static void hireCoach(CoachTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
 
         String sqlStatement;
-
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
 
         /**
          * Recording contract transaction
@@ -154,11 +124,6 @@ public class CoachUtils {
         sqlStatement = "UPDATE franchise SET coach = " + contract.getCoach()
                 + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -169,23 +134,8 @@ public class CoachUtils {
      */
     public static void recordFailedContractAttempt(int coach,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
 
         String sqlStatement;
-
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
 
         /**
          * Updating coach's record
@@ -193,11 +143,6 @@ public class CoachUtils {
         sqlStatement = "UPDATE coach SET failedContractAttempts = failedContractAttempts + 1 "
                 + " WHERE id = " + coach;
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -209,27 +154,12 @@ public class CoachUtils {
      */
     public static int getCoachSalary(short coachId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT salary FROM coach WHERE id = " + coachId;
         int salary = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -238,10 +168,7 @@ public class CoachUtils {
             salary = resultSet.getInt("salary");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
-
         return salary;
     }
 
@@ -254,27 +181,12 @@ public class CoachUtils {
      */
     public static short getCoachDraftMethod(short coachId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and coach's draft method
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT draftMethod FROM coach WHERE id = " + coachId;
         short draftMethod = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -283,10 +195,7 @@ public class CoachUtils {
             draftMethod = resultSet.getShort("draftMethod");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
-
         return draftMethod;
     }
 
@@ -299,27 +208,12 @@ public class CoachUtils {
      */
     public static short getCoachFranchiseId(short coachId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and coach's franchise
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT id FROM franchise WHERE coach = " + coachId;
         short franchiseId = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -328,8 +222,6 @@ public class CoachUtils {
             franchiseId = resultSet.getShort("id");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return franchiseId;
@@ -343,22 +235,8 @@ public class CoachUtils {
      */
     public static void releaseCoach(CoachTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Recording transaction
@@ -385,11 +263,6 @@ public class CoachUtils {
         sqlStatement = "UPDATE franchise SET coach = NULL"
                 + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -400,22 +273,8 @@ public class CoachUtils {
      */
     public static void fireCoach(CoachTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Recording transaction
@@ -443,11 +302,6 @@ public class CoachUtils {
         sqlStatement = "UPDATE franchise SET coach = NULL, assets = assets - "
                 + contract.getSalary() + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -457,17 +311,7 @@ public class CoachUtils {
      * @return
      */
     public static short getBestUnemployedCoachId(DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection, the sql statement, the
-         * resultset and the general manager's id
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         String sqlStatement = "SELECT id FROM coach "
                 + "WHERE retired = false AND id NOT IN (SELECT coach "
                 + "FROM franchise WHERE coach IS NOT NULL) "
@@ -480,7 +324,6 @@ public class CoachUtils {
          * returning it
          */
         try {
-            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             coachId = resultSet.getShort("id");
@@ -496,18 +339,19 @@ public class CoachUtils {
      *
      * @param contract Contract data
      */
-    public static void processCoachContract(CoachTransactionRecord contract) {
+    public static void processCoachContract(CoachTransactionRecord contract,
+            DatabaseDirectConnection connection) {
 
         /**
          * Checking the type of contract to process it
          */
         if (contract.getType().equalsIgnoreCase("C")
                 || contract.getType().equalsIgnoreCase("R")) {
-            CoachUtils.hireCoach(contract, null);
+            CoachUtils.hireCoach(contract, connection);
         } else if (contract.getType().equalsIgnoreCase("W")) {
-            CoachUtils.fireCoach(contract, null);
+            CoachUtils.fireCoach(contract, connection);
         } else {
-            CoachUtils.releaseCoach(contract, null);
+            CoachUtils.releaseCoach(contract, connection);
         }
     }
 
@@ -535,14 +379,6 @@ public class CoachUtils {
      */
     public static String getCoachDraftingSQL(short coachId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
 
         String coachDraftingSQL = null;
         short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
@@ -587,11 +423,6 @@ public class CoachUtils {
                     + " DESC, marketValue DESC LIMIT 1";
         }
 
-        /**
-         * Closing connection
-         */
-        connection.close();
-
         return coachDraftingSQL;
     }
 
@@ -620,14 +451,6 @@ public class CoachUtils {
      */
     public static String getCoachFreeAgentSelectSQL(short coachId, int maximumOffer,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
 
         String coachFreeAgentSelectSQL = null;
         short coachDraftingMethod = CoachUtils.getCoachDraftMethod(coachId, connection);
@@ -690,13 +513,6 @@ public class CoachUtils {
      */
     public static String getCoachPreferredAttribute(short coachId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
 
         TreeMap<Short, String> attributesMap = getCoachAttributesMap(coachId,
                 connection);
@@ -713,13 +529,7 @@ public class CoachUtils {
      */
     private static TreeMap<Short, String> getCoachAttributesMap(short coachId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         String sqlStatement = "SELECT shoot, pass, rebound, defense, technique FROM coach "
                 + "WHERE id = " + coachId + " LIMIT 1";
         ResultSet resultSet;
@@ -730,7 +540,6 @@ public class CoachUtils {
          * returning the preferred one
          */
         try {
-            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             attributesMap.put(resultSet.getShort("rebound"),
@@ -759,15 +568,8 @@ public class CoachUtils {
      */
     public static String getCoachRosterOrderingString(short coachId,
             DatabaseDirectConnection connection) {
-        String coachRosterOrderingString = null;
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+        String coachRosterOrderingString = null;
 
         NavigableMap<Short, String> attributesMap = getCoachAttributesMap(coachId,
                 connection).descendingMap();
@@ -782,6 +584,5 @@ public class CoachUtils {
         }
 
         return coachRosterOrderingString;
-
     }
 } // end CoachUtils

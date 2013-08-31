@@ -138,6 +138,10 @@ public class OffSeasonController implements Initializable {
      */
     private CoachJ application;
     /**
+     * Database connection
+     */
+    private DatabaseDirectConnection connection;
+    /**
      * Reference to resources file
      */
     private ResourceBundle resources;
@@ -164,6 +168,12 @@ public class OffSeasonController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+
         /**
          * Creates a reference to the resources file and calls the method that
          * retrieves off-season stats
@@ -205,8 +215,8 @@ public class OffSeasonController implements Initializable {
          */
         int requiredCountriesCount = 1;
         int requiredCitiesCount = 1;
-        long availableCountriesCount = CountingUtils.createdCountriesCount();
-        long availableCitiesCount = CountingUtils.createdCitiesCount();
+        long availableCountriesCount = CountingUtils.createdCountriesCount(connection);
+        long availableCitiesCount = CountingUtils.createdCitiesCount(connection);
 
         /**
          * Testing whether the number of required countries and cities has been
@@ -231,7 +241,7 @@ public class OffSeasonController implements Initializable {
          */
         int requiredFranchisesCount = Integer.parseInt(SettingsUtils
                 .getSetting("requiredFranchises", "32"));
-        long availableFranchisesCount = CountingUtils.createdFranchisesCount();
+        long availableFranchisesCount = CountingUtils.createdFranchisesCount(connection);
 
         /**
          * Testing whether the number of required franchises has been created
@@ -251,9 +261,9 @@ public class OffSeasonController implements Initializable {
         int draftRounds = Integer.parseInt(SettingsUtils
                 .getSetting("draftRounds", "2"));
         int requiredDrafteesCount = requiredFranchisesCount * draftRounds;
-        int requiredPlayersCount = requiredFranchisesCount * minimumPlayersPerTeam;
-        long availablePlayersCount = CountingUtils.availablePlayersCount();
-        long availableDrafteesCount = CountingUtils.drafteesCount();
+        int requiredPlayersCount = requiredFranchisesCount * minimumPlayersPerTeam * 2;
+        long availablePlayersCount = CountingUtils.availablePlayersCount(connection);
+        long availableDrafteesCount = CountingUtils.drafteesCount(connection);
 
         /**
          * Testing whether the number of required players has been created
@@ -277,8 +287,8 @@ public class OffSeasonController implements Initializable {
          */
         long requiredFirstNamesCount = requiredPlayersCount;
         long requiredLastNamesCount = requiredPlayersCount;
-        long createdFirstNamesCount = CountingUtils.createdFirstNamesCount();
-        long createdLastNamesCount = CountingUtils.createdLastNamesCount();
+        long createdFirstNamesCount = CountingUtils.createdFirstNamesCount(connection);
+        long createdLastNamesCount = CountingUtils.createdLastNamesCount(connection);
 
         /**
          * Testing whether the number of required names has been created
@@ -302,7 +312,7 @@ public class OffSeasonController implements Initializable {
          */
         int requiredGeneralManagersCount = requiredFranchisesCount;
         long availableGeneralManagersCount = CountingUtils
-                .availableGeneralManagersCount();
+                .availableGeneralManagersCount(connection);
 
         /**
          * Testing whether the number of required general managers has been
@@ -320,7 +330,7 @@ public class OffSeasonController implements Initializable {
          */
         int requiredCoachesCount = requiredFranchisesCount;
         long availableCoachesCount = CountingUtils
-                .availableCoachesCount();
+                .availableCoachesCount(connection);
 
         /**
          * Testing whether the number of required coaches has been created
@@ -336,7 +346,7 @@ public class OffSeasonController implements Initializable {
          * Retrieving data about arenas
          */
         int requiredArenasCount = requiredFranchisesCount;
-        long availableArenasCount = CountingUtils.createdArenasCount();
+        long availableArenasCount = CountingUtils.createdArenasCount(connection);
 
         /**
          * Testing whether the number of required arenas has been created
@@ -352,7 +362,7 @@ public class OffSeasonController implements Initializable {
          * Retrieving data about referees
          */
         int requiredRefereesCount = requiredFranchisesCount * 3;
-        long availableRefereesCount = CountingUtils.availableRefereesCount();
+        long availableRefereesCount = CountingUtils.availableRefereesCount(connection);
 
         /**
          * Testing whether the number of required arenas has been created
@@ -412,7 +422,7 @@ public class OffSeasonController implements Initializable {
                 + "CONCAT(' ', f.team)) AS description "
                 + "FROM franchise f "
                 + "INNER JOIN city c ON f.city = c.id "
-                + "ORDER BY c.name", null);
+                + "ORDER BY c.name", connection);
         franchiseComboBox.setItems(franchisesObservableList);
 
         /**
@@ -505,6 +515,11 @@ public class OffSeasonController implements Initializable {
                 String.valueOf(SeasonStatus.DRAFT.getStatus()));
         SceneUtils.loadScene(this.application, DraftController.class.getClass(),
                 "Draft.fxml");
+
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 
     /**
@@ -556,6 +571,7 @@ public class OffSeasonController implements Initializable {
 
         setEntityGenerationControls(true);
         mainContent.setCursor(Cursor.WAIT);
+        
         /**
          * Creating task and iterating through the loop that creates new
          * entities
@@ -564,35 +580,38 @@ public class OffSeasonController implements Initializable {
             @Override
             protected Integer call() throws Exception {
                 int iterations;
+                int entitiesToCreate = 460;
                 /**
                  * Database connection
                  */
-                DatabaseDirectConnection connection = new DatabaseDirectConnection();
+                DatabaseDirectConnection taskConnection = new DatabaseDirectConnection();
+                taskConnection.open();                
 
-                for (iterations = 0; iterations < 600; iterations++) {
+                for (iterations = 0; iterations < entitiesToCreate; iterations++) {
 
                     /**
                      * Identifying what kind entity to create
                      */
                     if (entityName.equalsIgnoreCase("coach")) {
-                        AutomaticEntitiesGenerator.generateCoaches(1, connection);
+                        AutomaticEntitiesGenerator.generateCoaches(1, taskConnection);
                     } else if (entityName.equalsIgnoreCase("player")) {
-                        AutomaticEntitiesGenerator.generatePlayers(1, connection);
+                        AutomaticEntitiesGenerator.generatePlayers(1, taskConnection);
                     } else if (entityName.equalsIgnoreCase("generalManager")) {
                         AutomaticEntitiesGenerator.generateGeneralManagers(1,
-                                connection);
+                                taskConnection);
                     } else if (entityName.equalsIgnoreCase("referee")) {
                         AutomaticEntitiesGenerator.generateReferees(1,
-                                connection);
+                                taskConnection);
                     }
 
                     /**
                      * Updating task's progress, which is bound to the progress
                      * indicator
                      */
-                    updateProgress(iterations, 600);
+                    updateProgress(iterations, entitiesToCreate);
 
                 }
+                taskConnection.close();
                 return iterations;
             }
 
@@ -636,11 +655,6 @@ public class OffSeasonController implements Initializable {
          * Updating whenever a franchise is selected from the combobox
          */
         if (franchiseComboBox.getSelectionModel().getSelectedIndex() != -1) {
-            /**
-             * Database connection
-             */
-            DatabaseDirectConnection connection = new DatabaseDirectConnection();
-
             /**
              * Variables to store locale settings, the selected franchise and
              * the information to be displayed
@@ -701,11 +715,6 @@ public class OffSeasonController implements Initializable {
             fireGeneralManagerButton.setDisable(!franchiseHasGeneralManager);
             proceedButton.setDisable(!(franchiseHasCoach && franchiseHasGeneralManager));
 
-            /**
-             * Closing connection
-             */
-            connection.close();
-
         }
     }
 
@@ -730,6 +739,11 @@ public class OffSeasonController implements Initializable {
                 String.valueOf(selectedFranchise.getId()));
         SceneUtils.loadScene(this.application, CoachContractNegotiationController.class.getClass(),
                 "CoachContractNegotiation.fxml");
+
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 
     /**
@@ -762,10 +776,6 @@ public class OffSeasonController implements Initializable {
     private void confirmFireCoach() {
         if (SceneUtils.confirm(resources.getString("ch_demitir_tecnico"),
                 resources.getString("ch_confirmar")) == 0) {
-            /**
-             * Database connection
-             */
-            DatabaseDirectConnection connection = new DatabaseDirectConnection();
 
             /**
              * Creating contract object, firing coach and updating controls
@@ -789,11 +799,6 @@ public class OffSeasonController implements Initializable {
 
             /* updating negotiation panel */
             updateFranchiseInfo();
-
-            /**
-             * Closing connection
-             */
-            connection.close();
         }
     }
 
@@ -804,11 +809,6 @@ public class OffSeasonController implements Initializable {
     private void confirmFireGeneralManager() {
         if (SceneUtils.confirm(resources.getString("ch_demitir_gerente"),
                 resources.getString("ch_confirmar")) == 0) {
-
-            /**
-             * Database connection
-             */
-            DatabaseDirectConnection connection = new DatabaseDirectConnection();
 
             /**
              * Creating contract object, firing coach and updating controls
@@ -832,11 +832,6 @@ public class OffSeasonController implements Initializable {
 
             /* updating negotiation panel */
             updateFranchiseInfo();
-
-            /**
-             * Closing connection
-             */
-            connection.close();
         }
     }
 
@@ -856,24 +851,29 @@ public class OffSeasonController implements Initializable {
         Task<Integer> hiringStaffTask = new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
+                /**
+                 * Database connection
+                 */
+                DatabaseDirectConnection taskConnection = new DatabaseDirectConnection();
+                taskConnection.open(); 
+                
                 short userFranchiseId = Short.parseShort(SettingsUtils
                         .getSetting("userFranchise", "0"));
-                DatabaseDirectConnection connection = new DatabaseDirectConnection();
+                
                 String sqlStatement = "SELECT id, coach, generalManager, record FROM franchise "
                         + "WHERE registered = 1 AND id != " + userFranchiseId
                         + " ORDER BY record, RAND()";
                 ResultSet resultSet;
                 int iterations = 0;
                 long computerRegisteredFranchisesCount = CountingUtils
-                        .computerControlledFranchisesCount();
+                        .computerControlledFranchisesCount(taskConnection);
                 short currentFranchiseId = 0;
 
                 /**
                  * Opening connection, populating resultset and positioning
                  * before its beginning
                  */
-                // // connection.open();
-                resultSet = connection.getResultSet(sqlStatement);
+                resultSet = taskConnection.getResultSet(sqlStatement);
                 resultSet.beforeFirst();
 
                 /**
@@ -887,9 +887,9 @@ public class OffSeasonController implements Initializable {
                      */
                     currentFranchiseId = resultSet.getShort("id");
                     FranchiseUtils.analyseGeneralManagerPerformance(currentFranchiseId,
-                            connection);
+                            taskConnection);
                     FranchiseUtils.analyseCoachPerformance(currentFranchiseId,
-                            connection);
+                            taskConnection);
 
                     /**
                      * Updating task's progress, which is bound to the progress
@@ -899,7 +899,7 @@ public class OffSeasonController implements Initializable {
                     updateProgress(iterations, computerRegisteredFranchisesCount);
 
                 }
-
+                taskConnection.close();
                 return iterations;
             }
 

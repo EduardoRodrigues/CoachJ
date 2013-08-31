@@ -141,11 +141,7 @@ public class PlayerBuilder {
      * @param connection Database connection used to retrieve data
      */
     public void setAttributes(DatabaseDirectConnection connection) {
-
-        /**
-         * Variables that store database connection and the baseline values for
-         * each position profile
-         */
+        
         /**
          * Checking if there's an active database connection, otherwise, create
          * it
@@ -164,11 +160,6 @@ public class PlayerBuilder {
         short minimumLowPost = 70;
         short minimumShootingRange = 70;
 
-        /**
-         * retrieving position's profile values
-         */
-        // // connection.open();
-
         ResultSet positionProfile = connection.getResultSet("SELECT * FROM position_profile"
                 + " WHERE position ='" + this.position + "'");
         try {
@@ -185,9 +176,7 @@ public class PlayerBuilder {
 
         } catch (SQLException ex) {
             Logger.getLogger(PlayerBuilder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        connection.close();
+        }        
 
         /**
          * Generates random numbers
@@ -793,8 +782,6 @@ public class PlayerBuilder {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
     }
 } // end class PlayerBuilder

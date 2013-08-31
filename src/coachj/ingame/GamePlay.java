@@ -40,16 +40,10 @@ public class GamePlay {
     private Referee referee;
     private ArrayList<Team> teams = new ArrayList<>();
 
-    public GamePlay(int gameId) {
+    public GamePlay(int gameId, DatabaseDirectConnection connection) {
         this.gameId = gameId;
         
          /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-        // // connection.open();        
-        
-        /**
          * Retrieving data to set up fields
          */
         String sqlStatement = "SELECT homeTeam, awayTeam, date, time, referee, "
@@ -82,8 +76,8 @@ public class GamePlay {
             /**
              * Creating teams
              */
-            awayTeam = new Team(awayTeamId);
-            homeTeam = new Team(homeTeamId);
+            awayTeam = new Team(awayTeamId, connection);
+            homeTeam = new Team(homeTeamId, connection);
             teams.add(awayTeam);
             teams.add(homeTeam);
             

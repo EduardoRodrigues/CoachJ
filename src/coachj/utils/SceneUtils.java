@@ -105,10 +105,7 @@ public class SceneUtils {
                     .replaceSceneContent(application.getStage(), fxmlFile);
             Field app = scene.getClass().getDeclaredField("application");
             app.setAccessible(true);
-            app.set(scene, application);            
-            Field connection = scene.getClass().getDeclaredField("connection");
-            connection.setAccessible(true);
-            connection.set(scene, application.getConnection());
+            app.set(scene, application);                        
             application.fullSizeScene();
             application.showMainStage();
         } catch (Exception ex) {

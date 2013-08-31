@@ -99,12 +99,12 @@ public class MySqlUtils {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = (Connection) DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Connection with database established"); // delete
+            System.out.println("Connection with database established"); // delete            
             return true;
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
             Logger.getLogger(MySqlUtils.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        }
+        } 
     }
 
     /**
@@ -116,7 +116,7 @@ public class MySqlUtils {
 
         /**
          * Retrieving the list of application's tables
-         */
+         */        
         AppTables appTables = new AppTables();
         List<String> tableNames = appTables.getTableNames();
         int tableCount = 0; // auxiliary variable
@@ -132,7 +132,7 @@ public class MySqlUtils {
          * Connecting to the database, retrieving information about the tables
          * and comparing with the information from the AppTables class
          */
-        try {
+        try {      
             Connection connection = (Connection) DriverManager.getConnection(URL, USER, PASSWORD);
             DatabaseMetaData metadata = connection.getMetaData();
             ResultSet resultSet;
@@ -143,6 +143,7 @@ public class MySqlUtils {
                     tableCount++;
                 }
             }
+           
             return tableNames.size() == tableCount;
 
         } catch (SQLException ex) {
@@ -172,7 +173,7 @@ public class MySqlUtils {
         /**
          * Opening database connection and checking tables
          */
-        // connection.open();
+        connection.open();
 
         for (int i = 0; i < tableNames.size(); i++) {
 
@@ -192,7 +193,7 @@ public class MySqlUtils {
                         .getName()).log(Level.SEVERE, null, ex);
 
                 return false;
-            }
+            } 
         }
 
         return true;

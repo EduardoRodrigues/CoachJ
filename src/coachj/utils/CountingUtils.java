@@ -20,8 +20,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdFranchisesCount() {
-        return countedFieldValue("id", "franchise", null, null, null, null);
+    public static long createdFranchisesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", null, null, null, null, 
+                connection);
     }
 
     /**
@@ -29,8 +30,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long registeredFranchisesCount() {
-        return countedFieldValue("id", "franchise", "registered = 1", null, null, null);
+    public static long registeredFranchisesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", "registered = 1", null, null, 
+                null, connection);
     }
 
     /**
@@ -38,8 +40,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdPlayersCount() {
-        return countedFieldValue("id", "player", null, null, null, null);
+    public static long createdPlayersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "player", null, null, null, null, connection);
     }
 
     /**
@@ -47,8 +49,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long signedPlayersCount() {
-        return countedFieldValue("id", "player", "franchise > 0", null, null, null);
+    public static long signedPlayersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "player", "franchise > 0", null, null, 
+                null, connection);
     }
 
     /**
@@ -56,9 +59,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long freeAgentsCount() {
+    public static long freeAgentsCount(DatabaseDirectConnection connection) {
         return countedFieldValue("id", "player", "franchise IS NULL AND retired = false",
-                null, null, null);
+                null, null, null, connection);
     }
 
     /**
@@ -66,9 +69,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long drafteesCount() {
+    public static long drafteesCount(DatabaseDirectConnection connection) {
         return countedFieldValue("id", "player", "franchise IS NULL AND seasons = 0 AND retired = false",
-                null, null, null);
+                null, null, null, connection);
     }
 
     /**
@@ -76,8 +79,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long retiredPlayersCount() {
-        return countedFieldValue("id", "player", "retired = true", null, null, null);
+    public static long retiredPlayersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "player", "retired = true", null, null, 
+                null, connection);
     }
 
     /**
@@ -85,8 +89,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdGeneralManagersCount() {
-        return countedFieldValue("id", "general_manager", null, null, null, null);
+    public static long createdGeneralManagersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "general_manager", null, null, null, null, connection);
     }
 
     /**
@@ -94,9 +98,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long signedGeneralManagersCount() {
+    public static long signedGeneralManagersCount(DatabaseDirectConnection connection) {
         return countedFieldValue("id", "franchise", "generalManager > 0", null,
-                null, null);
+                null, null, connection);
     }
 
     /**
@@ -104,9 +108,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long retiredGeneralManagersCount() {
+    public static long retiredGeneralManagersCount(DatabaseDirectConnection connection) {
         return countedFieldValue("id", "general_manager", "retired = true", null,
-                null, null);
+                null, null, connection);
     }
 
     /**
@@ -114,8 +118,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdCoachesCount() {
-        return countedFieldValue("id", "coach", null, null, null, null);
+    public static long createdCoachesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "coach", null, null, null, null, connection);
 
     }
 
@@ -124,8 +128,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long signedCoachesCount() {
-        return countedFieldValue("id", "franchise", "coach > 0", null, null, null);
+    public static long signedCoachesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", "coach > 0", null, null, null, 
+                connection);
     }
 
     /**
@@ -133,8 +138,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long retiredCoachesCount() {
-        return countedFieldValue("id", "coach", "retired = true", null, null, null);
+    public static long retiredCoachesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "coach", "retired = true", null, null, 
+                null, connection);
     }
 
     /**
@@ -142,8 +148,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdCountriesCount() {
-        return countedFieldValue("id", "country", null, null, null, null);
+    public static long createdCountriesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "country", null, null, null, null, connection);
     }
 
     /**
@@ -151,8 +157,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdCitiesCount() {
-        return countedFieldValue("id", "city", null, null, null, null);
+    public static long createdCitiesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "city", null, null, null, null, connection);
     }
 
     /**
@@ -160,8 +166,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdFirstNamesCount() {
-        return countedFieldValue("id", "first_name", null, null, null, null);
+    public static long createdFirstNamesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "first_name", null, null, null, null, connection);
     }
 
     /**
@@ -169,8 +175,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdLastNamesCount() {
-        return countedFieldValue("id", "last_name", null, null, null, null);
+    public static long createdLastNamesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "last_name", null, null, null, null, connection);
     }
 
     /**
@@ -178,8 +184,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long createdArenasCount() {
-        return countedFieldValue("id", "arena", null, null, null, null);
+    public static long createdArenasCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "arena", null, null, null, null, connection);
     }
 
     /**
@@ -187,8 +193,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long registeredArenasCount() {
-        return countedFieldValue("id", "franchise", "arena > 0", null, null, null);
+    public static long registeredArenasCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", "arena > 0", null, null, 
+                null, connection);
     }
 
     /**
@@ -196,8 +203,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long availablePlayersCount() {
-        return countedFieldValue("id", "player", "retired = false", null, null, null);
+    public static long availablePlayersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "player", "retired = false", null, null, 
+                null, connection);
     }
 
     /**
@@ -205,8 +213,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long availableGeneralManagersCount() {
-        return countedFieldValue("id", "general_manager", "retired = false", null, null, null);
+    public static long availableGeneralManagersCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "general_manager", "retired = false", null, 
+                null, null, connection);
     }
 
     /**
@@ -214,8 +223,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long availableCoachesCount() {
-        return countedFieldValue("id", "coach", "retired = false", null, null, null);
+    public static long availableCoachesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "coach", "retired = false", null, null, 
+                null, connection);
     }
 
     /**
@@ -223,8 +233,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long availableRefereesCount() {
-        return countedFieldValue("id", "referee", "retired = false", null, null, null);
+    public static long availableRefereesCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "referee", "retired = false", null, null, 
+                null, connection);
     }
 
     /**
@@ -232,8 +243,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long franchisesWithoutGeneralManagerCount() {
-        return countedFieldValue("id", "franchise", "generalManager IS NULL", null, null, null);
+    public static long franchisesWithoutGeneralManagerCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", "generalManager IS NULL", null, 
+                null, null, connection);
     }
 
     /**
@@ -241,8 +253,9 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long franchisesWithoutCoachCount() {
-        return countedFieldValue("id", "franchise", "coach IS NULL", null, null, null);
+    public static long franchisesWithoutCoachCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("id", "franchise", "coach IS NULL", null, null, 
+                null, connection);
     }
 
     /**
@@ -251,9 +264,11 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long computerControlledFranchisesCount() {
-        short userFranchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise", "0"));
-        return countedFieldValue("id", "franchise", "id != " + userFranchiseId, null, null, null);
+    public static long computerControlledFranchisesCount(DatabaseDirectConnection connection) {
+        short userFranchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise", 
+                "0"));
+        return countedFieldValue("id", "franchise", "id != " + userFranchiseId, 
+                null, null, null, connection);
     }
 
     /**
@@ -265,17 +280,17 @@ public class CountingUtils {
      * @param havingCondition SQL HAVING filter to be applied to the records
      * @param groupByClause SQL GROUP BY clause
      * @param orderByClause SQL ORDER BY clause
+     * @param connection Database connection used to retrieve data
      * @return
      */
     private static long countedFieldValue(String field, String table,
             String whereCondition, String havingCondition, String groupByClause,
-            String orderByClause) {
+            String orderByClause, DatabaseDirectConnection connection) {
         /**
          * Variables to store the number of records, the database connection and
          * resultset
          */
-        long recordCount = 0;
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
+        long recordCount = 0;        
         String sqlStatement;
         ResultSet resultSet;
 
@@ -299,11 +314,6 @@ public class CountingUtils {
 
         try {
             /**
-             * Opening database connection
-             */
-            // connection.open();
-
-            /**
              * Executing query, retrieving result and returning
              */
             resultSet = connection.getResultSet(sqlStatement);
@@ -311,9 +321,8 @@ public class CountingUtils {
             recordCount = resultSet.getLong("value");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
+        
         return recordCount;
     }
     
@@ -322,7 +331,8 @@ public class CountingUtils {
      *
      * @return
      */
-    public static long playedSeasonsCount() {
-        return countedFieldValue("year", "season", "finished = true", null, null, null);
+    public static long playedSeasonsCount(DatabaseDirectConnection connection) {
+        return countedFieldValue("year", "season", "finished = true", null, null, 
+                null, connection);
     }
 } // end class CountingUtils

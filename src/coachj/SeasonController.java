@@ -79,23 +79,24 @@ public class SeasonController implements Initializable {
     @FXML
     private Button gameCenterButton;
     /**
+     * Keeps a reference to the application's thread
+     */
+    private CoachJ application;
+    /**
+     * Keeps a reference to the application's database connection
+     */
+    private DatabaseDirectConnection connection;
+    /**
+     * Reference to resources file
+     */
+    private ResourceBundle resources;
+    /**
      * Observable lists to store information about games
      */
     private ObservableList<ScheduledGame> previousGamesList = FXCollections
             .observableArrayList();
     private ObservableList<ScheduledGame> todayGamesList = FXCollections
             .observableArrayList();
-    /**
-     * Keeps a reference to the application's thread
-     */
-    private CoachJ application;
-    
-    private Object caller;
-    private String callerFxml;
-    /**
-     * Reference to resources file
-     */
-    private ResourceBundle resources;
     /**
      * Auxiliary fields
      */
@@ -107,22 +108,22 @@ public class SeasonController implements Initializable {
     String yesterday;
     ResultSet resultSet;
     ScheduledGame selectedGame;
-    
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+
+        /**
          * Creates a reference to the resources file
          */
         this.resources = rb;
-        
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-        // // connection.open();
 
         /**
          * Retrieving auxiliary values
@@ -136,11 +137,11 @@ public class SeasonController implements Initializable {
         SettingsUtils.setSetting("currentDate", currentDate);
         currentDateLabel.setText(currentDate);
 
-         /**
+        /**
          * Allowing tableViews to resize and fit properly
          */
         todayGamesTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
+
         /**
          * Binding the columns of both tableviews to their data models
          */
@@ -154,7 +155,7 @@ public class SeasonController implements Initializable {
                 new PropertyValueFactory<ScheduledGame, String>("homeTeam"));
         todayGameHomeScoreTableColumn.setCellValueFactory(
                 new PropertyValueFactory<ScheduledGame, Short>("homeScore"));
-        
+
         previousGameTimeTableColumn.setCellValueFactory(
                 new PropertyValueFactory<ScheduledGame, String>("time"));
         previousGameAwayTeamTableColumn.setCellValueFactory(
@@ -165,7 +166,7 @@ public class SeasonController implements Initializable {
                 new PropertyValueFactory<ScheduledGame, String>("homeTeam"));
         previousGameHomeScoreTableColumn.setCellValueFactory(
                 new PropertyValueFactory<ScheduledGame, Short>("homeScore"));
-        
+
         /**
          * Filling table views with games
          */
@@ -195,7 +196,7 @@ public class SeasonController implements Initializable {
                 + "date = '" + currentDate + "' ORDER BY time, RAND()", connection);
         todayGamesTableView.setItems(todayGamesList);
     }
-    
+
     /**
      * Fills the table view with previous games
      *
@@ -208,7 +209,7 @@ public class SeasonController implements Initializable {
                 + "date = '" + yesterday + "' ORDER BY time, RAND()", connection);
         previousGamesTableView.setItems(previousGamesList);
     }
-    
+
     /**
      * Handles the click on the table view with today's games and updates the
      * action buttons states properly
@@ -220,7 +221,7 @@ public class SeasonController implements Initializable {
             updateActionButtons(selectedGame);
         }
     }
-    
+
     /**
      * Handles the click on the table view with previous games and updates the
      * action buttons states properly
@@ -232,22 +233,27 @@ public class SeasonController implements Initializable {
             updateActionButtons(selectedGame);
         }
     }
-    
+
     /**
      * Updates the action buttons accordingly to the selected game
-     * 
+     *
      * @param game Selected game
      */
     private void updateActionButtons(ScheduledGame game) {
         gotoNextGameButton.setDisable(game.isPlayed());
-        gameCenterButton.setDisable(! game.isPlayed());
+        gameCenterButton.setDisable(!game.isPlayed());
     }
-    
+
     /**
      * Loads the play game scene
      */
     @FXML
     private void gotoNextGame() {
-        SceneUtils.loadScene(application, GameController.class.getClass(), "Game.fxml");        
+        SceneUtils.loadScene(application, GameController.class.getClass(), "Game.fxml");
+
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 }

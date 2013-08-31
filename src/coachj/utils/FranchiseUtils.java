@@ -12,9 +12,10 @@ import coachj.structures.GeneralManagerPerformance;
 import coachj.structures.GeneralManagerTransactionRecord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Random;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,17 +37,7 @@ public class FranchiseUtils {
      */
     public static String getFranchiseCompleteName(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT f.team, c.name AS city FROM franchise f "
                 + "INNER JOIN city c ON f.city = c.id "
@@ -55,11 +46,6 @@ public class FranchiseUtils {
 
         try {
             /**
-             * Opening database connection
-             */
-            // // connection.open();
-
-            /**
              * Executing query, retrieving result and returning
              */
             resultSet = connection.getResultSet(sqlStatement);
@@ -67,8 +53,6 @@ public class FranchiseUtils {
             franchiseCompleteName = resultSet.getString("city") + " " + resultSet.getString("team");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return franchiseCompleteName;
@@ -84,28 +68,13 @@ public class FranchiseUtils {
      */
     public static short getFranchiseCoachId(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT coach FROM franchise f "
                 + "WHERE f.id = " + franchiseId;
         short franchiseCoachId = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -117,8 +86,6 @@ public class FranchiseUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return franchiseCoachId;
@@ -134,28 +101,13 @@ public class FranchiseUtils {
      */
     public static short getFranchiseGeneralManagerId(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT generalManager FROM franchise f "
                 + "WHERE f.id = " + franchiseId;
         short franchiseGeneralManagerId = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -167,8 +119,6 @@ public class FranchiseUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return franchiseGeneralManagerId;
@@ -188,23 +138,12 @@ public class FranchiseUtils {
          * Variables that connect to the database, retrieve the resultset, store 
          * the sql statement and get the field value
          */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
         ResultSet resultSet;
         String sqlStatement = "SELECT " + fieldName + " AS value FROM franchise f "
                 + "WHERE f.id = " + franchiseId;
         String fieldValue = null;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -215,8 +154,6 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
 
         return fieldValue;
@@ -231,27 +168,12 @@ public class FranchiseUtils {
      */
     public static int getPayroll(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement;
         int payroll = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Retrieving players payroll
              */
@@ -263,9 +185,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return payroll;
     }
 
@@ -278,28 +199,13 @@ public class FranchiseUtils {
      */
     public static short getSignedPlayers(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT COUNT(id) AS signedPlayers FROM player "
                 + "WHERE franchise = " + franchiseId + " AND retired = false";
         short signedPlayers = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -310,9 +216,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return signedPlayers;
     }
 
@@ -325,17 +230,7 @@ public class FranchiseUtils {
      */
     public static short getActivePlayers(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT COUNT(id) AS activePlayers FROM player "
                 + "WHERE franchise = " + franchiseId + " AND retired = false "
@@ -343,11 +238,6 @@ public class FranchiseUtils {
         short activePlayers = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -357,9 +247,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return activePlayers;
     }
 
@@ -372,24 +261,13 @@ public class FranchiseUtils {
      */
     public static short getFranchiseArenaId(int franchiseId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT arena FROM franchise "
                 + "WHERE id = " + franchiseId;
         short arenaId = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -399,9 +277,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return arenaId;
     }
 
@@ -414,24 +291,13 @@ public class FranchiseUtils {
      */
     public static int getFranchiseTicketHolders(int franchiseId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT ticketHolders FROM franchise "
                 + "WHERE id = " + franchiseId;
         int ticketHolders = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -441,9 +307,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return ticketHolders;
     }
 
@@ -456,24 +321,13 @@ public class FranchiseUtils {
      */
     public static double getFranchiseRecord(int franchiseId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT record FROM franchise "
                 + "WHERE id = " + franchiseId;
         double record = 0;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -483,9 +337,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return record;
     }
 
@@ -498,17 +351,7 @@ public class FranchiseUtils {
      */
     public static boolean franchiseHasCoach(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT coach FROM franchise "
                 + "WHERE id = " + franchiseId;
@@ -516,11 +359,6 @@ public class FranchiseUtils {
         boolean hasCoach = false;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -544,9 +382,8 @@ public class FranchiseUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return hasCoach;
     }
 
@@ -559,17 +396,7 @@ public class FranchiseUtils {
      */
     public static boolean franchiseHasGeneralManager(int franchiseId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset, store 
-         * the sql statement and franchise's complete name
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         ResultSet resultSet;
         String sqlStatement = "SELECT generalManager FROM franchise "
                 + "WHERE id = " + franchiseId;
@@ -577,11 +404,6 @@ public class FranchiseUtils {
         boolean hasGeneralManager = false;
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -593,9 +415,8 @@ public class FranchiseUtils {
             System.out.println("Has General Manager:" + hasGeneralManager); // delete
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
+
         return hasGeneralManager;
     }
 
@@ -620,14 +441,7 @@ public class FranchiseUtils {
      */
     public static void analyseGeneralManagerPerformance(short franchiseId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
+
         /**
          * Auxiliary variables
          */
@@ -708,7 +522,7 @@ public class FranchiseUtils {
         offer.setSeason(Short.parseShort(SettingsUtils.getSetting("currentSeason",
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
 
-        GeneralManagerUtils.processGeneralManagerContract(offer);
+        GeneralManagerUtils.processGeneralManagerContract(offer, connection);
     }
 
     /**
@@ -730,14 +544,6 @@ public class FranchiseUtils {
      */
     public static void analyseCoachPerformance(short franchiseId,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
         /**
          * Auxiliary variables
          */
@@ -762,7 +568,7 @@ public class FranchiseUtils {
              * Retrieving franchise's previous season logs with the coach
              */
             CoachPerformance coachPerformance = new CoachPerformance(coachId, franchiseId);
-            coachId = FranchiseUtils.getFranchiseCoachId(franchiseId, null);
+            coachId = FranchiseUtils.getFranchiseCoachId(franchiseId, connection);
             coachBuilder.fillAttributesFromDatabase(coachId, connection);
             coach = coachBuilder.generateCoachEntity();
 
@@ -813,7 +619,7 @@ public class FranchiseUtils {
         offer.setSeason(Short.parseShort(SettingsUtils.getSetting("currentSeason",
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))));
 
-        CoachUtils.processCoachContract(offer);
+        CoachUtils.processCoachContract(offer, connection);
     }
 
     /**
@@ -827,14 +633,6 @@ public class FranchiseUtils {
     public static short getAvailableJerseyNumber(int franchiseId,
             DatabaseDirectConnection connection) {
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
         /**
          * Auxiliary variables
          */
@@ -876,51 +674,43 @@ public class FranchiseUtils {
      * @param connection Database connection used to retrieve data
      * @return
      */
-    public static String getFranchiseFewestPosition(short franchiseId, DatabaseDirectConnection connection) {
-
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
-
-        /**
-         * Retrieving position count for the franchise
-         */
-        String franchiseFewestPosition = "PG";
-        TreeMap<Short, String> positionsCountMap = new TreeMap<>();
-        short pointGuardCount = getFranchisePositionPlayersCount(franchiseId, "PG",
-                connection);
-        short shootingGuardCount = getFranchisePositionPlayersCount(franchiseId, "SG",
-                connection);
-        short smallForwardCount = getFranchisePositionPlayersCount(franchiseId, "SF",
-                connection);
-        short powerForwardCount = getFranchisePositionPlayersCount(franchiseId, "PF",
-                connection);
-        short centerCount = getFranchisePositionPlayersCount(franchiseId, "C",
-                connection);
-
-        /**
-         * Populating the map
-         */
-        positionsCountMap.put(pointGuardCount, "PG");
-        positionsCountMap.put(shootingGuardCount, "SG");
-        positionsCountMap.put(smallForwardCount, "SF");
-        positionsCountMap.put(powerForwardCount, "PF");
-        positionsCountMap.put(centerCount, "C");
-
-        /**
-         * Retrieving the values of the lowest and highest entries, if they're equal
-         * a random position is selected to foster diversity
-         */
-        short lowestPositionCount = positionsCountMap.firstEntry().getKey();
-        short highestPositionCount = positionsCountMap.lastEntry().getKey();
+    public static String getFranchiseFewestPosition(short franchiseId,
+            DatabaseDirectConnection connection) {
         
-        if (highestPositionCount - lowestPositionCount < 2) {
-            franchiseFewestPosition = PositionUtils.getRandomPosition();
-        } else {
-            franchiseFewestPosition = positionsCountMap.firstEntry().getValue();
-        }
+        String franchiseFewestPosition = "SF";
+        String currentPosition;        
+        int franchiseActivePlayers = FranchiseUtils.getActivePlayers(franchiseId, 
+                connection);
+        int lowerBound = franchiseActivePlayers / 5;
+        int currentPositionCount;
+        ArrayList<String> positionsArrayList = new ArrayList<>();
 
+        /**
+         * Populating the array list, then shuffling it
+         */
+        positionsArrayList.add("PG");
+        positionsArrayList.add("SG");
+        positionsArrayList.add("SF");
+        positionsArrayList.add("PF");
+        positionsArrayList.add("C");
+
+        Collections.shuffle(positionsArrayList);
+        
+        /**
+         * Iterating through the arraylist until finding a position that has the
+         * lowest number of players
+         */
+        for (int i = 0; i < positionsArrayList.size(); i++) {
+            currentPosition = positionsArrayList.get(i);
+            currentPositionCount = getFranchisePositionPlayersCount(franchiseId, 
+                    currentPosition, connection);
+            
+            if (currentPositionCount == lowerBound) {
+                franchiseFewestPosition = currentPosition;
+                break;
+            }            
+        }
+        
         return franchiseFewestPosition;
     }
 
@@ -935,11 +725,6 @@ public class FranchiseUtils {
      */
     public static short getFranchisePositionPlayersCount(short franchiseId, String position,
             DatabaseDirectConnection connection) {
-
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
 
         ResultSet resultSet;
         String sqlStatement;

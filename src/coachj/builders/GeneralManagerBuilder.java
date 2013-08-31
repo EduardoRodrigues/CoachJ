@@ -170,8 +170,6 @@ public class GeneralManagerBuilder {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
     }
 

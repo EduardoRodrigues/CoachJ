@@ -24,8 +24,16 @@ public class CoachJ extends Application {
      * Field used to keep reference to the main stage
      */
     private Stage stage;
+    /**
+     * Database connection
+     */
     private DatabaseDirectConnection connection;
-    
+
+    /**
+     * Main method (deprecated)
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Application.launch(CoachJ.class, (java.lang.String[]) null);
     }
@@ -43,24 +51,29 @@ public class CoachJ extends Application {
          * retrieving league's name
          */
         this.stage = primaryStage;
-        String leagueName = SettingsUtils.getSetting("name", "South American Basketball League");                      
-        
+        String leagueName = SettingsUtils.getSetting("name", "South American Basketball League");
+
+        /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+
         /**
          * Checking database connection, tables and data integrity
          */
         boolean databaseConnection = MySqlUtils.checkDatabaseConnection();
         boolean databaseTables = MySqlUtils.checkDatabaseTables();
         boolean databaseIntegrity = MySqlUtils.checkDatabaseIntegrity();
-                
+
         /**
-         * Storing result of operations into app setting to be used by the 
-         * post loader scene
+         * Storing result of operations into app setting to be used by the post
+         * loader scene
          */
         SettingsUtils.setSetting("databaseConnection", String.valueOf(databaseConnection));
         SettingsUtils.setSetting("databaseTables", String.valueOf(databaseTables));
-        SettingsUtils.setSetting("databaseIntegrity", String.valueOf(databaseIntegrity));        
-        
-        connection = new DatabaseDirectConnection();
+        SettingsUtils.setSetting("databaseIntegrity", String.valueOf(databaseIntegrity));
+
         /*
          * Setting window's properties and calling postloader
          * scene
@@ -68,7 +81,7 @@ public class CoachJ extends Application {
         try {
             stage.setTitle("Coach J | " + leagueName);
             stage.setWidth(640);
-            stage.setHeight(480);            
+            stage.setHeight(480);
             gotoPostLoader();
             stage.setResizable(false);
             stage.show();
@@ -80,10 +93,9 @@ public class CoachJ extends Application {
     /*
      * Utility methods that allow controllers to modify the main stage
      */
-    
     /**
      * Gets the application's main stage
-     * 
+     *
      * @return
      * @see Stage
      */
@@ -93,7 +105,7 @@ public class CoachJ extends Application {
 
     /**
      * Changes the dimensions of the main stage
-     * 
+     *
      * @param width New width for the stage
      * @param height New height for the stage
      */
@@ -104,7 +116,7 @@ public class CoachJ extends Application {
 
     /**
      * Changes the coordinates from which the main stage is drawn upon
-     * 
+     *
      * @param X Horizontal position
      * @param Y Vertical position
      */
@@ -115,16 +127,16 @@ public class CoachJ extends Application {
 
     /**
      * Allows or not the scene's window to be resized
-     * 
+     *
      * @param resizable Whether the window can be resized or not
      */
     public void setResizableStage(boolean resizable) {
         this.stage.setResizable(resizable);
     }
-    
+
     /**
      * Displays the main stage
-     */     
+     */
     public void showMainStage() {
         this.stage.show();
     }
@@ -134,14 +146,21 @@ public class CoachJ extends Application {
      */
     private void gotoPostLoader() {
         try {
-            PostLoaderController postLoader = (PostLoaderController) SceneUtils.replaceSceneContent(this.stage, "PostLoader.fxml");
+            /**
+             * Closing connection
+             */
+            connection.close();
+            
+            PostLoaderController postLoader = (PostLoaderController) 
+                    SceneUtils.replaceSceneContent(this.stage, "PostLoader.fxml");
             postLoader.setApp(this);
-            postLoader.setDatabaseConnection(connection);
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(CoachJ.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Resizes the main scene to full size screen
      */
@@ -150,13 +169,6 @@ public class CoachJ extends Application {
         Rectangle2D bounds = screen.getVisualBounds();
         setMainStageSize(bounds.getWidth(), bounds.getHeight());
         setMainStageLocation(0, 0);
-        setResizableStage(true);        
-    }
-    
-    /**
-     * Getters 
-     */
-    public DatabaseDirectConnection getConnection() {
-        return connection;
+        setResizableStage(true);
     }    
 }

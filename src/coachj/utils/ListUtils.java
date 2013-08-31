@@ -38,14 +38,7 @@ public class ListUtils {
          * resultset
          */
         ObservableList<IdDescriptionListItem> observableList = FXCollections
-                .observableArrayList();
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+                .observableArrayList();        
         ResultSet resultSet;
 
         /**
@@ -57,8 +50,7 @@ public class ListUtils {
         /**
          * Opening connection, checking if there are records retrieved and, if
          * so, looping through the resulset to fill the observable list
-         */
-        // // connection.open();
+         */        
         resultSet = connection.getResultSet(sqlStatement);
 
         try {
@@ -77,10 +69,8 @@ public class ListUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(ListUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
-
+        } 
+        
         return observableList;
     }
 
@@ -159,13 +149,8 @@ public class ListUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DraftController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            /**
-             * Closing connection
-             */
-            connection.close();
-        }
-
+        } 
+        
         return observableList;
     }
 
@@ -227,12 +212,7 @@ public class ListUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DraftController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            /**
-             * Closing connection
-             */
-            connection.close();
-        }
+        } 
 
         return observableList;
     }
@@ -293,12 +273,7 @@ public class ListUtils {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DraftController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            /**
-             * Closing connection
-             */
-            connection.close();
-        }
+        } 
 
         return observableList;
     }

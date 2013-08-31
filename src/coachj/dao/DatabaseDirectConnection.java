@@ -90,11 +90,9 @@ public class DatabaseDirectConnection {
          * Opens connection and executes statement
          */
         System.out.println("Execute SQL:" + sqlStatement); // delete     
-        try {
-            this.connection = open();
+        try {           
             this.sqlStatement = connection.createStatement();
-            this.sqlStatement.executeUpdate(sqlStatement);
-            this.connection.close();
+            this.sqlStatement.executeUpdate(sqlStatement);            
         } catch (SQLException e) {
             Logger.getLogger(DatabaseDirectConnection.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -112,8 +110,7 @@ public class DatabaseDirectConnection {
          */
         ResultSet resultSet = null;
         System.out.println("Get ResultSet:" + sqlStatement); // delete      
-        try {           
-            this.connection = open();           
+        try {                                      
             this.sqlStatement = this.connection.createStatement();
             resultSet = this.sqlStatement.executeQuery(sqlStatement);
             

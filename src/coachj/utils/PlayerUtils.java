@@ -56,9 +56,7 @@ public class PlayerUtils {
                     + resultSet.getString("lastName");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return playerCompleteName;
     }
@@ -99,9 +97,7 @@ public class PlayerUtils {
             playerFranchiseId = resultSet.getShort("franchise");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return playerFranchiseId;
     }
@@ -143,9 +139,7 @@ public class PlayerUtils {
             playerSalary = resultSet.getInt("salary");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return playerSalary;
     }
@@ -232,12 +226,7 @@ public class PlayerUtils {
                 + "remainingYears = " + contract.getLength() + ", failedContractAttempts = 0, "
                 + "jersey = " + jersey + ", franchise = " + contract.getFranchise() 
                 +  ", isActive = true, gamesWithTeam = 0 WHERE id = " + contract.getPlayer();
-        connection.executeSQL(sqlStatement);        
-
-        /**
-         * Closing connection
-         */
-        connection.close();
+        connection.executeSQL(sqlStatement);    
     }
     
     /**
@@ -269,11 +258,6 @@ public class PlayerUtils {
         sqlStatement = "UPDATE player SET failedContractAttempts = failedContractAttempts + 1 "
                 + " WHERE id = " + player;
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -319,12 +303,7 @@ public class PlayerUtils {
         sqlStatement = "UPDATE player SET remainingYears = 0, failedContractAttempts = 0, "
                 + " salary = marketValue * 4000, franchise = NULL, isActive = false WHERE id = " 
                 + contract.getPlayer();
-        connection.executeSQL(sqlStatement);        
-
-        /**
-         * Closing connection
-         */
-        connection.close();
+        connection.executeSQL(sqlStatement);
     }
 
     /**
@@ -371,11 +350,6 @@ public class PlayerUtils {
                 + " salary = marketValue * 4000, totalEarnings = totalEarnings + "
                 + contract.getSalary() + ", franchise = NULL, isActive = false WHERE id = " 
                 + contract.getPlayer();
-        connection.executeSQL(sqlStatement);        
-
-        /**
-         * Closing connection
-         */
-        connection.close();
+        connection.executeSQL(sqlStatement); 
     }
 } // end PlayerUtils

@@ -148,12 +148,7 @@ public class RefereeBuilder {
         String sqlStatement = "SELECT * FROM referee "
                 + "WHERE id = " + refereeId;
 
-        try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
+        try { 
             /**
              * Executing query, retrieving result and setting attributes
              */
@@ -174,8 +169,6 @@ public class RefereeBuilder {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
         }
     }
 } // end class RefereeBuilder

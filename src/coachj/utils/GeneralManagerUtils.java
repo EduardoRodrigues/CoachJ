@@ -61,22 +61,8 @@ public class GeneralManagerUtils {
      */
     public static void hireGeneralManager(GeneralManagerTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Recording contract transaction
@@ -106,10 +92,6 @@ public class GeneralManagerUtils {
                 + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
 
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -120,22 +102,8 @@ public class GeneralManagerUtils {
      */
     public static void recordFailedContractAttempt(int generalManagerId,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Updating coach's record
@@ -143,11 +111,6 @@ public class GeneralManagerUtils {
         sqlStatement = "UPDATE general_manager SET failedContractAttempts = failedContractAttempts + 1 "
                 + " WHERE id = " + generalManagerId;
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -158,22 +121,8 @@ public class GeneralManagerUtils {
      */
     public static void releaseGeneralManager(GeneralManagerTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Recording transaction
@@ -200,11 +149,6 @@ public class GeneralManagerUtils {
         sqlStatement = "UPDATE franchise SET generalManager = NULL"
                 + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -215,22 +159,8 @@ public class GeneralManagerUtils {
      */
     public static void fireGeneralManager(GeneralManagerTransactionRecord contract,
             DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection and the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        String sqlStatement;
 
-        /**
-         * Opening database connection
-         */
-        // // connection.open();
+        String sqlStatement;
 
         /**
          * Recording transaction
@@ -258,11 +188,6 @@ public class GeneralManagerUtils {
         sqlStatement = "UPDATE franchise SET generalManager = NULL, assets = assets - "
                 + contract.getSalary() + " WHERE id = " + contract.getFranchise();
         connection.executeSQL(sqlStatement);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -272,17 +197,7 @@ public class GeneralManagerUtils {
      * @return
      */
     public static short getBestUnemployedGeneralManagerId(DatabaseDirectConnection connection) {
-        /**
-         * Variables to store the database connection, the sql statement, the
-         * resultset and the general manager's id
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+
         String sqlStatement = "SELECT id FROM general_manager "
                 + "WHERE retired = false AND id NOT IN (SELECT generalManager "
                 + "FROM franchise WHERE generalManager IS NOT NULL) "
@@ -315,15 +230,9 @@ public class GeneralManagerUtils {
      * @param connection Database connection used to retrieve data
      * @return
      */
-    public static GeneralManagerPerformance getGeneralManagerSeasonsWithFranchise(short generalManagerId,
-            short franchiseId, DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+    public static GeneralManagerPerformance getGeneralManagerSeasonsWithFranchise(
+            short generalManagerId, short franchiseId, DatabaseDirectConnection connection) {
+
         String sqlStatement = "SELECT COUNT(id) AS years, SUM(1 - record - playoffStatus) "
                 + "AS performanceRate FROM franchise_season_log "
                 + "WHERE franchise = " + franchiseId + " AND generalManager = "
@@ -336,7 +245,6 @@ public class GeneralManagerUtils {
          * franchise and returning them
          */
         try {
-            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             generalManagerPerformance.setYearsWithFranchise(resultSet.getShort("years"));
             generalManagerPerformance.setPerformanceRate(resultSet.getDouble("performanceRate"));
@@ -346,57 +254,48 @@ public class GeneralManagerUtils {
 
         return generalManagerPerformance;
     }
-    
+
     /**
      * Processes general manager's contract
-     * 
+     *
      * @param contract Contract data
      */
-    public static void processGeneralManagerContract(GeneralManagerTransactionRecord contract) {
-        
+    public static void processGeneralManagerContract(GeneralManagerTransactionRecord contract,
+            DatabaseDirectConnection connection) {
+
         /**
          * Checking the type of contract to process it
          */
-        if (contract.getType().equalsIgnoreCase("C") || 
-                contract.getType().equalsIgnoreCase("R")) {
-            GeneralManagerUtils.hireGeneralManager(contract, null);
+        if (contract.getType().equalsIgnoreCase("C")
+                || contract.getType().equalsIgnoreCase("R")) {
+            GeneralManagerUtils.hireGeneralManager(contract, connection);
         } else if (contract.getType().equalsIgnoreCase("W")) {
-            GeneralManagerUtils.fireGeneralManager(contract, null);
+            GeneralManagerUtils.fireGeneralManager(contract, connection);
         } else {
-            GeneralManagerUtils.releaseGeneralManager(contract, null);
+            GeneralManagerUtils.releaseGeneralManager(contract, connection);
         }
     }
-    
-    
+
     public static short getGeneralManagerDealingStrategy(short generalManagerId,
             DatabaseDirectConnection connection) {
         short generalManagerDealingStrategy = 0;
-        
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        
+
         String sqlStatement = "SELECT dealingStrategy FROM general_manager "
                 + "WHERE id = " + generalManagerId;
-        ResultSet resultSet;        
+        ResultSet resultSet;
 
         /**
          * Opening the connection, retrieving the general manager's id and
          * returning it
          */
         try {
-            // // connection.open();
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             generalManagerDealingStrategy = resultSet.getShort("dealingStrategy");
         } catch (SQLException ex) {
             Logger.getLogger(GeneralManagerUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return generalManagerDealingStrategy;
-    }       
+    }
 } // end class GeneralManagerUtils

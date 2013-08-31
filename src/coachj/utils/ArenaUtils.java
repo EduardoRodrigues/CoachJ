@@ -50,9 +50,7 @@ public class ArenaUtils {
             arenaCapacity = resultSet.getInt("capacity");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
         
         return arenaCapacity;
     }
@@ -92,9 +90,7 @@ public class ArenaUtils {
             arenaName = resultSet.getString("name");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
         
         return arenaName;
     }

@@ -1,16 +1,17 @@
 package coachj;
 
 import coachj.dao.DatabaseDirectConnection;
+import coachj.enums.SeasonStatus;
 import coachj.ingame.GamePlay;
 import coachj.ingame.InGamePlayer;
 import coachj.utils.ArenaUtils;
+import coachj.utils.SceneUtils;
 import coachj.utils.ScheduleUtils;
 import coachj.utils.SettingsUtils;
 import coachj.utils.TimeUtils;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.ResourceBundle;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,11 +20,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -93,6 +92,10 @@ public class GameController implements Initializable {
      */
     private CoachJ application;
     /**
+     * Keeps a reference to the application's database connection
+     */
+    private DatabaseDirectConnection connection;
+    /**
      * Reference to resources file
      */
     private ResourceBundle resources;
@@ -103,7 +106,7 @@ public class GameController implements Initializable {
             String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
     private int gameId;
     private GamePlay game;
-    DatabaseDirectConnection connection = new DatabaseDirectConnection();
+    
     /**
      * Observable list to keep the box score updated
      */
@@ -118,20 +121,21 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         /**
+         * Creating and opening database connection
+         */
+        connection = new DatabaseDirectConnection();
+        connection.open();
+        
+        /**
          * Creates a reference to the resources file
          */
         this.resources = rb;
 
         /**
-         * Database connection
-         */
-        // // connection.open();
-
-        /**
          * Retrieving the id of the next game to be played
          */
         gameId = ScheduleUtils.getNextGameId(season, connection);
-        game = new GamePlay(gameId);
+        game = new GamePlay(gameId, connection);
 
         /**
          * Setting up scoreboard
@@ -154,8 +158,6 @@ public class GameController implements Initializable {
          */
         awayTeamPlayerJerseyTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, Short>("jersey"));
-       
-        
         awayTeamPlayerCompleteNameTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("completeNamePosition"));
         awayTeamBoxScoreTableView.setItems(awayTeamBoxScoreList);
@@ -165,11 +167,6 @@ public class GameController implements Initializable {
         homeTeamPlayerCompleteNameTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("completeNamePosition"));
         homeTeamBoxScoreTableView.setItems(homeTeamBoxScoreList);
-
-        /**
-         * Closing connection
-         */
-        connection.close();
     }
 
     /**
@@ -190,20 +187,29 @@ public class GameController implements Initializable {
          * Retrieving the season status to define scene content
          */
         int seasonStatus = Integer.parseInt(SettingsUtils.getSetting("seasonStatus", "0"));
-        //game
-        game.getTeams().get(0).getPlayers().get(0).setJersey((short) 9);
-        /*awayTeamPlayerJerseyTableColumn.setVisible(false);
-        awayTeamPlayerJerseyTableColumn.setVisible(true);*/
+        /*game
+         game.getTeams().get(0).getPlayers().get(0).setJersey((short) 9);
+         /*awayTeamPlayerJerseyTableColumn.setVisible(false);
+         awayTeamPlayerJerseyTableColumn.setVisible(true);*/
 
-        /*if (seasonStatus == SeasonStatus.SEASON.getStatus()) {
-         SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
-         "Season.fxml");
-         } else if (seasonStatus == SeasonStatus.PLAYOFFS.getStatus()) {
-         SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
-         "Playoffs.fxml");
-         }*/
+
+        if (seasonStatus == SeasonStatus.SEASON.getStatus()) {
+            SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
+                    "Season.fxml");
+        } else if (seasonStatus == SeasonStatus.PLAYOFFS.getStatus()) {
+            SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
+                    "Playoffs.fxml");
+        }
+
+        /**
+         * Closing connection
+         */
+        connection.close();
     }
 
+    /**
+     * Updates game's scoreboard
+     */
     private void updateScoreBoard() {
 
         String awayTeamFouls = String.valueOf(game.getTeams().get(0).getFouls());
@@ -229,6 +235,9 @@ public class GameController implements Initializable {
         scoreboardTimeLeftLabel.setText(timeLeft);
     }
 
+    /**
+     * Update game's information panel
+     */
     private void updateGameInfoPanel() {
         String gameDate = game.getGameDate();
         String gameTime = game.getGameTime();

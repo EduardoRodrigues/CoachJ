@@ -42,13 +42,7 @@ public class InGamePlayer {
     /**
      * Constructor
      */
-    public InGamePlayer(short id) {
-
-        /**
-         * Database connection
-         */
-        DatabaseDirectConnection connection = new DatabaseDirectConnection();
-        // // connection.open();
+    public InGamePlayer(short id, DatabaseDirectConnection connection) {
 
         PlayerBuilder playerBuilder = new PlayerBuilder();
         playerBuilder.fillAttributesFromDatabase(id, connection);

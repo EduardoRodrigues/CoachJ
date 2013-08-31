@@ -28,7 +28,7 @@ public class DraftUtils {
             DatabaseDirectConnection connection) {
         short draftRound = 1;
         short draftPick;
-        short draftRounds = DraftUtils.getTotalDraftRounds();
+        short draftRounds = DraftUtils.getTotalDraftRounds(connection);
         short requiredFranchises = Short.parseShort(SettingsUtils
                 .getSetting("requiredFranchises", "32"));
 
@@ -78,9 +78,7 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return draftRound;
     }
@@ -143,9 +141,7 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return draftPick;
     }
@@ -156,8 +152,8 @@ public class DraftUtils {
      *
      * @return
      */
-    public static short getTotalDraftRounds() {
-        return CountingUtils.playedSeasonsCount() > 0
+    public static short getTotalDraftRounds(DatabaseDirectConnection connection) {
+        return CountingUtils.playedSeasonsCount(connection) > 0
                 ? Short.parseShort(SettingsUtils.getSetting("draftRounds", "2")) : 10;
     }
 
@@ -211,9 +207,7 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            connection.close();
-        }
+        } 
 
         return nextFranchise;
     }

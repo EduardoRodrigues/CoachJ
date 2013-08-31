@@ -27,19 +27,7 @@ public class AutomaticEntitiesGenerator {
         String country;
         String firstName;
         String lastName;
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();           
-        }
-
-        /**
-         * Opening database connection and generating that necessary coaches
-         */
-        // // connection.open();
-
+        
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("coach", connection);
             country = NamingUtils.getLastNameCountry(lastName, connection);
@@ -52,11 +40,6 @@ public class AutomaticEntitiesGenerator {
             String coachInsertSQL = coachBuilder.generateInsertSQL();
             connection.executeSQL(coachInsertSQL);
         }
-
-        /**
-         * Closing database connection
-         */
-        connection.close();
     }
 
     /**
@@ -73,18 +56,6 @@ public class AutomaticEntitiesGenerator {
         String country;
         String firstName;
         String lastName;
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();            
-        }
-
-        /**
-         * Opening database connection and generating that necessary coaches
-         */
-        // // connection.open();
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("general_manager", connection);
@@ -97,13 +68,7 @@ public class AutomaticEntitiesGenerator {
             generalManagerBuilder.setAttributes();
             String generalManagerInsertSQL = generalManagerBuilder.generateInsertSQL();
             connection.executeSQL(generalManagerInsertSQL);
-
         }
-
-        /**
-         * Closing database connection
-         */
-        connection.close();
     }
 
     /**
@@ -119,19 +84,7 @@ public class AutomaticEntitiesGenerator {
          */
         String country;
         String firstName;
-        String lastName;
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
-        /**
-         * Opening database connection and generating that necessary coaches
-         */
-        // // connection.open();
+        String lastName;        
 
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("referee", connection);
@@ -144,13 +97,7 @@ public class AutomaticEntitiesGenerator {
             refereeBuilder.setAttributes();
             String refereeInsertSQL = refereeBuilder.generateInsertSQL();
             connection.executeSQL(refereeInsertSQL);
-
         }
-
-        /**
-         * Closing database connection
-         */
-        connection.close();
     }
 
     /**
@@ -168,19 +115,7 @@ public class AutomaticEntitiesGenerator {
         String firstName;
         String lastName;
         String position;
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
-        /**
-         * Opening database connection and generating that necessary coaches
-         */
-        // // connection.open();
-
+        
         for (int i = 0; i < quantity; i++) {
             lastName = NamingUtils.getRandomLastName("player", connection);
             country = NamingUtils.getLastNameCountry(lastName, connection);
@@ -193,12 +128,6 @@ public class AutomaticEntitiesGenerator {
             playerBuilder.setAttributes(connection);
             String playerInsertSQL = playerBuilder.generateInsertSQL();
             connection.executeSQL(playerInsertSQL);
-
         }
-
-        /**
-         * Closing database connection
-         */
-        connection.close();
     }
 } // end class AutomaticEntitiesGenerator
