@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.TeamCentralController">
+  <children>
+    <Label id="seasonLabel" fx:id="completeFranchiseNameLabel" prefWidth="800.0" styleClass="h1" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
+      <tabs>
+        <Tab text="%ch_atletas">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <TableView fx:id="playersTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_numero" fx:id="playerJerseyTableColumn" />
+                    <TableColumn minWidth="240.0" prefWidth="240.0" text="%ch_atleta" fx:id="playerCompleteNameTableColumn" />
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_idade" fx:id="playerAgeTableColumn" />
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_altura" fx:id="playerHeightTableColumn" />
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_peso" fx:id="playerWeightTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_salario_anual" fx:id="playerSalaryTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_valor_mercado" fx:id="playerMarketValueTableColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_atletas_estatisticas">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <columns>
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_numero" />
+                    <TableColumn minWidth="240.0" prefWidth="240.0" text="%ch_atleta" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_atleta" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+    <Button mnemonicParsing="false" onAction="#goBack" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" />
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

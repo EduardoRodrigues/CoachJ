@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -22,8 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "franchise_season_log")
@@ -78,19 +76,46 @@ public class FranchiseSeasonLog implements Serializable {
     private String streak;
     @Basic(optional = false)
     @Column(name = "playoffStatus")
-    private String playoffStatus;
+    private short playoffStatus;
     @JoinColumn(name = "season", referencedColumnName = "year")
     @ManyToOne(optional = false)
     private Season season;
-    @JoinColumn(name = "mvp", referencedColumnName = "id")
+    @JoinColumn(name = "assistsLeader", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Player mvp;
-    @JoinColumn(name = "personalFoulsLeader", referencedColumnName = "id")
+    private Player assistsLeader;
+    @JoinColumn(name = "totalReboundsLeader", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Player personalFoulsLeader;
+    private Player totalReboundsLeader;
+    @JoinColumn(name = "defensiveReboundsLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player defensiveReboundsLeader;
+    @JoinColumn(name = "offensiveReboundsLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player offensiveReboundsLeader;
+    @JoinColumn(name = "threePointersLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player threePointersLeader;
+    @JoinColumn(name = "stealsLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player stealsLeader;
+    @JoinColumn(name = "blocksLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player blocksLeader;
     @JoinColumn(name = "turnoversLeader", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Player turnoversLeader;
+    @JoinColumn(name = "personalFoulsLeader", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player personalFoulsLeader;
+    @JoinColumn(name = "mvp", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Player mvp;
+    @JoinColumn(name = "generalManager", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private GeneralManager generalManager;
+    @JoinColumn(name = "coach", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Coach coach;
     @JoinColumn(name = "franchise", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Franchise franchise;
@@ -106,27 +131,6 @@ public class FranchiseSeasonLog implements Serializable {
     @JoinColumn(name = "freeThrowsLeader", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Player freeThrowsLeader;
-    @JoinColumn(name = "threePointersLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player threePointersLeader;
-    @JoinColumn(name = "offensiveReboundsLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player offensiveReboundsLeader;
-    @JoinColumn(name = "defensiveReboundsLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player defensiveReboundsLeader;
-    @JoinColumn(name = "totalReboundsLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player totalReboundsLeader;
-    @JoinColumn(name = "assistsLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player assistsLeader;
-    @JoinColumn(name = "stealsLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player stealsLeader;
-    @JoinColumn(name = "blocksLeader", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Player blocksLeader;
 
     public FranchiseSeasonLog() {
     }
@@ -135,7 +139,7 @@ public class FranchiseSeasonLog implements Serializable {
         this.id = id;
     }
 
-    public FranchiseSeasonLog(Short id, int ticketHolders, short seed, short homeWins, short homeLosses, short awayWins, short awayLosses, BigDecimal record, String last10, String streak, String playoffStatus) {
+    public FranchiseSeasonLog(Short id, int ticketHolders, short seed, short homeWins, short homeLosses, short awayWins, short awayLosses, BigDecimal record, String last10, String streak, short playoffStatus) {
         this.id = id;
         this.ticketHolders = ticketHolders;
         this.seed = seed;
@@ -229,11 +233,11 @@ public class FranchiseSeasonLog implements Serializable {
         this.streak = streak;
     }
 
-    public String getPlayoffStatus() {
+    public short getPlayoffStatus() {
         return playoffStatus;
     }
 
-    public void setPlayoffStatus(String playoffStatus) {
+    public void setPlayoffStatus(short playoffStatus) {
         this.playoffStatus = playoffStatus;
     }
 
@@ -245,12 +249,68 @@ public class FranchiseSeasonLog implements Serializable {
         this.season = season;
     }
 
-    public Player getMvp() {
-        return mvp;
+    public Player getAssistsLeader() {
+        return assistsLeader;
     }
 
-    public void setMvp(Player mvp) {
-        this.mvp = mvp;
+    public void setAssistsLeader(Player assistsLeader) {
+        this.assistsLeader = assistsLeader;
+    }
+
+    public Player getTotalReboundsLeader() {
+        return totalReboundsLeader;
+    }
+
+    public void setTotalReboundsLeader(Player totalReboundsLeader) {
+        this.totalReboundsLeader = totalReboundsLeader;
+    }
+
+    public Player getDefensiveReboundsLeader() {
+        return defensiveReboundsLeader;
+    }
+
+    public void setDefensiveReboundsLeader(Player defensiveReboundsLeader) {
+        this.defensiveReboundsLeader = defensiveReboundsLeader;
+    }
+
+    public Player getOffensiveReboundsLeader() {
+        return offensiveReboundsLeader;
+    }
+
+    public void setOffensiveReboundsLeader(Player offensiveReboundsLeader) {
+        this.offensiveReboundsLeader = offensiveReboundsLeader;
+    }
+
+    public Player getThreePointersLeader() {
+        return threePointersLeader;
+    }
+
+    public void setThreePointersLeader(Player threePointersLeader) {
+        this.threePointersLeader = threePointersLeader;
+    }
+
+    public Player getStealsLeader() {
+        return stealsLeader;
+    }
+
+    public void setStealsLeader(Player stealsLeader) {
+        this.stealsLeader = stealsLeader;
+    }
+
+    public Player getBlocksLeader() {
+        return blocksLeader;
+    }
+
+    public void setBlocksLeader(Player blocksLeader) {
+        this.blocksLeader = blocksLeader;
+    }
+
+    public Player getTurnoversLeader() {
+        return turnoversLeader;
+    }
+
+    public void setTurnoversLeader(Player turnoversLeader) {
+        this.turnoversLeader = turnoversLeader;
     }
 
     public Player getPersonalFoulsLeader() {
@@ -261,12 +321,28 @@ public class FranchiseSeasonLog implements Serializable {
         this.personalFoulsLeader = personalFoulsLeader;
     }
 
-    public Player getTurnoversLeader() {
-        return turnoversLeader;
+    public Player getMvp() {
+        return mvp;
     }
 
-    public void setTurnoversLeader(Player turnoversLeader) {
-        this.turnoversLeader = turnoversLeader;
+    public void setMvp(Player mvp) {
+        this.mvp = mvp;
+    }
+
+    public GeneralManager getGeneralManager() {
+        return generalManager;
+    }
+
+    public void setGeneralManager(GeneralManager generalManager) {
+        this.generalManager = generalManager;
+    }
+
+    public Coach getCoach() {
+        return coach;
+    }
+
+    public void setCoach(Coach coach) {
+        this.coach = coach;
     }
 
     public Franchise getFranchise() {
@@ -309,62 +385,6 @@ public class FranchiseSeasonLog implements Serializable {
         this.freeThrowsLeader = freeThrowsLeader;
     }
 
-    public Player getThreePointersLeader() {
-        return threePointersLeader;
-    }
-
-    public void setThreePointersLeader(Player threePointersLeader) {
-        this.threePointersLeader = threePointersLeader;
-    }
-
-    public Player getOffensiveReboundsLeader() {
-        return offensiveReboundsLeader;
-    }
-
-    public void setOffensiveReboundsLeader(Player offensiveReboundsLeader) {
-        this.offensiveReboundsLeader = offensiveReboundsLeader;
-    }
-
-    public Player getDefensiveReboundsLeader() {
-        return defensiveReboundsLeader;
-    }
-
-    public void setDefensiveReboundsLeader(Player defensiveReboundsLeader) {
-        this.defensiveReboundsLeader = defensiveReboundsLeader;
-    }
-
-    public Player getTotalReboundsLeader() {
-        return totalReboundsLeader;
-    }
-
-    public void setTotalReboundsLeader(Player totalReboundsLeader) {
-        this.totalReboundsLeader = totalReboundsLeader;
-    }
-
-    public Player getAssistsLeader() {
-        return assistsLeader;
-    }
-
-    public void setAssistsLeader(Player assistsLeader) {
-        this.assistsLeader = assistsLeader;
-    }
-
-    public Player getStealsLeader() {
-        return stealsLeader;
-    }
-
-    public void setStealsLeader(Player stealsLeader) {
-        this.stealsLeader = stealsLeader;
-    }
-
-    public Player getBlocksLeader() {
-        return blocksLeader;
-    }
-
-    public void setBlocksLeader(Player blocksLeader) {
-        this.blocksLeader = blocksLeader;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -389,5 +409,5 @@ public class FranchiseSeasonLog implements Serializable {
     public String toString() {
         return "coachj.models.FranchiseSeasonLog[ id=" + id + " ]";
     }
-
-} // end class FranchiseSeasonLog
+    
+}

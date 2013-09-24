@@ -1,9 +1,14 @@
 package coachj.utils;
 
+import coachj.builders.PlayerBuilder;
 import coachj.dao.DatabaseDirectConnection;
+import coachj.ingame.InGamePlayer;
+import coachj.ingame.Team;
+import coachj.models.Player;
 import coachj.structures.PlayerTransactionRecord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,7 +77,6 @@ public class RosterUtils {
         String sqlStatement = "UPDATE player SET rosterPosition = 0 "
                 + "WHERE franchise = " + franchiseId;
         connection.executeSQL(sqlStatement);
-
     }
 
     /**
@@ -99,29 +103,29 @@ public class RosterUtils {
 
         try {
             /* player native to that position */
-            sqlStatement = "SELECT id FROM player WHERE isActive = true AND "
+            sqlStatement = "SELECT id FROM player WHERE active = true AND "
                     + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
-                    + "position LIKE '" + playerPosition + "' AND isPlayable = 1 "
-                    + "ORDER BY isPlayable DESC, " + orderingString + " LIMIT 0, 1";
+                    + "position LIKE '" + playerPosition + "' AND playable = 1 "
+                    + "ORDER BY playable DESC, " + orderingString + " LIMIT 0, 1";
             resultSet = connection.getResultSet(sqlStatement);
 
             if (resultSet.next()) {
                 playerId = resultSet.getShort("id");
             } else {
                 /* player that plays second position */
-                sqlStatement = "SELECT id FROM player WHERE isActive = true AND "
+                sqlStatement = "SELECT id FROM player WHERE active = true AND "
                         + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
-                        + "position2 LIKE '" + playerPosition + "' AND isPlayable = 1 "
-                        + "ORDER BY isPlayable DESC, " + orderingString + " LIMIT 0, 1";
+                        + "position2 LIKE '" + playerPosition + "' AND playable = 1 "
+                        + "ORDER BY playable DESC, " + orderingString + " LIMIT 0, 1";
                 resultSet = connection.getResultSet(sqlStatement);
 
                 if (resultSet.next()) {
                     playerId = resultSet.getShort("id");
                 } else {
                     /* whichever player able to play */
-                    sqlStatement = "SELECT id FROM player WHERE isActive = true AND "
+                    sqlStatement = "SELECT id FROM player WHERE active = true AND "
                             + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
-                            + "isPlayable = 1 ORDER BY isPlayable DESC, " + orderingString
+                            + "playable = 1 ORDER BY playable DESC, " + orderingString
                             + " LIMIT 0, 1";
                     resultSet = connection.getResultSet(sqlStatement);
                     resultSet.first();
@@ -215,5 +219,45 @@ public class RosterUtils {
                 Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    /**
+     * Return the active roster for the given franchise
+     *
+     * @param franchiseId
+     * @param connection Database connection used to retrieve data
+     */
+    public static ArrayList<Player> getFranchiseRoster(short franchiseId,
+            DatabaseDirectConnection connection) {
+        ArrayList<Player> franchiseRoster = new ArrayList<>();
+        
+         /**
+         * Reordering roster
+         */
+        RosterUtils.reorderRoster(franchiseId, connection);
+
+        /**
+         * Retrieving player data
+         */
+        String sqlStatement = "SELECT id FROM player WHERE franchise = " + franchiseId
+                + " AND active = true ORDER BY rosterPosition LIMIT 15";
+        ResultSet resultSet = connection.getResultSet(sqlStatement);
+        short playerId;        
+        PlayerBuilder playerBuilder = new PlayerBuilder();
+        Player player;
+
+        try {
+            while (resultSet.next()) {
+                playerId = resultSet.getShort("id");
+                playerBuilder.fillAttributesFromDatabase(playerId, connection);
+                player = playerBuilder.generatePlayerEntity();
+                
+               franchiseRoster.add(player);               
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return franchiseRoster;
     }
 } // end RosterUtils

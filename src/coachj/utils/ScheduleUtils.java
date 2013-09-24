@@ -179,7 +179,7 @@ public class ScheduleUtils {
 
         String nextScheduledDate = null;
         String sqlStatement = "SELECT date FROM game WHERE season = " + season
-                + " AND date IS NOT NULL ORDER BY date LIMIT 1";
+                + " AND played = 0 AND date IS NOT NULL ORDER BY date LIMIT 1";
         ResultSet resultSet = connection.getResultSet(sqlStatement);
 
         try {

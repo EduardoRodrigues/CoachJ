@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -24,8 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "coach_transaction")
@@ -57,12 +55,12 @@ public class CoachTransaction implements Serializable {
     @Basic(optional = false)
     @Column(name = "salary")
     private int salary;
-    @JoinColumn(name = "season", referencedColumnName = "year")
-    @ManyToOne(optional = false)
-    private Season season;
     @JoinColumn(name = "franchise", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Franchise franchise;
+    @JoinColumn(name = "season", referencedColumnName = "year")
+    @ManyToOne(optional = false)
+    private Season season;
     @JoinColumn(name = "coach", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Coach coach;
@@ -122,20 +120,20 @@ public class CoachTransaction implements Serializable {
         this.salary = salary;
     }
 
-    public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
-    }
-
     public Franchise getFranchise() {
         return franchise;
     }
 
     public void setFranchise(Franchise franchise) {
         this.franchise = franchise;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 
     public Coach getCoach() {
@@ -170,5 +168,5 @@ public class CoachTransaction implements Serializable {
     public String toString() {
         return "coachj.models.CoachTransaction[ id=" + id + " ]";
     }
-
-} // end class CoachTransaction
+    
+}

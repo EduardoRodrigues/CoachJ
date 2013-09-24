@@ -78,6 +78,8 @@ public class SeasonController implements Initializable {
     private Button gotoNextGameButton;
     @FXML
     private Button gameCenterButton;
+    @FXML
+    private Button rosterCentralButton;
     /**
      * Keeps a reference to the application's thread
      */
@@ -193,7 +195,7 @@ public class SeasonController implements Initializable {
 
         todayGamesList = ListUtils.fillScheduledGameListFromSQL("SELECT id, played, date, "
                 + "time, awayTeam, awayScore, homeTeam, homeScore FROM game WHERE "
-                + "date = '" + currentDate + "' ORDER BY time, RAND()", connection);
+                + "date = '" + currentDate + "' ORDER BY date, time", connection);
         todayGamesTableView.setItems(todayGamesList);
     }
 
@@ -250,6 +252,19 @@ public class SeasonController implements Initializable {
     @FXML
     private void gotoNextGame() {
         SceneUtils.loadScene(application, GameController.class.getClass(), "Game.fxml");
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+    
+    /**
+     * Loads the roster central scene
+     */
+    @FXML
+    private void gotoTeamCentral() {
+        SceneUtils.loadScene(application, TeamCentralController.class.getClass(), "TeamCentral.fxml");
 
         /**
          * Closing connection

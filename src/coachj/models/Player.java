@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -28,8 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "player")
@@ -51,8 +49,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Player.findByRecoveryDate", query = "SELECT p FROM Player p WHERE p.recoveryDate = :recoveryDate"),
     @NamedQuery(name = "Player.findByInjuryTendency", query = "SELECT p FROM Player p WHERE p.injuryTendency = :injuryTendency"),
     @NamedQuery(name = "Player.findByGamesOut", query = "SELECT p FROM Player p WHERE p.gamesOut = :gamesOut"),
-    @NamedQuery(name = "Player.findByIsActive", query = "SELECT p FROM Player p WHERE p.isActive = :isActive"),
-    @NamedQuery(name = "Player.findByIsPlayable", query = "SELECT p FROM Player p WHERE p.isPlayable = :isPlayable"),
+    @NamedQuery(name = "Player.findByActive", query = "SELECT p FROM Player p WHERE p.active = :active"),
+    @NamedQuery(name = "Player.findByPlayable", query = "SELECT p FROM Player p WHERE p.playable = :playable"),
     @NamedQuery(name = "Player.findByRosterPosition", query = "SELECT p FROM Player p WHERE p.rosterPosition = :rosterPosition"),
     @NamedQuery(name = "Player.findByRemainingYears", query = "SELECT p FROM Player p WHERE p.remainingYears = :remainingYears"),
     @NamedQuery(name = "Player.findByFailedContractAttempts", query = "SELECT p FROM Player p WHERE p.failedContractAttempts = :failedContractAttempts"),
@@ -178,11 +176,11 @@ public class Player implements Serializable {
     @Column(name = "gamesOut")
     private Short gamesOut;
     @Basic(optional = false)
-    @Column(name = "isActive")
-    private boolean isActive;
+    @Column(name = "active")
+    private boolean active;
     @Basic(optional = false)
-    @Column(name = "isPlayable")
-    private boolean isPlayable;
+    @Column(name = "playable")
+    private boolean playable;
     @Basic(optional = false)
     @Column(name = "rosterPosition")
     private short rosterPosition;
@@ -413,47 +411,47 @@ public class Player implements Serializable {
     private short titles;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<PlayerLog> playerLogCollection;
-    @JoinColumn(name = "franchise", referencedColumnName = "id")
-    @ManyToOne
-    private Franchise franchise;
     @JoinColumn(name = "favoriteCourtZone", referencedColumnName = "id")
     @ManyToOne
     private CourtZone favoriteCourtZone;
-    @JoinColumn(name = "event", referencedColumnName = "id")
-    @ManyToOne
-    private Event event;
     @JoinColumn(name = "country", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Country country;
+    @JoinColumn(name = "event", referencedColumnName = "id")
+    @ManyToOne
+    private Event event;
+    @JoinColumn(name = "franchise", referencedColumnName = "id")
+    @ManyToOne
+    private Franchise franchise;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<Draft> draftCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mvp")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalFoulsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "turnoversLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "minutesLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection3;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pointsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection4;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fieldGoalsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection5;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "freeThrowsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection6;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "threePointersLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection7;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "offensiveReboundsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection8;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "defensiveReboundsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection9;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "totalReboundsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection10;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "assistsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection11;
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "totalReboundsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "defensiveReboundsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection2;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "offensiveReboundsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection3;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "threePointersLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection4;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stealsLeader")
-    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection12;
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection5;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "blocksLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection6;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "turnoversLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection7;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalFoulsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection8;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mvp")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection9;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "minutesLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection10;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pointsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection11;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fieldGoalsLeader")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection12;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "freeThrowsLeader")
     private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection13;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private Collection<PlayerAward> playerAwardCollection;
@@ -467,7 +465,7 @@ public class Player implements Serializable {
         this.id = id;
     }
 
-    public Player(Integer id, String position, String position2, String firstName, String lastName, short seasons, boolean hallOfFame, short jersey, short age, short height, short weight, short injuryImpact, short injuryTendency, boolean isActive, boolean isPlayable, short rosterPosition, short remainingYears, short failedContractAttempts, int salary, int totalEarnings, float bodyMassIndex, short draftYear, short marketValue, short starPoints, short technique, short aggressiveness, short speed, short stamina, short accumulatedFatigue, short tirednessRate, short peakAge, short strenght, short rookieWeakness, short seasonMomentum, boolean retired, short happinessLevel, short patience, short discipline, short workEthic, short loyalty, short greed, char hand, short lowPost, short offenseDedication, short defenseDedication, short shootingRange, short fieldGoals, short threePointers, short freeThrows, short inThePaint, short shotCorrection, short pullUpJumper, short runningJumper, short floatingJumper, short bankShot, short scoopShot, short fadeawayShot, short turnaroundShot, short hookShot, short layupShot, short reverseLayupShot, short fingerRollShot, short catchAndShootShot, short stepBackShot, short dunk, short crunchTimeShooting, short fakeShotFrequency, short ballHandling, short dribble, short drive, short courtVision, short creativity, short pass, short behindTheBackPass, short noLookPass, short alleyOopPass, short bouncePass, short steal, short block, short contest, short boxOut, short oneOnOneDefense, short helpDefense, short defensiveRebound, short offensiveRebound, short jump, short milestones, short regularSeasonExperience, short playoffsExperience, short gamesWithTeam, short titles) {
+    public Player(Integer id, String position, String position2, String firstName, String lastName, short seasons, boolean hallOfFame, short jersey, short age, short height, short weight, short injuryImpact, short injuryTendency, boolean active, boolean playable, short rosterPosition, short remainingYears, short failedContractAttempts, int salary, int totalEarnings, float bodyMassIndex, short draftYear, short marketValue, short starPoints, short technique, short aggressiveness, short speed, short stamina, short accumulatedFatigue, short tirednessRate, short peakAge, short strenght, short rookieWeakness, short seasonMomentum, boolean retired, short happinessLevel, short patience, short discipline, short workEthic, short loyalty, short greed, char hand, short lowPost, short offenseDedication, short defenseDedication, short shootingRange, short fieldGoals, short threePointers, short freeThrows, short inThePaint, short shotCorrection, short pullUpJumper, short runningJumper, short floatingJumper, short bankShot, short scoopShot, short fadeawayShot, short turnaroundShot, short hookShot, short layupShot, short reverseLayupShot, short fingerRollShot, short catchAndShootShot, short stepBackShot, short dunk, short crunchTimeShooting, short fakeShotFrequency, short ballHandling, short dribble, short drive, short courtVision, short creativity, short pass, short behindTheBackPass, short noLookPass, short alleyOopPass, short bouncePass, short steal, short block, short contest, short boxOut, short oneOnOneDefense, short helpDefense, short defensiveRebound, short offensiveRebound, short jump, short milestones, short regularSeasonExperience, short playoffsExperience, short gamesWithTeam, short titles) {
         this.id = id;
         this.position = position;
         this.position2 = position2;
@@ -481,8 +479,8 @@ public class Player implements Serializable {
         this.weight = weight;
         this.injuryImpact = injuryImpact;
         this.injuryTendency = injuryTendency;
-        this.isActive = isActive;
-        this.isPlayable = isPlayable;
+        this.active = active;
+        this.playable = playable;
         this.rosterPosition = rosterPosition;
         this.remainingYears = remainingYears;
         this.failedContractAttempts = failedContractAttempts;
@@ -681,20 +679,20 @@ public class Player implements Serializable {
         this.gamesOut = gamesOut;
     }
 
-    public boolean getIsActive() {
-        return isActive;
+    public boolean getActive() {
+        return active;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    public boolean getIsPlayable() {
-        return isPlayable;
+    public boolean getPlayable() {
+        return playable;
     }
 
-    public void setIsPlayable(boolean isPlayable) {
-        this.isPlayable = isPlayable;
+    public void setPlayable(boolean playable) {
+        this.playable = playable;
     }
 
     public short getRosterPosition() {
@@ -1314,20 +1312,20 @@ public class Player implements Serializable {
         this.playerLogCollection = playerLogCollection;
     }
 
-    public Franchise getFranchise() {
-        return franchise;
-    }
-
-    public void setFranchise(Franchise franchise) {
-        this.franchise = franchise;
-    }
-
     public CourtZone getFavoriteCourtZone() {
         return favoriteCourtZone;
     }
 
     public void setFavoriteCourtZone(CourtZone favoriteCourtZone) {
         this.favoriteCourtZone = favoriteCourtZone;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public Event getEvent() {
@@ -1338,12 +1336,12 @@ public class Player implements Serializable {
         this.event = event;
     }
 
-    public Country getCountry() {
-        return country;
+    public Franchise getFranchise() {
+        return franchise;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setFranchise(Franchise franchise) {
+        this.franchise = franchise;
     }
 
     @XmlTransient
@@ -1523,5 +1521,5 @@ public class Player implements Serializable {
     public String toString() {
         return "coachj.models.Player[ id=" + id + " ]";
     }
-
-} // end class Player
+    
+}

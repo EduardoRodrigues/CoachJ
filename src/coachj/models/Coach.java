@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -26,8 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "coach")
@@ -161,12 +159,14 @@ public class Coach implements Serializable {
     @JoinColumn(name = "country", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Country country;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "homeTeamCoach")
+    @OneToMany(mappedBy = "homeTeamCoach")
     private Collection<Game> gameCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "awayTeamCoach")
+    @OneToMany(mappedBy = "awayTeamCoach")
     private Collection<Game> gameCollection1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "coach")
     private Collection<CoachAwards> coachAwardsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "coach")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection;
 
     public Coach() {
     }
@@ -491,6 +491,15 @@ public class Coach implements Serializable {
         this.coachAwardsCollection = coachAwardsCollection;
     }
 
+    @XmlTransient
+    public Collection<FranchiseSeasonLog> getFranchiseSeasonLogCollection() {
+        return franchiseSeasonLogCollection;
+    }
+
+    public void setFranchiseSeasonLogCollection(Collection<FranchiseSeasonLog> franchiseSeasonLogCollection) {
+        this.franchiseSeasonLogCollection = franchiseSeasonLogCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -515,5 +524,5 @@ public class Coach implements Serializable {
     public String toString() {
         return "coachj.models.Coach[ id=" + id + " ]";
     }
-
-} // end class Coach
+    
+}

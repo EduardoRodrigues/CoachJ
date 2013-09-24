@@ -31,25 +31,12 @@ public class DraftUtils {
         short draftRounds = DraftUtils.getTotalDraftRounds(connection);
         short requiredFranchises = Short.parseShort(SettingsUtils
                 .getSetting("requiredFranchises", "32"));
-
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
         ResultSet resultSet;
         String sqlStatement = "SELECT round, pick "
                 + "FROM draft "
                 + "WHERE season = " + season + " ORDER BY round DESC, pick DESC LIMIT 1";
 
-        try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
+        try {           
             /**
              * Executing query, retrieving result and returning
              */
@@ -78,7 +65,7 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
 
         return draftRound;
     }
@@ -96,23 +83,12 @@ public class DraftUtils {
         short requiredFranchises = Short.parseShort(SettingsUtils
                 .getSetting("requiredFranchises", "32"));
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
         ResultSet resultSet;
         String sqlStatement = "SELECT pick "
                 + "FROM draft "
                 + "WHERE season = " + season + " ORDER BY round DESC, pick DESC LIMIT 1";
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
 
             /**
              * Executing query, retrieving result and returning
@@ -141,7 +117,7 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
 
         return draftPick;
     }
@@ -167,15 +143,8 @@ public class DraftUtils {
      */
     public static short getNextFranchise(short season, short draftRound,
             DatabaseDirectConnection connection) {
-        short nextFranchise = 1;
 
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
+        short nextFranchise = 1;
         ResultSet resultSet;
         String sqlStatement = "SELECT id FROM franchise "
                 + "WHERE registered = TRUE AND id NOT IN "
@@ -183,11 +152,6 @@ public class DraftUtils {
                 + draftRound + ") ORDER BY record, RAND() LIMIT 1";
 
         try {
-            /**
-             * Opening database connection
-             */
-            // // connection.open();
-
             /**
              * Executing query, retrieving result and returning
              */
@@ -207,28 +171,21 @@ public class DraftUtils {
 
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
 
         return nextFranchise;
     }
 
     /**
      * Records a drafting operation into the database
-     * 
+     *
      * @param draftOperation Data structure with information about the drafting
      * operation
      * @param connection Database connection used to retrieve data
      */
     public static void recordDraft(DraftSummary draftOperation,
             DatabaseDirectConnection connection) {
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-        
+
         String sqlStatement;
         short franchiseId = draftOperation.getFranchiseId();
         int playerId = draftOperation.getPlayerId();
@@ -238,17 +195,12 @@ public class DraftUtils {
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
         /**
-         * Opening database connection
-         */
-        // // connection.open();
-
-        /**
          * Registering player into the franchise
          */
         sqlStatement = "UPDATE player SET franchise = " + franchiseId + ", "
                 + "jersey = " + FranchiseUtils.getAvailableJerseyNumber(franchiseId, connection) + ", "
                 + "salary = " + minimumSalary + ", draftYear = " + draftYear + ", "
-                + "remainingYears = 2, isActive = true WHERE id = " + playerId;
+                + "remainingYears = 2, active = true WHERE id = " + playerId;
         connection.executeSQL(sqlStatement);
 
         /**
@@ -258,6 +210,6 @@ public class DraftUtils {
                 + "VALUES (" + draftYear + ", " + playerId + ", " + franchiseId + ", "
                 + draftOperation.getDraftRound() + ", " + draftOperation.getDraftPick()
                 + ")";
-        connection.executeSQL(sqlStatement);       
+        connection.executeSQL(sqlStatement);
     }
 } // end DraftUtils

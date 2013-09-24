@@ -18,26 +18,29 @@ public class CountingUtils {
     /**
      * Returns the number of franchises created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdFranchisesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", null, null, null, null, 
+        return countedFieldValue("id", "franchise", null, null, null, null,
                 connection);
     }
 
     /**
      * Returns the number of franchises registered in the league
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long registeredFranchisesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", "registered = 1", null, null, 
+        return countedFieldValue("id", "franchise", "registered = 1", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of players created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdPlayersCount(DatabaseDirectConnection connection) {
@@ -47,16 +50,18 @@ public class CountingUtils {
     /**
      * Returns the number of players signed
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long signedPlayersCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "player", "franchise > 0", null, null, 
+        return countedFieldValue("id", "player", "franchise > 0", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of free agents
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long freeAgentsCount(DatabaseDirectConnection connection) {
@@ -67,6 +72,7 @@ public class CountingUtils {
     /**
      * Returns the number of draftees
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long drafteesCount(DatabaseDirectConnection connection) {
@@ -77,16 +83,18 @@ public class CountingUtils {
     /**
      * Returns the number of retired players
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long retiredPlayersCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "player", "retired = true", null, null, 
+        return countedFieldValue("id", "player", "retired = true", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of general managers created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdGeneralManagersCount(DatabaseDirectConnection connection) {
@@ -96,6 +104,7 @@ public class CountingUtils {
     /**
      * Returns the number of general managers signed
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long signedGeneralManagersCount(DatabaseDirectConnection connection) {
@@ -106,6 +115,7 @@ public class CountingUtils {
     /**
      * Returns the number of retired general managers
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long retiredGeneralManagersCount(DatabaseDirectConnection connection) {
@@ -116,6 +126,7 @@ public class CountingUtils {
     /**
      * Returns the number of coaches created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdCoachesCount(DatabaseDirectConnection connection) {
@@ -126,26 +137,29 @@ public class CountingUtils {
     /**
      * Returns the number of coaches signed
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long signedCoachesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", "coach > 0", null, null, null, 
+        return countedFieldValue("id", "franchise", "coach > 0", null, null, null,
                 connection);
     }
 
     /**
      * Returns the number of retired coaches
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long retiredCoachesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "coach", "retired = true", null, null, 
+        return countedFieldValue("id", "coach", "retired = true", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of countries created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdCountriesCount(DatabaseDirectConnection connection) {
@@ -155,6 +169,7 @@ public class CountingUtils {
     /**
      * Returns the number of cities created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdCitiesCount(DatabaseDirectConnection connection) {
@@ -164,6 +179,7 @@ public class CountingUtils {
     /**
      * Returns the number of first names created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdFirstNamesCount(DatabaseDirectConnection connection) {
@@ -173,6 +189,7 @@ public class CountingUtils {
     /**
      * Returns the number of last names created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdLastNamesCount(DatabaseDirectConnection connection) {
@@ -182,6 +199,7 @@ public class CountingUtils {
     /**
      * Returns the number of arenas created
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long createdArenasCount(DatabaseDirectConnection connection) {
@@ -191,70 +209,77 @@ public class CountingUtils {
     /**
      * Returns the number of arenas registered in the league
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long registeredArenasCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", "arena > 0", null, null, 
+        return countedFieldValue("id", "franchise", "arena > 0", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of available players
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long availablePlayersCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "player", "retired = false", null, null, 
+        return countedFieldValue("id", "player", "retired = false", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of available general managers
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long availableGeneralManagersCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "general_manager", "retired = false", null, 
+        return countedFieldValue("id", "general_manager", "retired = false", null,
                 null, null, connection);
     }
 
     /**
      * Returns the number of available coaches
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long availableCoachesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "coach", "retired = false", null, null, 
+        return countedFieldValue("id", "coach", "retired = false", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of available referees
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long availableRefereesCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "referee", "retired = false", null, null, 
+        return countedFieldValue("id", "referee", "retired = false", null, null,
                 null, connection);
     }
 
     /**
      * Returns the number of franchises without general manager
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long franchisesWithoutGeneralManagerCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", "generalManager IS NULL", null, 
+        return countedFieldValue("id", "franchise", "generalManager IS NULL", null,
                 null, null, connection);
     }
 
     /**
      * Returns the number of franchises without coach
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long franchisesWithoutCoachCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("id", "franchise", "coach IS NULL", null, null, 
+        return countedFieldValue("id", "franchise", "coach IS NULL", null, null,
                 null, connection);
     }
 
@@ -262,12 +287,13 @@ public class CountingUtils {
      * Returns the number of registered franchises that are controlled by the
      * computer
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long computerControlledFranchisesCount(DatabaseDirectConnection connection) {
-        short userFranchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise", 
+        short userFranchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise",
                 "0"));
-        return countedFieldValue("id", "franchise", "id != " + userFranchiseId, 
+        return countedFieldValue("id", "franchise", "id != " + userFranchiseId,
                 null, null, null, connection);
     }
 
@@ -290,7 +316,7 @@ public class CountingUtils {
          * Variables to store the number of records, the database connection and
          * resultset
          */
-        long recordCount = 0;        
+        long recordCount = 0;
         String sqlStatement;
         ResultSet resultSet;
 
@@ -321,18 +347,19 @@ public class CountingUtils {
             recordCount = resultSet.getLong("value");
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        
+        }
+
         return recordCount;
     }
-    
+
     /**
      * Returns the number of seasons played
      *
+     * @param connection Database connection used to retrieve data
      * @return
      */
     public static long playedSeasonsCount(DatabaseDirectConnection connection) {
-        return countedFieldValue("year", "season", "finished = true", null, null, 
+        return countedFieldValue("year", "season", "finished = true", null, null,
                 null, connection);
     }
 } // end class CountingUtils

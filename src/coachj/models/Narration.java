@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -12,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -21,8 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "narration")
@@ -30,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Narration.findAll", query = "SELECT n FROM Narration n"),
     @NamedQuery(name = "Narration.findById", query = "SELECT n FROM Narration n WHERE n.id = :id"),
+    @NamedQuery(name = "Narration.findByPlayType", query = "SELECT n FROM Narration n WHERE n.playType = :playType"),
     @NamedQuery(name = "Narration.findByNarrationEn", query = "SELECT n FROM Narration n WHERE n.narrationEn = :narrationEn"),
     @NamedQuery(name = "Narration.findByNarrationPt", query = "SELECT n FROM Narration n WHERE n.narrationPt = :narrationPt")})
 public class Narration implements Serializable {
@@ -40,14 +37,14 @@ public class Narration implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @Column(name = "playType")
+    private String playType;
+    @Basic(optional = false)
     @Column(name = "narration_en")
     private String narrationEn;
     @Basic(optional = false)
     @Column(name = "narration_pt")
     private String narrationPt;
-    @JoinColumn(name = "playType", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private PlayType playType;
 
     public Narration() {
     }
@@ -56,8 +53,9 @@ public class Narration implements Serializable {
         this.id = id;
     }
 
-    public Narration(Integer id, String narrationEn, String narrationPt) {
+    public Narration(Integer id, String playType, String narrationEn, String narrationPt) {
         this.id = id;
+        this.playType = playType;
         this.narrationEn = narrationEn;
         this.narrationPt = narrationPt;
     }
@@ -68,6 +66,14 @@ public class Narration implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPlayType() {
+        return playType;
+    }
+
+    public void setPlayType(String playType) {
+        this.playType = playType;
     }
 
     public String getNarrationEn() {
@@ -84,14 +90,6 @@ public class Narration implements Serializable {
 
     public void setNarrationPt(String narrationPt) {
         this.narrationPt = narrationPt;
-    }
-
-    public PlayType getPlayType() {
-        return playType;
-    }
-
-    public void setPlayType(PlayType playType) {
-        this.playType = playType;
     }
 
     @Override
@@ -118,5 +116,5 @@ public class Narration implements Serializable {
     public String toString() {
         return "coachj.models.Narration[ id=" + id + " ]";
     }
-
-} // end class Narration
+    
+}

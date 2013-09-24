@@ -57,6 +57,35 @@ public class FranchiseUtils {
 
         return franchiseCompleteName;
     }
+    
+    /**
+     * Returns the franchise's abbreviature
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getFranchiseAbbreviature(int franchiseId,
+            DatabaseDirectConnection connection) {
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT abbreviature FROM franchise "               
+                + "WHERE id = " + franchiseId;
+        String franchiseAbbreviature = null;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            franchiseAbbreviature = resultSet.getString("abbreviature");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseAbbreviature;
+    }
 
     /**
      * Return the id of the franchise's coach or 0 if the franchise currently
@@ -234,7 +263,7 @@ public class FranchiseUtils {
         ResultSet resultSet;
         String sqlStatement = "SELECT COUNT(id) AS activePlayers FROM player "
                 + "WHERE franchise = " + franchiseId + " AND retired = false "
-                + "AND isActive = true";
+                + "AND active = true";
         short activePlayers = 0;
 
         try {
@@ -732,7 +761,7 @@ public class FranchiseUtils {
 
         try {
             sqlStatement = "SELECT COUNT(position) AS positionCount FROM player "
-                    + "WHERE isActive = true AND franchise = " + franchiseId
+                    + "WHERE active = true AND franchise = " + franchiseId
                     + " AND position = '" + position + "'";
             resultSet = connection.getResultSet(sqlStatement);
             if (resultSet.next()) {

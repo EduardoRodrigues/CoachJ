@@ -1,11 +1,11 @@
 package coachj.builders;
 
+import coachj.constants.CourtZoneConstants;
 import coachj.dao.DatabaseDirectConnection;
 import coachj.models.Country;
 import coachj.models.CourtZone;
 import coachj.models.Player;
 import coachj.utils.SettingsUtils;
-import coachj.ingame.CourtZones;
 import coachj.utils.CountingUtils;
 import coachj.utils.PositionUtils;
 import java.sql.ResultSet;
@@ -36,7 +36,7 @@ public class PlayerBuilder {
     private short height;
     private short weight;
     private short injuryTendency;
-    private boolean isPlayable;
+    private boolean playable;
     private short rosterPosition;
     private short remainingYears;
     private int salary;
@@ -352,7 +352,7 @@ public class PlayerBuilder {
         this.seasons = 0;
         this.hallOfFame = false;
         this.jersey = 0;
-        this.isPlayable = true;
+        this.playable = true;
         this.rosterPosition = 0;
         this.remainingYears = 0;
         this.totalEarnings = 0;
@@ -484,7 +484,7 @@ public class PlayerBuilder {
         player.setHookShot(hookShot);
         player.setInThePaint(inThePaint);
         player.setInjuryTendency(injuryTendency);
-        player.setIsPlayable(isPlayable);
+        player.setPlayable(playable);
         player.setJersey(jersey);
         player.setJump(jump);
         player.setLastName(lastName);
@@ -567,14 +567,14 @@ public class PlayerBuilder {
         if (this.position.equalsIgnoreCase("PG") || this.position.equalsIgnoreCase("SG")
                 || this.position.equalsIgnoreCase("SF")) {
             if (this.threePointers > this.fieldGoals && this.threePointers > this.inThePaint) {
-                favoriteZone = CourtZones.THREE_POINTERS_ZONES[generator
-                        .nextInt(CourtZones.THREE_POINTERS_ZONES.length)];
+                favoriteZone = CourtZoneConstants.THREE_POINTERS_ZONES[generator
+                        .nextInt(CourtZoneConstants.THREE_POINTERS_ZONES.length)];
             } else if (this.inThePaint > this.fieldGoals) {
-                favoriteZone = CourtZones.PAINT_ZONES[generator
-                        .nextInt(CourtZones.PAINT_ZONES.length)];
+                favoriteZone = CourtZoneConstants.PAINT_ZONES[generator
+                        .nextInt(CourtZoneConstants.PAINT_ZONES.length)];
             } else {
-                favoriteZone = CourtZones.MID_RANGE_ZONES[generator
-                        .nextInt(CourtZones.MID_RANGE_ZONES.length)];
+                favoriteZone = CourtZoneConstants.MID_RANGE_ZONES[generator
+                        .nextInt(CourtZoneConstants.MID_RANGE_ZONES.length)];
             }
         }
 
@@ -585,14 +585,14 @@ public class PlayerBuilder {
          */
         if (this.position.equalsIgnoreCase("PF") || this.position.equalsIgnoreCase("C")) {
             if (this.lowPost > this.inThePaint && this.lowPost > this.fieldGoals) {
-                favoriteZone = CourtZones.LOW_POST_ZONES[generator
-                        .nextInt(CourtZones.LOW_POST_ZONES.length)];
+                favoriteZone = CourtZoneConstants.LOW_POST_ZONES[generator
+                        .nextInt(CourtZoneConstants.LOW_POST_ZONES.length)];
             } else if (this.inThePaint > this.fieldGoals) {
-                favoriteZone = CourtZones.PAINT_ZONES[generator
-                        .nextInt(CourtZones.PAINT_ZONES.length)];
+                favoriteZone = CourtZoneConstants.PAINT_ZONES[generator
+                        .nextInt(CourtZoneConstants.PAINT_ZONES.length)];
             } else {
-                favoriteZone = CourtZones.MID_RANGE_ZONES[generator
-                        .nextInt(CourtZones.MID_RANGE_ZONES.length)];
+                favoriteZone = CourtZoneConstants.MID_RANGE_ZONES[generator
+                        .nextInt(CourtZoneConstants.MID_RANGE_ZONES.length)];
             }
         }
 
@@ -609,7 +609,7 @@ public class PlayerBuilder {
         String sqlInsertStatement = "INSERT INTO player (country, "
                 + "position, position2, favoriteCourtZone, firstName, lastName, "
                 + "seasons, hallOfFame, jersey, age, height, weight, "
-                + "injuryTendency, gamesOut, isPlayable, rosterPosition, "
+                + "injuryTendency, gamesOut, playable, rosterPosition, "
                 + "remainingYears, salary, totalEarnings, bodyMassIndex, draftYear, "
                 + "marketValue, starPoints, technique, aggressiveness, speed, stamina, "
                 + "accumulatedFatigue, tirednessRate, peakAge, strenght, rookieWeakness, "
@@ -627,7 +627,7 @@ public class PlayerBuilder {
                 + this.position2 + "', " + this.favoriteCourtZone + ", '" + this.firstName + "', '"
                 + this.lastName + "', " + this.seasons + ", " + this.hallOfFame + ", "
                 + this.jersey + ", " + this.age + ", " + this.height + ", " + this.weight + ", "
-                + this.injuryTendency + ", " + this.gamesOut + ", " + this.isPlayable + ", "
+                + this.injuryTendency + ", " + this.gamesOut + ", " + this.playable + ", "
                 + this.rosterPosition + ", " + this.remainingYears + ", " + this.salary + ", "
                 + this.totalEarnings + ", " + this.bodyMassIndex + ", " + this.draftYear + ", "
                 + this.marketValue + ", " + this.starPoints + ", " + this.technique + ", "
@@ -667,19 +667,7 @@ public class PlayerBuilder {
      */
     public void fillAttributesFromDatabase(short playerId,
             DatabaseDirectConnection connection) {
-        /*
-         * Variables that connect to the database, retrieve the resultset and store 
-         * the sql statement
-         */
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
-
+       
         ResultSet resultSet;
         String sqlStatement = "SELECT * FROM player "
                 + "WHERE id = " + playerId;
@@ -732,7 +720,7 @@ public class PlayerBuilder {
             this.hookShot = resultSet.getShort("hookShot");
             this.inThePaint = resultSet.getShort("inThePaint");
             this.injuryTendency = resultSet.getShort("injuryTendency");
-            this.isPlayable = resultSet.getBoolean("isPlayable");
+            this.playable = resultSet.getBoolean("playable");
             this.jersey = resultSet.getShort("jersey");
             this.jump = resultSet.getShort("jump");
             this.lastName = resultSet.getString("lastName");
@@ -779,7 +767,8 @@ public class PlayerBuilder {
             this.turnaroundShot = resultSet.getShort("turnaroundShot");
             this.weight = resultSet.getShort("weight");
             this.workEthic = resultSet.getShort("workEthic");
-
+            this.favoriteCourtZone = resultSet.getShort("favoriteCourtZone");
+            
         } catch (SQLException ex) {
             Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }

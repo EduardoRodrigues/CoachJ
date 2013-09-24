@@ -177,3 +177,7 @@
     -fx-text-fill: #EE0000;
     -fx-alignment:center;
 }
+
+.player_on_the_court {
+    -fx-font: bold 13px 'Consolas';
+}

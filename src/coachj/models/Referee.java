@@ -2,13 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,8 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "referee")
@@ -81,7 +78,7 @@ public class Referee implements Serializable {
     @Basic(optional = false)
     @Column(name = "blockingFouls")
     private short blockingFouls;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referee")
+    @OneToMany(mappedBy = "referee")
     private Collection<Game> gameCollection;
     @JoinColumn(name = "country", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -237,5 +234,5 @@ public class Referee implements Serializable {
     public String toString() {
         return "coachj.models.Referee[ id=" + id + " ]";
     }
-
-} // end class Referee
+    
+}

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -24,8 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "general_manager_transaction")
@@ -35,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "GeneralManagerTransaction.findById", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.id = :id"),
     @NamedQuery(name = "GeneralManagerTransaction.findByType", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.type = :type"),
     @NamedQuery(name = "GeneralManagerTransaction.findByDate", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.date = :date"),
-    @NamedQuery(name = "GeneralManagerTransaction.findBySalary", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.salary = :salary")})
+    @NamedQuery(name = "GeneralManagerTransaction.findBySalary", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.salary = :salary"),
+    @NamedQuery(name = "GeneralManagerTransaction.findByContractLength", query = "SELECT g FROM GeneralManagerTransaction g WHERE g.contractLength = :contractLength")})
 public class GeneralManagerTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,12 +52,15 @@ public class GeneralManagerTransaction implements Serializable {
     @Basic(optional = false)
     @Column(name = "salary")
     private int salary;
-    @JoinColumn(name = "season", referencedColumnName = "year")
-    @ManyToOne(optional = false)
-    private Season season;
+    @Basic(optional = false)
+    @Column(name = "contractLength")
+    private short contractLength;
     @JoinColumn(name = "franchise", referencedColumnName = "id")
     @ManyToOne
     private Franchise franchise;
+    @JoinColumn(name = "season", referencedColumnName = "year")
+    @ManyToOne(optional = false)
+    private Season season;
     @JoinColumn(name = "generalManager", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private GeneralManager generalManager;
@@ -70,11 +72,12 @@ public class GeneralManagerTransaction implements Serializable {
         this.id = id;
     }
 
-    public GeneralManagerTransaction(Integer id, char type, Date date, int salary) {
+    public GeneralManagerTransaction(Integer id, char type, Date date, int salary, short contractLength) {
         this.id = id;
         this.type = type;
         this.date = date;
         this.salary = salary;
+        this.contractLength = contractLength;
     }
 
     public Integer getId() {
@@ -109,12 +112,12 @@ public class GeneralManagerTransaction implements Serializable {
         this.salary = salary;
     }
 
-    public Season getSeason() {
-        return season;
+    public short getContractLength() {
+        return contractLength;
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public void setContractLength(short contractLength) {
+        this.contractLength = contractLength;
     }
 
     public Franchise getFranchise() {
@@ -123,6 +126,14 @@ public class GeneralManagerTransaction implements Serializable {
 
     public void setFranchise(Franchise franchise) {
         this.franchise = franchise;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 
     public GeneralManager getGeneralManager() {
@@ -157,5 +168,5 @@ public class GeneralManagerTransaction implements Serializable {
     public String toString() {
         return "coachj.models.GeneralManagerTransaction[ id=" + id + " ]";
     }
-
-} // end class GeneralManagerTransaction
+    
+}

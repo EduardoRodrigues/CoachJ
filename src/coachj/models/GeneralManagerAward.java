@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -24,8 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "general_manager_award")
@@ -45,12 +43,12 @@ public class GeneralManagerAward implements Serializable {
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
-    @JoinColumn(name = "season", referencedColumnName = "year")
-    @ManyToOne(optional = false)
-    private Season season;
     @JoinColumn(name = "award", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Award award;
+    @JoinColumn(name = "season", referencedColumnName = "year")
+    @ManyToOne(optional = false)
+    private Season season;
     @JoinColumn(name = "generalManager", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private GeneralManager generalManager;
@@ -83,20 +81,20 @@ public class GeneralManagerAward implements Serializable {
         this.date = date;
     }
 
-    public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
-    }
-
     public Award getAward() {
         return award;
     }
 
     public void setAward(Award award) {
         this.award = award;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 
     public GeneralManager getGeneralManager() {
@@ -131,5 +129,5 @@ public class GeneralManagerAward implements Serializable {
     public String toString() {
         return "coachj.models.GeneralManagerAward[ id=" + id + " ]";
     }
-
-} // end class GeneralManagerAward
+    
+}

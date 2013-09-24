@@ -483,7 +483,7 @@ public class PreSeasonController implements Initializable {
     private void fillFreeAgentsTableView(DatabaseDirectConnection connection) {
 
         freeAgentsList = ListUtils.fillPlayerListFromSQL("SELECT id FROM player "
-                + "WHERE isActive =  false AND retired = false "
+                + "WHERE active =  false AND retired = false "
                 + "ORDER BY marketValue DESC", connection);
         freeAgentsTableView.setItems(freeAgentsList);
     }

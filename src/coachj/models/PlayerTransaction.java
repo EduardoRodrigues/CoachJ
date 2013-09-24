@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -24,8 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "player_transaction")
@@ -181,5 +179,5 @@ public class PlayerTransaction implements Serializable {
     public String toString() {
         return "coachj.models.PlayerTransaction[ id=" + id + " ]";
     }
-
-} // end class PlayerTransaction
+    
+}

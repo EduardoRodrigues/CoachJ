@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -28,8 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "game")
@@ -112,24 +110,24 @@ public class Game implements Serializable {
     @JoinColumn(name = "season", referencedColumnName = "year")
     @ManyToOne(optional = false)
     private Season season;
-    @JoinColumn(name = "arena", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Arena arena;
+    @JoinColumn(name = "referee", referencedColumnName = "id")
+    @ManyToOne
+    private Referee referee;
     @JoinColumn(name = "homeTeam", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Franchise homeTeam;
     @JoinColumn(name = "awayTeam", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Franchise awayTeam;
-    @JoinColumn(name = "referee", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Referee referee;
     @JoinColumn(name = "homeTeamCoach", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Coach homeTeamCoach;
     @JoinColumn(name = "awayTeamCoach", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Coach awayTeamCoach;
+    @JoinColumn(name = "arena", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Arena arena;
 
     public Game() {
     }
@@ -310,12 +308,12 @@ public class Game implements Serializable {
         this.season = season;
     }
 
-    public Arena getArena() {
-        return arena;
+    public Referee getReferee() {
+        return referee;
     }
 
-    public void setArena(Arena arena) {
-        this.arena = arena;
+    public void setReferee(Referee referee) {
+        this.referee = referee;
     }
 
     public Franchise getHomeTeam() {
@@ -334,14 +332,6 @@ public class Game implements Serializable {
         this.awayTeam = awayTeam;
     }
 
-    public Referee getReferee() {
-        return referee;
-    }
-
-    public void setReferee(Referee referee) {
-        this.referee = referee;
-    }
-
     public Coach getHomeTeamCoach() {
         return homeTeamCoach;
     }
@@ -356,6 +346,14 @@ public class Game implements Serializable {
 
     public void setAwayTeamCoach(Coach awayTeamCoach) {
         this.awayTeamCoach = awayTeamCoach;
+    }
+
+    public Arena getArena() {
+        return arena;
+    }
+
+    public void setArena(Arena arena) {
+        this.arena = arena;
     }
 
     @Override
@@ -382,5 +380,5 @@ public class Game implements Serializable {
     public String toString() {
         return "coachj.models.Game[ id=" + id + " ]";
     }
-
-} // end class Game
+    
+}

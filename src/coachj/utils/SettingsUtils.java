@@ -16,6 +16,7 @@
  * minimumSalary - lowest salary paid to players/coaches
  * currentDate - Season's current date
  * currentSeason - Current season
+ * ticketPrice - ticket's price
  */
 
 package coachj.utils;

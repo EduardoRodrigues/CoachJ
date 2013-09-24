@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package coachj.models;
 
 import java.io.Serializable;
@@ -26,8 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Eduardo M. Rodrigues
- * @version 1.0 /2012
+ * @author Eduardo
  */
 @Entity
 @Table(name = "general_manager")
@@ -119,6 +117,8 @@ public class GeneralManager implements Serializable {
     private Country country;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "generalManager")
     private Collection<GeneralManagerAward> generalManagerAwardCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "generalManager")
+    private Collection<FranchiseSeasonLog> franchiseSeasonLogCollection;
 
     public GeneralManager() {
     }
@@ -326,6 +326,15 @@ public class GeneralManager implements Serializable {
         this.generalManagerAwardCollection = generalManagerAwardCollection;
     }
 
+    @XmlTransient
+    public Collection<FranchiseSeasonLog> getFranchiseSeasonLogCollection() {
+        return franchiseSeasonLogCollection;
+    }
+
+    public void setFranchiseSeasonLogCollection(Collection<FranchiseSeasonLog> franchiseSeasonLogCollection) {
+        this.franchiseSeasonLogCollection = franchiseSeasonLogCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -350,5 +359,5 @@ public class GeneralManager implements Serializable {
     public String toString() {
         return "coachj.models.GeneralManager[ id=" + id + " ]";
     }
-
-} // end class GeneralManager
+    
+}
