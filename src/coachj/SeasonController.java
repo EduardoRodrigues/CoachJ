@@ -135,6 +135,17 @@ public class SeasonController implements Initializable {
         completeFranchiseNameLabel.setText(completeFranchiseName);
         seasonLabel.setText(resources.getString("ch_temporada") + " " + season);
         currentDate = ScheduleUtils.getNextScheduledDate(season, connection);
+        
+        /**
+         * If the current date retrieved from the schedule is different from that
+         * one stored in the preferences, it means one day have passed and the 
+         * players should be rested
+         */
+        if (!currentDate.equalsIgnoreCase(SettingsUtils.getSetting("currentDate", 
+                Calendar.getInstance().get(Calendar.YEAR) + "-02-01"))) {
+            connection.executeSQL("CALL restPlayers");
+        }
+        
         yesterday = DateUtils.calculateDate(currentDate, -1);
         SettingsUtils.setSetting("currentDate", currentDate);
         currentDateLabel.setText(currentDate);

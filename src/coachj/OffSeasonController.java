@@ -580,7 +580,7 @@ public class OffSeasonController implements Initializable {
             @Override
             protected Integer call() throws Exception {
                 int iterations;
-                int entitiesToCreate = 460;
+                int entitiesToCreate = 200;
                 /**
                  * Database connection
                  */

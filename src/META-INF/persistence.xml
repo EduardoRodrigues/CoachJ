@@ -67,6 +67,7 @@
     <class>coachj.models.PositionProfile_1</class>
     <class>coachj.models.GeneralManagerAward_1</class>
     <class>coachj.models.CourtSpot</class>
+    <class>coachj.models.FranchiseLog</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/coach_j?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="playmobil"/>

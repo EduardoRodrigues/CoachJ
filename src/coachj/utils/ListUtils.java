@@ -144,7 +144,7 @@ public class ListUtils {
             while (resultSet.next()) {
                 playerId = resultSet.getShort("id");
                 playerBuilder.fillAttributesFromDatabase(playerId, connection);
-                player = playerBuilder.generatePlayerEntity();
+                player = playerBuilder.buildPlayerEntity();
                 observableList.add(player);
             }
         } catch (SQLException ex) {

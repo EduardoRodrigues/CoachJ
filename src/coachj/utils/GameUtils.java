@@ -1,6 +1,10 @@
 package coachj.utils;
 
 import coachj.dao.DatabaseDirectConnection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utility class for games
@@ -11,17 +15,18 @@ import coachj.dao.DatabaseDirectConnection;
  */
 public class GameUtils {
 
+    /**
+     * Calculate the attendance for the given game
+     * 
+     * @param gameType Type of the game (O) off-season, (R) regular season, (P) playoffs
+     * @param awayTeam Away team's id
+     * @param homeTeam Home team's id
+     * @param arena Arena's id
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
     public static int calculateGameAttendance(String gameType, short awayTeam,
             short homeTeam, short arena, DatabaseDirectConnection connection) {
-
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
         /**
          * Retrieving necessary data to calculate attendance
          */
@@ -46,4 +51,38 @@ public class GameUtils {
 
         return attendance;
     }
+    
+    /**
+     * Returns the given game's score
+     * @param gameId Game's id
+     * @param perspectiveFromTeam Team whose score will be showed first
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static String getGameScore(int gameId, int perspectiveFromTeam, 
+            DatabaseDirectConnection connection) {
+        String gameScore = null;
+        ResultSet resultSet;
+        String sqlStatement = "SELECT awayTeam, awayScore,homeScore "
+                + " FROM game WHERE id = " + gameId;
+        
+        resultSet = connection.getResultSet(sqlStatement);
+        
+        try {
+            resultSet.first();
+            if (resultSet.getInt("awayTeam") == perspectiveFromTeam) {
+                gameScore = resultSet.getString("awayScore") + "-" 
+                        + resultSet.getString("homeScore");
+            } else {
+                gameScore = resultSet.getString("homeScore") + "-" 
+                        + resultSet.getString("awayScore");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(GameUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return gameScore;
+    }
+   
 } // end GameUtils

@@ -65,7 +65,7 @@ public class InGamePlayer {
 
         PlayerBuilder playerBuilder = new PlayerBuilder();
         playerBuilder.fillAttributesFromDatabase(id, connection);
-        this.baseAttributes = playerBuilder.generatePlayerEntity();
+        this.baseAttributes = playerBuilder.buildPlayerEntity();
         this.rosterPosition = this.baseAttributes.getRosterPosition();
         this.staminaLevel = this.baseAttributes.getStamina()
                 - this.baseAttributes.getAccumulatedFatigue();
@@ -111,6 +111,16 @@ public class InGamePlayer {
             System.out.println("Checked trailing team"); // delete
 
             /**
+             * Checking for intentional fouls at the end of the game.
+             */
+            if (game.getPeriod() > 3 && game.getTimeLeft() < 60
+                    && game.getBallPossession() == game.getLeadingTeam()
+                    && game.getGap() < (game.getTimeLeft() / 20 * 3)) {
+                playerDecision = "intentional foul";
+                return playerDecision;
+            }
+
+            /**
              * If the shotclock is about to expire, shoot
              */
             if (game.getShotClock() <= 3) {
@@ -140,13 +150,12 @@ public class InGamePlayer {
              * If the team is trailing by less than 9 points in fourth quarter
              * or overtime with too few time left, call a timeout if there's any
              * left
-             
-            if (teamIsTrailing && game.getPeriod() > 3 && game.getTimeLeft() < 60
-                    && team.getTimeoutsLeft() > 0 && game.getGap() < 10) {
-                playerDecision = "call timeout";
-                return playerDecision;
-            }*/
-
+             *
+             * if (teamIsTrailing && game.getPeriod() > 3 && game.getTimeLeft()
+             * < 60 && team.getTimeoutsLeft() > 0 && game.getGap() < 10) {
+             * playerDecision = "call timeout"; return playerDecision;
+            }
+             */
             /**
              * If the shotclock is dead and the team is trailing by 3 in fourth
              * quarter or overtime, take a quick three-pointer
@@ -386,7 +395,6 @@ public class InGamePlayer {
              * in the perimeter area
              */
             if (game.getThreePointerZone().contains(this.currentZoneLocation)) {
-
 
                 /**
                  * Player is an above-the-average outside shooter and has an
@@ -2103,7 +2111,7 @@ public class InGamePlayer {
     public void updatePersonalFouls() {
         this.personalFouls = (short) (this.personalFouls + 1);
     }
-    
+
     public void updateTechnicalFouls() {
         this.technicalFouls = (short) (this.technicalFouls + 1);
     }
@@ -2151,7 +2159,7 @@ public class InGamePlayer {
     public void updateBlockedShots() {
         this.blockedShots = (short) (this.blockedShots + 1);
     }
-    
+
     public void updateAssists() {
         this.assists = (short) (this.assists + 1);
     }
@@ -2333,7 +2341,7 @@ public class InGamePlayer {
     public void setEjected(boolean ejected) {
         this.ejected = ejected;
     }
-    
+
     public boolean isHasBall() {
         return hasBall;
     }
@@ -2481,5 +2489,5 @@ public class InGamePlayer {
 
     public void setTechnicalFouls(short technicalFouls) {
         this.technicalFouls = technicalFouls;
-    }  
+    }
 } // end class InGamePlayer

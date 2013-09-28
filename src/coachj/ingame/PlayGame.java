@@ -410,17 +410,6 @@ public class PlayGame {
         if (!this.isPaused()) {
 
             try {
-
-                /**
-                 * Checking for intentional fouls at the end of the game.
-                 */
-                if (this.period > 3 && this.timeLeft < 60
-                        && this.ballPossession == this.leadingTeam
-                        && this.gap < (this.timeLeft / 20 * 3)) {
-                    this.lastEvent = this.currentEvent;
-                    this.currentEvent = "intentional foul";            
-                }
-
                 System.out.println("Last event: " + lastEvent); // delete
                 System.out.println("Current event: " + currentEvent); // delete
                 System.out.println("Time left: " + timeLeft); // delete
@@ -950,6 +939,7 @@ public class PlayGame {
         activeOffensivePlayer.updatePersonalFouls();
         teams.get(ballPossession).updateTurnovers();
         teams.get(ballPossession).updateFouls();
+        teams.get(ballPossession).updateTotalFouls();
 
         /**
          * Switching possession
@@ -1006,6 +996,7 @@ public class PlayGame {
          */
         activeDefensivePlayer.updatePersonalFouls();
         teams.get(3 - ballPossession).updateFouls();
+        teams.get(3 - ballPossession).updateTotalFouls();
 
         /**
          * Creating play log and adding it to the observable list
@@ -1066,6 +1057,7 @@ public class PlayGame {
          */
         activeDefensivePlayer.updatePersonalFouls();
         teams.get(3 - ballPossession).updateFouls();
+        teams.get(3 - ballPossession).updateTotalFouls();
 
         /**
          * Creating play log and adding it to the observable list
@@ -1126,6 +1118,7 @@ public class PlayGame {
          */
         activeDefensivePlayer.updatePersonalFouls();
         teams.get(3 - ballPossession).updateFouls();
+        teams.get(3 - ballPossession).updateTotalFouls();
 
         System.out.println("Inside intentional foul");
         /**
@@ -1143,7 +1136,6 @@ public class PlayGame {
             /**
              * Updating events
              */
-            this.lastEvent = this.currentEvent;
             this.currentEvent = "fouled out";
 
             /**
@@ -1160,9 +1152,9 @@ public class PlayGame {
         /**
          * Updating events
          */
-        this.lastEvent = this.currentEvent;
+        this.lastEvent = "intentional foul";
 
-        if (this.teams.get(ballPossession).getFouls()
+        if (this.teams.get(3 - ballPossession).getFouls()
                 > GameParameters.COLLECTIVE_FOULS_LIMIT.getParameterValue()) {
             this.freeThrowsToShoot = 2;
             this.currentEvent = "free-throw";
@@ -1310,6 +1302,7 @@ public class PlayGame {
         activeOffensivePlayer.updateOffensiveMomentum(-3);
         activeOffensivePlayer.updateBlockedShots();
         teams.get(3 - ballPossession).updateBlocks();
+        teams.get(ballPossession).updateBlockedShots();
 
         /**
          * Elapsing time
@@ -2224,10 +2217,11 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
-
+       
         /**
          * Restoring the previous current event
          */
+        this.lastEvent= this.currentEvent;
         this.currentEvent = previousEvent;
     }
 
@@ -2840,17 +2834,18 @@ public class PlayGame {
 
         /**
          * Selecting the inbound pass zone.If the game is in the last 2:00 of
-         * the quarter, the ball is inbounded in the offensive halfcourt
+         * the quarter and a timeout was called, the ball is inbounded in the
+         * offensive halfcourt
          */
         int originalSpot;
         int destinationZone;
 
-        if (this.timeLeft > 120) {
-            originalSpot = 413;
-            destinationZone = 15;
-        } else {
+        if (this.timeLeft < 120 && this.lastEvent.equalsIgnoreCase("timeout")) {
             originalSpot = 106;
             destinationZone = MathUtils.generateRandomInt(1, 2);
+        } else {
+            originalSpot = 413;
+            destinationZone = 15;            
         }
 
         int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
@@ -3161,6 +3156,7 @@ public class PlayGame {
          */
         activeDefensivePlayer.updatePersonalFouls();
         teams.get(3 - ballPossession).updateFouls();
+        teams.get(3 - ballPossession).updateTotalFouls();
 
         /**
          * Creating play log and adding it to the observable list
@@ -3662,8 +3658,7 @@ public class PlayGame {
         if (this.shotClock <= 0) {
             this.shotClock = 0;
             this.lastEvent = this.currentEvent;
-            this.currentEvent = "shotclock violation";
-            return;
+            this.currentEvent = "shotclock violation";            
         }
     }
 
@@ -4040,7 +4035,7 @@ public class PlayGame {
     /**
      * Saves player logs and updates data
      */
-    public void processPlayerData() {
+    public void savePlayerData() {
         String sqlStatement;
 
         /**
@@ -4115,7 +4110,8 @@ public class PlayGame {
                         ? 1 : 0;
 
                 sqlStatement = "UPDATE player SET accumulatedFatigue = accumulatedFatigue + "
-                        + (currentPlayer.getPlayingTime() / 600) + ", happinessLevel = "
+                        + Math.max(currentPlayer.getPlayingTime() / 600 
+                        / currentPlayer.getBaseAttributes().getTirednessRate(), 1) + ", happinessLevel = "
                         + "happinessLevel + " + happinessLevelAdjust + ", "
                         + "regularSeasonExperience = regularSeasonExperience + "
                         + regularSeasonExperienceAdjust + ", playoffsExperience = "
@@ -4125,6 +4121,68 @@ public class PlayGame {
 
                 this.connection.executeSQL(sqlStatement);
             }
+        }
+    }
+
+    /**
+     * Saves team logs and updates data
+     */
+    public void saveTeamData() {
+        String sqlStatement;
+
+        /**
+         * Deleting previous logs from this game
+         */
+        sqlStatement = "DELETE FROM franchise_log WHERE game = " + this.gameId;
+        this.connection.executeSQL(sqlStatement);
+
+        /**
+         * Looping through the play log observable list to save each entry into
+         * database
+         */
+        for (int i = 1; i < 3; i++) {
+            Team currentTeam = this.teams.get(i);
+            int opponent = this.teams.get(3 - i).getId();
+            String homeRoad = i == 1 ? "R" : "H";
+            String result = this.teams.get(i).getScore()
+                    > this.teams.get(3 - i).getScore() ? "W" : "L";
+
+            /**
+             * Saving team logs for this game
+             */
+            sqlStatement = "INSERT INTO franchise_log (season, game, team, "
+                    + "opponent, gameType, gameDate, homeRoad, result, "
+                    + "points, fieldGoalsAttempted, "
+                    + "fieldGoalsMade, freeThrowsAttempted, freeThrowsMade, "
+                    + "threePointersAttempted, threePointersMade, assists, offensiveRebounds, "
+                    + "defensiveRebounds, blocks, blockedShots, steals, turnovers, "
+                    + "personalFouls, technicalFouls) VALUES ("
+                    + this.season + ", "
+                    + this.gameId + ", "
+                    + currentTeam.getId() + ", "
+                    + opponent + ", "
+                    + "'" + this.gameType + "', "
+                    + "'" + this.gameDate + "', "
+                    + "'" + homeRoad + "', "
+                    + "'" + result + "', "
+                    + currentTeam.getScore() + ", "
+                    + currentTeam.getFieldGoalsAttempted() + ", "
+                    + currentTeam.getFieldGoalsMade() + ", "
+                    + currentTeam.getFreeThrowsAttempted() + ", "
+                    + currentTeam.getFreeThrowsMade() + ", "
+                    + currentTeam.getThreePointersAttempted() + ", "
+                    + currentTeam.getThreePointersMade() + ", "
+                    + currentTeam.getAssists() + ", "
+                    + currentTeam.getOffensiveRebounds() + ", "
+                    + currentTeam.getDefensiveRebounds() + ", "
+                    + currentTeam.getBlocks() + ", "
+                    + currentTeam.getBlockedShots() + ", "
+                    + currentTeam.getSteals() + ", "
+                    + currentTeam.getTurnovers() + ", "
+                    + currentTeam.getTotalFouls() + ", "
+                    + currentTeam.getTechnicalFouls() + ")";
+
+            this.connection.executeSQL(sqlStatement);
         }
     }
 

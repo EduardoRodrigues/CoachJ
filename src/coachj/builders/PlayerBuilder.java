@@ -429,7 +429,7 @@ public class PlayerBuilder {
      *
      * @return
      */
-    public Player generatePlayerEntity() {
+    public Player buildPlayerEntity() {
 
         /**
          * Creating objects that are required to complete the operation

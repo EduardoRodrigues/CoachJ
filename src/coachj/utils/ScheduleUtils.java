@@ -1,9 +1,11 @@
 package coachj.utils;
 
+import coachj.builders.ScheduleGameBuilder;
 import coachj.dao.DatabaseDirectConnection;
-import coachj.structures.ScheduledGame;
+import coachj.structures.ScheduleGame;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -425,16 +427,7 @@ public class ScheduleUtils {
      * @return
      */
     private static String getRandomScheduleDate(short season,
-            DatabaseDirectConnection connection) {
-
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-            // // connection.open();
-        }
+            DatabaseDirectConnection connection) {        
 
         String randomScheduleDate = null;
         String sqlStatement = "SELECT date FROM game "
@@ -454,5 +447,43 @@ public class ScheduleUtils {
 
         return randomScheduleDate;
     }    
+
+    /**
+     * Returns a list with ScheduleGame objects containing the schedule for the
+     * given franchise in the given season
+     * 
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static ArrayList<ScheduleGame> getFranchiseSchedule(short franchiseId,
+            int season, DatabaseDirectConnection connection) {
+        
+        ArrayList<ScheduleGame> schedule = new ArrayList<>();
+        ScheduleGame game;
+        ResultSet resultSet;
+        int gameId;
+        String sqlStatement;
+        
+        sqlStatement = "SELECT id FROM game WHERE (homeTeam = " + franchiseId 
+                + " OR awayTeam = " + franchiseId + ") AND season = " + season
+                + " ORDER BY date";
+        
+        resultSet = connection.getResultSet(sqlStatement);
+        
+        try {
+            while (resultSet.next()) {
+                gameId = resultSet.getInt("id");
+                game = ScheduleGameBuilder.buildScheduleGame(gameId, franchiseId, connection);
+                
+                schedule.add(game);                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return schedule;
+    }
     
 } // end class ScheduleUtils

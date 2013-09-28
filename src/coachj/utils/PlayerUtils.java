@@ -51,7 +51,66 @@ public class PlayerUtils {
 
         return playerCompleteName;
     }
+    
+    /**
+     * Returns the player's jersey
+     *
+     * @param playerId Player's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getPlayerJersey(int playerId,
+            DatabaseDirectConnection connection) {
 
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT jersey FROM player "
+                + "WHERE id = " + playerId;
+        int playerJersey = 0;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            playerJersey = resultSet.getInt("jersey");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return playerJersey;
+    }
+
+    /**
+     * Returns the player's position
+     *
+     * @param playerId Player's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getPlayerPosition(int playerId,
+            DatabaseDirectConnection connection) {
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT position FROM player "
+                + "WHERE id = " + playerId;
+        String position = null;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            position = resultSet.getString("position");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return position;
+    }
+    
     /**
      * Returns the player's franchise id
      *

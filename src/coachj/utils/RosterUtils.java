@@ -1,10 +1,11 @@
 package coachj.utils;
 
 import coachj.builders.PlayerBuilder;
+import coachj.builders.PlayerAveragesBuilder;
 import coachj.dao.DatabaseDirectConnection;
-import coachj.ingame.InGamePlayer;
 import coachj.ingame.Team;
 import coachj.models.Player;
+import coachj.structures.PlayerAverages;
 import coachj.structures.PlayerTransactionRecord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -103,7 +104,7 @@ public class RosterUtils {
 
         try {
             /* player native to that position */
-            sqlStatement = "SELECT id FROM player WHERE active = true AND "
+            sqlStatement = "SELECT id FROM player WHERE active = 1 AND "
                     + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
                     + "position LIKE '" + playerPosition + "' AND playable = 1 "
                     + "ORDER BY playable DESC, " + orderingString + " LIMIT 0, 1";
@@ -113,7 +114,7 @@ public class RosterUtils {
                 playerId = resultSet.getShort("id");
             } else {
                 /* player that plays second position */
-                sqlStatement = "SELECT id FROM player WHERE active = true AND "
+                sqlStatement = "SELECT id FROM player WHERE active = 1 AND "
                         + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
                         + "position2 LIKE '" + playerPosition + "' AND playable = 1 "
                         + "ORDER BY playable DESC, " + orderingString + " LIMIT 0, 1";
@@ -123,7 +124,7 @@ public class RosterUtils {
                     playerId = resultSet.getShort("id");
                 } else {
                     /* whichever player able to play */
-                    sqlStatement = "SELECT id FROM player WHERE active = true AND "
+                    sqlStatement = "SELECT id FROM player WHERE active = 1 AND "
                             + "franchise = " + franchiseId + " AND rosterPosition = 0 AND "
                             + "playable = 1 ORDER BY playable DESC, " + orderingString
                             + " LIMIT 0, 1";
@@ -224,7 +225,7 @@ public class RosterUtils {
     /**
      * Return the active roster for the given franchise
      *
-     * @param franchiseId
+     * @param franchiseId Franchise's id
      * @param connection Database connection used to retrieve data
      */
     public static ArrayList<Player> getFranchiseRoster(short franchiseId,
@@ -250,7 +251,7 @@ public class RosterUtils {
             while (resultSet.next()) {
                 playerId = resultSet.getShort("id");
                 playerBuilder.fillAttributesFromDatabase(playerId, connection);
-                player = playerBuilder.generatePlayerEntity();
+                player = playerBuilder.buildPlayerEntity();
                 
                franchiseRoster.add(player);               
             }
@@ -259,5 +260,46 @@ public class RosterUtils {
         }
         
         return franchiseRoster;
+    }
+    
+    /**
+     * Returns the stats for the player of the given franchise
+     * 
+     * @param franchiseId Franchise's id
+     * @param season Season to retrieve stats from, if it's null, the stats for
+     * all the player's career are retrieved
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static ArrayList<PlayerAverages> getFranchiseRosterStats(short franchiseId,
+            int season, DatabaseDirectConnection connection) {
+        ArrayList<PlayerAverages> franchiseRosterStats = new ArrayList<>();
+        
+         /**
+         * Reordering roster
+         */
+        RosterUtils.reorderRoster(franchiseId, connection);
+
+        /**
+         * Retrieving player data
+         */
+        String sqlStatement = "SELECT id FROM player WHERE franchise = " + franchiseId
+                + " AND active = true ORDER BY rosterPosition";
+        ResultSet resultSet = connection.getResultSet(sqlStatement);
+        short playerId;        
+        PlayerAverages playerStats;        
+
+        try {
+            while (resultSet.next()) {
+                playerId = resultSet.getShort("id");
+                playerStats = PlayerAveragesBuilder.buildPlayerAverages(playerId, season, connection);
+                
+               franchiseRosterStats.add(playerStats);               
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Team.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return franchiseRosterStats;
     }
 } // end RosterUtils

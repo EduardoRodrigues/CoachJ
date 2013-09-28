@@ -602,7 +602,7 @@ public class GameController implements Initializable {
             }
         });
 
-        awayTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
+        /*awayTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
@@ -639,7 +639,7 @@ public class GameController implements Initializable {
                     return new SimpleStringProperty("00");
                 }
             }
-        });
+        });*/
 
         //awayTeamBoxScoreTableView.setItems(awayTeamBoxScoreList);
 
@@ -859,7 +859,7 @@ public class GameController implements Initializable {
             }
         });
 
-        homeTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
+        /*homeTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
@@ -896,7 +896,7 @@ public class GameController implements Initializable {
                     return new SimpleStringProperty("00");
                 }
             }
-        });
+        });*/
 
         //homeTeamBoxScoreTableView.setItems(homeTeamBoxScoreList);
     }
@@ -1065,7 +1065,7 @@ public class GameController implements Initializable {
     @FXML
     private void saveGame() {
         savingInformationLabel.setVisible(true);
-        savingInformationLabel.setText(resources.getString("ch_salvando_lances"));
+        savingInformationLabel.setText(resources.getString("ch_salvando_jogo"));
         saveGameButton.setDisable(true);
         pauseGameButton.setDisable(true);
         mainContent.setCursor(Cursor.WAIT);
@@ -1156,7 +1156,8 @@ public class GameController implements Initializable {
             protected Void call() throws Exception {
                 System.out.println("Starting save game task"); // delete
                 game.savePlayLogs();
-                game.processPlayerData();
+                game.savePlayerData();
+                game.saveTeamData();
                 game.save();
                 return null;
             }

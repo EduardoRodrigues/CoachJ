@@ -70,6 +70,4 @@ public class IdDescriptionListItem {
     public String toString() {
         return description;
     }   
-    
-    
 } // end IdDescriptionListItem

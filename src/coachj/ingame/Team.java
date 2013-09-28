@@ -30,6 +30,9 @@ public class Team {
     private short timeoutsLeft = 3;
     private int lastTimeoutCall;
     private short fouls = 0;
+    private short technicalFouls = 0;
+    private short totalFouls = 0;
+    private short totalPersonalFouls = 0;
     private short fieldGoalsAttempted = 0;
     private short fieldGoalsMade = 0;
     private short freeThrowsAttempted = 0;
@@ -40,6 +43,7 @@ public class Team {
     private short defensiveRebounds = 0;
     private short steals = 0;
     private short blocks = 0;
+    private short blockedShots = 0;
     private short assists = 0;
     private short turnovers = 0;
     private short currentRun = 0;
@@ -606,6 +610,10 @@ public class Team {
     public void updateFouls() {
         this.fouls = (short) (this.fouls + 1);
     }
+    
+     public void updateTotalFouls() {
+        this.totalFouls = (short) (this.totalFouls + 1);
+    }
 
     public void updateFieldGoalsMade() {
         this.fieldGoalsMade = (short) (this.fieldGoalsMade + 1);
@@ -645,6 +653,10 @@ public class Team {
 
     public void updateBlocks() {
         this.blocks = (short) (this.blocks + 1);
+    }
+
+    public void updateBlockedShots() {
+        this.blockedShots = (short) (this.blockedShots + 1);
     }
 
     public void updateAssists() {
@@ -894,5 +906,37 @@ public class Team {
 
     public void setConnection(DatabaseDirectConnection connection) {
         this.connection = connection;
+    }
+
+    public short getTechnicalFouls() {
+        return technicalFouls;
+    }
+
+    public void setTechnicalFouls(short technicalFouls) {
+        this.technicalFouls = technicalFouls;
+    }
+
+    public short getBlockedShots() {
+        return blockedShots;
+    }
+
+    public void setBlockedShots(short blockedShots) {
+        this.blockedShots = blockedShots;
+    }    
+
+    public short getTotalFouls() {
+        return totalFouls;
+    }
+
+    public void setTotalFouls(short totalFouls) {
+        this.totalFouls = totalFouls;
+    }
+
+    public short getTotalPersonalFouls() {
+        return totalPersonalFouls;
+    }
+
+    public void setTotalPersonalFouls(short totalPersonalFouls) {
+        this.totalPersonalFouls = totalPersonalFouls;
     }
 } // end class Team

@@ -3,7 +3,9 @@
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -18,11 +20,30 @@
     </ImageView>
     <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
       <tabs>
+        <Tab text="%ch_agenda_jogos">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <TableView fx:id="scheduleTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+                  <columns>
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_data" fx:id="scheduleDateTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_oponente" fx:id="scheduleOpponentTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_resultado" fx:id="scheduleResultTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_pontos" fx:id="scheduleTopScorerTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_rebotes" fx:id="scheduleTopRebounderTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_assistencias" fx:id="scheduleTopAssistantTableColumn" />
+                  </columns>
+                </TableView>
+                <Label styleClass="h2" text="%ch_agenda_jogos" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
         <Tab text="%ch_atletas">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
               <children>
-                <TableView fx:id="playersTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                <TableView fx:id="playersTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
                   <columns>
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_numero" fx:id="playerJerseyTableColumn" />
                     <TableColumn minWidth="240.0" prefWidth="240.0" text="%ch_atleta" fx:id="playerCompleteNameTableColumn" />
@@ -33,6 +54,7 @@
                     <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_valor_mercado" fx:id="playerMarketValueTableColumn" />
                   </columns>
                 </TableView>
+                <Label styleClass="h2" text="%ch_atletas" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
               </children>
             </AnchorPane>
           </content>
@@ -41,12 +63,137 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
               <children>
-                <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                <TableView fx:id="seasonStatsTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
                   <columns>
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Column X" />
-                    <TableColumn minWidth="240.0" prefWidth="240.0" text="Column X" />
+                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_numero" fx:id="seasonStatsJerseyTableColumn" />
+                    <TableColumn minWidth="240.0" prefWidth="240.0" text="%ch_atleta" fx:id="seasonStatsCompleteNameTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_mpg" fx:id="seasonStatsMinutesPerGameTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ppg" fx:id="seasonStatsPointsPerGameTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_fgp" fx:id="seasonStatsFieldGoalPercentageTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_ftp" fx:id="seasonStatsFreeThrowPercentageTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_tpp" fx:id="seasonStatsThreePointerPercentageTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_trpg" fx:id="seasonStatsReboundsPerGameTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_apg" fx:id="seasonStatsAssistsPerGameTableColumn" />
                   </columns>
                 </TableView>
+                <Label styleClass="h2" text="%ch_atletas_estatisticas" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_estatisticas_jogo_a_jogo">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <Label styleClass="h2" text="%ch_estatisticas_jogo_a_jogo" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                <Label styleClass="boldLabel" text="%ch_escolha_atleta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="playerGameByGameStatsComboBox" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <TableView fx:id="playerGameByGameStatsTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0">
+                  <columns>
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_data" fx:id="gameDateTableColumn" />
+                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_oponente" fx:id="gameOpponentTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_resultado" fx:id="gameResultTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_minutos" fx:id="gameMinutesTableColumn" />
+                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_pontos" fx:id="gamePointsTableColumn" />
+                    <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_fg" fx:id="gameFieldGoalsTableColumn" />
+                    <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_ft" fx:id="gameFreeThrowsTableColumn" />
+                    <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_tp" fx:id="gameThreePointersTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_or" fx:id="gameOffensiveReboundsTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_dr" fx:id="gameDefensiveReboundsTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_tr" fx:id="gameTotalReboundsTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_ass" fx:id="gameAssistsTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_stl" fx:id="gameStealsTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_blk" fx:id="gameBlocksTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_to" fx:id="gameTurnoversTableColumn" />
+                    <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_pf" fx:id="gamePersonalFoulsTableColumn" />
+                  </columns>
+                </TableView>
+                <Button mnemonicParsing="false" onMouseClicked="#fillPlayerGameByGameStatsTableView" text="%ch_ver_estatisticas" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="70.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_grafico_desempenho_temporada">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <Label styleClass="h2" text="%ch_grafico_desempenho_temporada" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                <Label styleClass="boldLabel" text="%ch_escolha_atleta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="playerSeasonPerformancePlayersComboBox" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Label styleClass="boldLabel" text="%ch_escolha_estatística" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="playerSeasonPerformanceStatsComboBox" prefWidth="250.0" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Button mnemonicParsing="false" onMouseClicked="#generateSeasonPerformanceChart" text="%ch_gerar_gráfico" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="70.0" />
+                <LineChart fx:id="playerSeasonPerformanceStatsLineChart" title="%ch_grafico_desempenho_temporada" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0">
+                  <xAxis>
+                    <CategoryAxis fx:id="gameAxis" side="BOTTOM" />
+                  </xAxis>
+                  <yAxis>
+                    <NumberAxis fx:id="statAxis" side="LEFT" />
+                  </yAxis>
+                </LineChart>
+                <Button mnemonicParsing="false" onMouseClicked="#resetSeasonPerformanceChart" text="%ch_resetar_gráfico" AnchorPane.leftAnchor="700.0" AnchorPane.topAnchor="70.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="%ch_grafico_comparativo">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <Label styleClass="h2" text="%ch_grafico_comparativo" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                <Label styleClass="boldLabel" text="%ch_escolha_atleta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="playerComparisonComboBox" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Button mnemonicParsing="false" onMouseClicked="#generateComparisonChart" text="%ch_gerar_gráfico" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="70.0" />
+                <BarChart fx:id="playerComparisonBarChart" legendSide="RIGHT" title="%ch_grafico_comparativo" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0">
+                  <xAxis>
+                    <CategoryAxis fx:id="comparisonCategoryAxis" side="BOTTOM" />
+                  </xAxis>
+                  <yAxis>
+                    <NumberAxis fx:id="comparisonStatAxis" side="LEFT" />
+                  </yAxis>
+                </BarChart>
+                <ComboBox fx:id="statComparisonComboBox" prefWidth="250.0" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Label styleClass="boldLabel" text="%ch_escolha_estatística" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="50.0" />
               </children>
             </AnchorPane>
           </content>

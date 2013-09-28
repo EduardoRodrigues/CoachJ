@@ -57,7 +57,37 @@ public class FranchiseUtils {
 
         return franchiseCompleteName;
     }
-    
+
+    /**
+     * Returns the city where the franchise is located
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getFranchiseCity(int franchiseId,
+            DatabaseDirectConnection connection) {
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT c.name AS city FROM franchise f "
+                + "INNER JOIN city c ON f.city = c.id "
+                + "WHERE f.id = " + franchiseId;
+        String franchiseCity = null;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            franchiseCity = resultSet.getString("city");
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseCity;
+    }
+
     /**
      * Returns the franchise's abbreviature
      *
@@ -69,7 +99,7 @@ public class FranchiseUtils {
             DatabaseDirectConnection connection) {
 
         ResultSet resultSet;
-        String sqlStatement = "SELECT abbreviature FROM franchise "               
+        String sqlStatement = "SELECT abbreviature FROM franchise "
                 + "WHERE id = " + franchiseId;
         String franchiseAbbreviature = null;
 
@@ -705,10 +735,10 @@ public class FranchiseUtils {
      */
     public static String getFranchiseFewestPosition(short franchiseId,
             DatabaseDirectConnection connection) {
-        
+
         String franchiseFewestPosition = "SF";
-        String currentPosition;        
-        int franchiseActivePlayers = FranchiseUtils.getActivePlayers(franchiseId, 
+        String currentPosition;
+        int franchiseActivePlayers = FranchiseUtils.getActivePlayers(franchiseId,
                 connection);
         int lowerBound = franchiseActivePlayers / 5;
         int currentPositionCount;
@@ -724,22 +754,22 @@ public class FranchiseUtils {
         positionsArrayList.add("C");
 
         Collections.shuffle(positionsArrayList);
-        
+
         /**
          * Iterating through the arraylist until finding a position that has the
          * lowest number of players
          */
         for (int i = 0; i < positionsArrayList.size(); i++) {
             currentPosition = positionsArrayList.get(i);
-            currentPositionCount = getFranchisePositionPlayersCount(franchiseId, 
+            currentPositionCount = getFranchisePositionPlayersCount(franchiseId,
                     currentPosition, connection);
-            
+
             if (currentPositionCount == lowerBound) {
                 franchiseFewestPosition = currentPosition;
                 break;
-            }            
+            }
         }
-        
+
         return franchiseFewestPosition;
     }
 
@@ -772,5 +802,116 @@ public class FranchiseUtils {
         }
 
         return franchisePositionPlayersCount;
+    }
+
+    /**
+     * Returns the top rebounder for a team in a given game
+     * 
+     * @param franchiseId Franchise's id
+     * @param GameId Game's id
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static String getGameTopRebounder(int franchiseId, int GameId,
+            DatabaseDirectConnection connection) {
+
+        String gameTopRebounder = null;
+        String playerName;
+        short rebounds;
+        ResultSet resultSet;
+        String sqlStatement;
+
+        try {
+            sqlStatement = "SELECT player, MAX(defensiveRebounds + offensiveRebounds) "
+                    + "AS rebounds FROM player_log "
+                    + "WHERE team = " + franchiseId
+                    + " AND game = " + GameId + " GROUP BY player "
+                    + "ORDER BY rebounds DESC, playingTime LIMIT 1";
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+
+            playerName = PlayerUtils.getPlayerCompleteName(resultSet.getInt("player"),
+                    connection);
+            rebounds = resultSet.getShort("rebounds");
+            gameTopRebounder = playerName + " (" + rebounds + ")";
+
+        } catch (SQLException ex) {
+            Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return gameTopRebounder;
+    }
+    
+    /**
+     * Returns the top scorer for a team in a given game
+     * 
+     * @param franchiseId Franchise's id
+     * @param GameId Game's id
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static String getGameTopScorer(int franchiseId, int GameId,
+            DatabaseDirectConnection connection) {
+
+        String gameTopScorer = null;
+        String playerName;
+        short points;
+        ResultSet resultSet;
+        String sqlStatement;
+
+        try {
+            sqlStatement = "SELECT player, MAX(points) "
+                    + "AS points FROM player_log "
+                    + "WHERE team = " + franchiseId
+                    + " AND game = " + GameId + " GROUP BY player "
+                    + "ORDER BY points DESC, playingTime LIMIT 1";
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+
+            playerName = PlayerUtils.getPlayerCompleteName(resultSet.getInt("player"),
+                    connection);
+            points = resultSet.getShort("points");
+            gameTopScorer = playerName + " (" + points + ")";
+
+        } catch (SQLException ex) {
+            Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return gameTopScorer;
+    }
+    
+    /**
+     * Returns the top assistant for a team in a given game
+     * 
+     * @param franchiseId Franchise's id
+     * @param GameId Game's id
+     * @param connection Database connection used to retrieve data
+     * @return 
+     */
+    public static String getGameTopAssistant(int franchiseId, int GameId,
+            DatabaseDirectConnection connection) {
+
+        String gameTopAssistant = null;
+        String playerName;
+        short assists;
+        ResultSet resultSet;
+        String sqlStatement;
+
+        try {
+            sqlStatement = "SELECT player, MAX(assists) "
+                    + "AS assists FROM player_log "
+                    + "WHERE team = " + franchiseId
+                    + " AND game = " + GameId + " GROUP BY player "
+                    + "ORDER BY assists DESC, playingTime LIMIT 1";
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+
+            playerName = PlayerUtils.getPlayerCompleteName(resultSet.getInt("player"),
+                    connection);
+            assists = resultSet.getShort("assists");
+            gameTopAssistant = playerName + " (" + assists + ")";
+
+        } catch (SQLException ex) {
+            Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return gameTopAssistant;
     }
 } // end FranchiseUtils

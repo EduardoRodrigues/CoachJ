@@ -141,7 +141,7 @@
                 <TableView fx:id="awayTeamBoxScoreTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
                   <columns>
                     <TableColumn editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" text="%ch_numero" fx:id="awayTeamPlayerJerseyTableColumn" />
-                    <TableColumn maxWidth="500.0" minWidth="75.0" prefWidth="200.0" text="%ch_atleta" fx:id="awayTeamPlayerCompleteNameTableColumn" />
+                    <TableColumn maxWidth="500.0" minWidth="200.0" prefWidth="200.0" text="%ch_atleta" fx:id="awayTeamPlayerCompleteNameTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_min" fx:id="awayTeamPlayerMinutesTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_pts" fx:id="awayTeamPlayerPointsTableColumn" />
                     <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_fg" fx:id="awayTeamPlayerFieldGoalsTableColumn" />
@@ -156,9 +156,6 @@
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_to" fx:id="awayTeamPlayerTurnoversTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_pf" fx:id="awayTeamPlayerPersonalFoulsTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_stamina" fx:id="awayTeamPlayerStaminaTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Loc" fx:id="awayTeamPlayerCurrentLocationTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="OFF" fx:id="awayTeamPlayerOffensiveMomentumTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="DEF" fx:id="awayTeamPlayerDefensiveMomentumTableColumn" />
                   </columns>
                 </TableView>
                 <Label fx:id="awayTeamCompleteNameLabel" styleClass="h2" text="------" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0" />
@@ -173,7 +170,7 @@
                 <TableView fx:id="homeTeamBoxScoreTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
                   <columns>
                     <TableColumn editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" text="%ch_numero" fx:id="homeTeamPlayerJerseyTableColumn" />
-                    <TableColumn maxWidth="500.0" minWidth="75.0" prefWidth="200.0" text="%ch_atleta" fx:id="homeTeamPlayerCompleteNameTableColumn" />
+                    <TableColumn maxWidth="500.0" minWidth="240.0" prefWidth="240.0" text="%ch_atleta" fx:id="homeTeamPlayerCompleteNameTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_min" fx:id="homeTeamPlayerMinutesTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_pts" fx:id="homeTeamPlayerPointsTableColumn" />
                     <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_fg" fx:id="homeTeamPlayerFieldGoalsTableColumn" />
@@ -188,9 +185,6 @@
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_to" fx:id="homeTeamPlayerTurnoversTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_pf" fx:id="homeTeamPlayerPersonalFoulsTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_stamina" fx:id="homeTeamPlayerStaminaTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Loc" fx:id="homeTeamPlayerCurrentLocationTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="OFF" fx:id="homeTeamPlayerOffensiveMomentumTableColumn" />
-                    <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="DEF" fx:id="homeTeamPlayerDefensiveMomentumTableColumn" />
                   </columns>
                 </TableView>
                 <Label fx:id="homeTeamCompleteNameLabel" styleClass="h2" text="-----" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0" />
@@ -206,7 +200,7 @@
     <Label fx:id="lastScoringPlayLabel" text="-----" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="lastScorerStatsLineLabel" text="-----" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="savingInformationLabel" styleClass="boldLabel" text="%ch_salvando_jogo" visible="false" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="10.0" />
-    <Button fx:id="saveGameButton" mnemonicParsing="false" text="%ch_salvar_partida" visible="false" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="160.0" />
+    <Button fx:id="saveGameButton" mnemonicParsing="false" onMouseClicked="#saveGame" text="%ch_salvar_partida" visible="false" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="160.0" />
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />
