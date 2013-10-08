@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package coachj;
 
 import coachj.dao.DatabaseDirectConnection;
@@ -166,6 +162,42 @@ public class TeamCentralController implements Initializable {
     private ComboBox playerComparisonComboBox;
     @FXML
     private ComboBox statComparisonComboBox;
+    @FXML
+    private ComboBox playerShootingChartComboBox;
+    @FXML
+    private ComboBox gameShootingChartComboBox;
+    @FXML
+    private Label shootingChartZone1Label;
+    @FXML
+    private Label shootingChartZone2Label;
+    @FXML
+    private Label shootingChartZone3Label;
+    @FXML
+    private Label shootingChartZone4Label;
+    @FXML
+    private Label shootingChartZone5Label;
+    @FXML
+    private Label shootingChartZone6Label;
+    @FXML
+    private Label shootingChartZone7Label;
+    @FXML
+    private Label shootingChartZone8Label;
+    @FXML
+    private Label shootingChartZone9Label;
+    @FXML
+    private Label shootingChartZone10Label;
+    @FXML
+    private Label shootingChartZone11Label;
+    @FXML
+    private Label shootingChartZone12Label;
+    @FXML
+    private Label shootingChartZone13Label;
+    @FXML
+    private Label shootingChartZone14Label;
+    @FXML
+    private Label shootingChartZone15Label;
+    @FXML
+    private ComboBox franchiseSelectComboBox;
     /**
      * Keeps a reference to the application's thread
      */
@@ -191,12 +223,16 @@ public class TeamCentralController implements Initializable {
             .observableArrayList();
     private ObservableList<IdDescriptionListItem> playersObservableList = FXCollections
             .observableArrayList();
+    private ObservableList<IdDescriptionListItem> franchisesObservableList = FXCollections
+            .observableArrayList();
+    private ObservableList<ScheduleGame> gamesObservableList = FXCollections
+            .observableArrayList();
     private ObservableList<PlayerGameStats> playerGameByGameStatsList = FXCollections
             .observableArrayList();
     /**
      * Auxiliary fields
      */
-    private short userFranchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise",
+    private short franchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise",
             "1"));
     private short season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
             String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
@@ -218,52 +254,24 @@ public class TeamCentralController implements Initializable {
         this.resources = rb;
 
         /**
-         * Retrieving auxiliary values
-         */
-        String completeFranchiseName = FranchiseUtils.getFranchiseCompleteName(userFranchiseId,
-                connection);
-        completeFranchiseNameLabel.setText(completeFranchiseName);
-
-        /**
-         * Filling up observable list and binding them to the tableviews and
-         * comboboxes
-         */
-        rosterList.setAll(RosterUtils.getFranchiseRoster(userFranchiseId, connection));
-        seasonStatsList.setAll(RosterUtils.getFranchiseRosterStats(userFranchiseId,
-                season, connection));
-        scheduleList.setAll(ScheduleUtils.getFranchiseSchedule(userFranchiseId,
-                season, connection));
-        statsList.setAll(StatsUtils.getStatsDescriptorsList(rb));
-        playersObservableList.setAll(ListUtils.fillIdDescriptionListFromSQL(
-                "SELECT id, CONCAT(position, CONCAT(' ' ,CONCAT(firstName, "
-                + "CONCAT(' ', lastName)))) AS description "
-                + "FROM player "
-                + "WHERE active = true AND franchise = " + userFranchiseId
-                + " ORDER BY rosterPosition", connection));
-
-        bindRosterTableView();
-        bindRosterStatsTableView();
-        bindScheduleTableView();
-        bindPlayerGameByGameStatsTableView();
-        playerSeasonPerformanceStatsComboBox.setItems(statsList);
-        statComparisonComboBox.setItems(statsList);
-        playerSeasonPerformancePlayersComboBox.setItems(playersObservableList);
-        playerGameByGameStatsComboBox.setItems(playersObservableList);
-        playerComparisonComboBox.setItems(playersObservableList);
-
-        /**
-         * Setting default choices in the comboboxes
-         */
-        playerSeasonPerformancePlayersComboBox.getSelectionModel().selectFirst();
-        playerSeasonPerformanceStatsComboBox.getSelectionModel().selectFirst();
-        playerGameByGameStatsComboBox.getSelectionModel().selectFirst();
-        playerComparisonComboBox.getSelectionModel().selectFirst();
-        statComparisonComboBox.getSelectionModel().selectFirst();
-
-        /**
          * Allowing tableViews to resize and fit properly
          */
         playersTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        /**
+         * Filling up observables lists that are commom to all franchises
+         */
+         statsList.setAll(StatsUtils.getStatsDescriptorsList(resources));
+         franchisesObservableList = ListUtils.fillIdDescriptionListFromSQL("SELECT f.id, CONCAT(c.name, "
+                + "CONCAT(' ', f.team)) AS description "
+                + "FROM franchise f "
+                + "INNER JOIN city c ON f.city = c.id "
+                + "ORDER BY c.name", connection);
+         franchiseSelectComboBox.setItems(franchisesObservableList);
+        /**
+         * Updating controls
+         */
+        updateControls();
     }
 
     /**
@@ -389,7 +397,6 @@ public class TeamCentralController implements Initializable {
             SceneUtils.loadScene(this.application, SeasonController.class.getClass(),
                     "Playoffs.fxml");
         }
-
     }
 
     /**
@@ -885,13 +892,13 @@ public class TeamCentralController implements Initializable {
 
         double playerAverage = StatsUtils.getPlayerAverage(playerId,
                 season, statSqlEquation, connection);
-        double teamLeaderAverage = StatsUtils.getTeamLeaderAverage(userFranchiseId,
+        double teamLeaderAverage = StatsUtils.getTeamLeaderAverage(franchiseId,
                 season, statSqlEquation, connection);
         double leagueLeaderAverage = StatsUtils.getLeagueLeaderAverage(season,
                 statSqlEquation, connection);
         double leagueAverage = StatsUtils.getLeagueAverage(season,
                 statSqlEquation, connection);
-        double positionAverage = StatsUtils.getPositionAverage(playerPosition, 
+        double positionAverage = StatsUtils.getPositionAverage(playerPosition,
                 season, statSqlEquation, connection);
 
         XYChart.Series playerAverageSeries = new XYChart.Series();
@@ -905,15 +912,15 @@ public class TeamCentralController implements Initializable {
 
         teamLeaderAverageSeries.setName(resources.getString("ch_lider_equipe"));
         teamLeaderAverageSeries.getData().add(new XYChart.Data("", teamLeaderAverage));
-        
+
         leagueLeaderAverageSeries.setName(resources.getString("ch_lider_liga"));
         leagueLeaderAverageSeries.getData().add(new XYChart.Data("",
                 leagueLeaderAverage));
-        
+
         leagueAverageSeries.setName(resources.getString("ch_media_liga"));
         leagueAverageSeries.getData().add(new XYChart.Data("",
                 leagueAverage));
-        
+
         positionAverageSeries.setName(resources.getString("ch_media_posicao"));
         positionAverageSeries.getData().add(new XYChart.Data("",
                 positionAverage));
@@ -925,5 +932,126 @@ public class TeamCentralController implements Initializable {
         playerComparisonBarChart.getData().add(leagueLeaderAverageSeries);
         playerComparisonBarChart.getData().add(leagueAverageSeries);
         playerComparisonBarChart.getData().add(positionAverageSeries);
+    }
+
+    @FXML
+    private void generateShootingMap() {
+        /**
+         * Creating necessary objects and retrieving selected items
+         */
+        IdDescriptionListItem selectedPlayer = (IdDescriptionListItem) playerShootingChartComboBox
+                .getSelectionModel().getSelectedItem();
+        int playerId = selectedPlayer.getId();
+        String gameId;
+        String[] shootingData = new String[15];
+
+        /**
+         * Checking if there's a selected game in the combobox, if none, it
+         * means the stats for the whole season will be displayed
+         */
+        if (gameShootingChartComboBox.getSelectionModel().getSelectedIndex() == -1) {
+            gameId = "%";
+        } else {
+            ScheduleGame selectedGame = (ScheduleGame) gameShootingChartComboBox.getSelectionModel()
+                    .getSelectedItem();
+            gameId = String.valueOf(selectedGame.getId());
+        }
+
+        for (int i = 1; i < 16; i++) {
+            shootingData[i - 1] = StatsUtils.getPlayerGameZoneShootingData(
+                    playerId, season, gameId, i, connection);
+        }
+
+        shootingChartZone1Label.setText(shootingData[0]);
+        shootingChartZone2Label.setText(shootingData[1]);
+        shootingChartZone3Label.setText(shootingData[2]);
+        shootingChartZone4Label.setText(shootingData[3]);
+        shootingChartZone5Label.setText(shootingData[4]);
+        shootingChartZone6Label.setText(shootingData[5]);
+        shootingChartZone7Label.setText(shootingData[6]);
+        shootingChartZone8Label.setText(shootingData[7]);
+        shootingChartZone9Label.setText(shootingData[8]);
+        shootingChartZone10Label.setText(shootingData[9]);
+        shootingChartZone11Label.setText(shootingData[10]);
+        shootingChartZone12Label.setText(shootingData[11]);
+        shootingChartZone13Label.setText(shootingData[12]);
+        shootingChartZone14Label.setText(shootingData[13]);
+        shootingChartZone15Label.setText(shootingData[14]);
+    }
+
+    /**
+     * Updates controls accordingly to the selected franchise
+     */
+    private void updateControls() {
+        /**
+         * Retrieving auxiliary values
+         */
+        String completeFranchiseName = FranchiseUtils.getFranchiseCompleteName(franchiseId,
+                connection);
+        completeFranchiseNameLabel.setText(completeFranchiseName);
+
+        /**
+         * Filling up observable list and binding them to the tableviews and
+         * comboboxes
+         */
+        rosterList.setAll(RosterUtils.getFranchiseRoster(franchiseId, connection));
+        seasonStatsList.setAll(RosterUtils.getFranchiseRosterStats(franchiseId,
+                season, connection));
+        scheduleList.setAll(ScheduleUtils.getFranchiseSchedule(franchiseId,
+                season, connection));       
+        playersObservableList.setAll(ListUtils.fillIdDescriptionListFromSQL(
+                "SELECT id, CONCAT(position, CONCAT(' ' ,CONCAT(firstName, "
+                + "CONCAT(' ', lastName)))) AS description "
+                + "FROM player "
+                + "WHERE active = true AND franchise = " + franchiseId
+                + " ORDER BY rosterPosition", connection));
+        gamesObservableList.setAll(ScheduleUtils.getFranchisePlayedGame(franchiseId,
+                season, connection));
+
+        bindRosterTableView();
+        bindRosterStatsTableView();
+        bindScheduleTableView();
+        bindPlayerGameByGameStatsTableView();
+        playerSeasonPerformanceStatsComboBox.setItems(statsList);
+        statComparisonComboBox.setItems(statsList);
+        playerSeasonPerformancePlayersComboBox.setItems(playersObservableList);
+        playerGameByGameStatsComboBox.setItems(playersObservableList);
+        playerComparisonComboBox.setItems(playersObservableList);
+        playerShootingChartComboBox.setItems(playersObservableList);
+        gameShootingChartComboBox.setItems(gamesObservableList);
+
+        /**
+         * Setting default choices in the comboboxes
+         */
+        playerSeasonPerformancePlayersComboBox.getSelectionModel().selectFirst();
+        playerSeasonPerformanceStatsComboBox.getSelectionModel().selectFirst();
+        playerGameByGameStatsComboBox.getSelectionModel().selectFirst();
+        playerComparisonComboBox.getSelectionModel().selectFirst();
+        statComparisonComboBox.getSelectionModel().selectFirst();
+        playerShootingChartComboBox.getSelectionModel().selectFirst();
+
+    }
+    
+    /**
+     * Changes the franchise displayed in the central
+     */
+    @FXML
+    private void changeFranchise() {
+        /**
+         * Checking if the user has picked a franchise
+         */
+        if (franchiseSelectComboBox.getSelectionModel().getSelectedIndex() == -1) {
+            SceneUtils.warning(resources.getString("ch_selecione_franquia"), 
+                    resources.getString("ch_atencao"));
+            return;
+        }
+        
+        /**
+         * Creating necessary objects and retrieving selected items
+         */
+        IdDescriptionListItem selectedFranchise = (IdDescriptionListItem) franchiseSelectComboBox
+                .getSelectionModel().getSelectedItem();        
+        franchiseId = (short) selectedFranchise.getId();
+        updateControls();
     }
 }

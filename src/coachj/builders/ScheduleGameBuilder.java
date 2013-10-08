@@ -45,7 +45,7 @@ public class ScheduleGameBuilder {
         /**
          * Retrieving information about the game
          */
-        sqlStatement = "SELECT date, awayTeam, awayScore, homeTeam, homeScore, "
+        sqlStatement = "SELECT id, date, awayTeam, awayScore, homeTeam, homeScore, "
                 + "periodsPlayed, played FROM game WHERE id = " + gameId;
 
         resultSet = connection.getResultSet(sqlStatement);
@@ -79,11 +79,11 @@ public class ScheduleGameBuilder {
 
                 if (resultSet.getBoolean("played")) {
                     if (resultSet.getShort("homeScore") < resultSet.getShort("awayScore")) {
-                        result = "W " + resultSet.getShort("homeScore") + "-"
-                                + resultSet.getShort("awayScore");
-                    } else {
-                        result = "L " + resultSet.getShort("awayScore") + "-"
+                        result = "W " + resultSet.getShort("awayScore") + "-"
                                 + resultSet.getShort("homeScore");
+                    } else {
+                        result = "L " + resultSet.getShort("homeScore") + "-"
+                                + resultSet.getShort("awayScore");
                     }
                 }
             }
@@ -104,6 +104,7 @@ public class ScheduleGameBuilder {
                         connection);
             }
             
+            game.setId(resultSet.getInt("id"));
             game.setDate(gameDate);
             game.setOpponent(homeRoad + " " + opponent);
             game.setResult(result);

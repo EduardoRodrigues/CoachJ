@@ -12,6 +12,7 @@ public class ScheduleGame {
     /**
      * Fields
      */
+    private int id;
     private String date;
     private String opponent;
     private String result;
@@ -25,6 +26,11 @@ public class ScheduleGame {
     public ScheduleGame() {
     }
 
+    @Override
+    public String toString() {
+        return date + " " + opponent + ": " + result;
+    }
+    
     /* getters and setters */
     public String getDate() {
         return date;
@@ -72,5 +78,13 @@ public class ScheduleGame {
 
     public void setTopAssistant(String topAssistant) {
         this.topAssistant = topAssistant;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 } // end ScheduleGame

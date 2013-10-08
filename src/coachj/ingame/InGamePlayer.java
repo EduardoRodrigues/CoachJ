@@ -11,6 +11,8 @@ import coachj.utils.MathUtils;
 import coachj.utils.TimeUtils;
 import java.util.ArrayList;
 import java.util.Collections;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Controls players when they're in a game
@@ -231,7 +233,11 @@ public class InGamePlayer {
              * If the last event was a loose-ball, get the ball to playmaker to
              * initiate the offense
              */
-            if (game.getLastEvent().equalsIgnoreCase("loose-ball")
+            if ((game.getLastEvent().equalsIgnoreCase("loose-ball")
+                    || game.getLastEvent().equalsIgnoreCase("after turnover inbound pass")
+                    || game.getLastEvent().equalsIgnoreCase("after basket inbound pass")
+                    || game.getLastEvent().equalsIgnoreCase("inbound pass")
+                    || game.getLastEvent().equalsIgnoreCase("defensive rebound"))
                     && !game.getActiveOffensivePlayer().equals(bestPlaymaker)) {
                 playerDecision = "ball to playmaker";
                 return playerDecision;
@@ -2490,4 +2496,220 @@ public class InGamePlayer {
     public void setTechnicalFouls(short technicalFouls) {
         this.technicalFouls = technicalFouls;
     }
+    /**
+     * JavaFX properties necessary to allow observable lists to work properly
+     * in the game scene
+     */    
+    private final StringProperty stringPlayingTime = new SimpleStringProperty();
+
+    public String getStringPlayingTime() {
+        return stringPlayingTime.get();
+    }
+
+    public void setStringPlayingTime(String value) {
+        stringPlayingTime.set(value);
+    }
+
+    public StringProperty stringPlayingTimeProperty() {
+        return stringPlayingTime;
+    }
+    
+    private final StringProperty stringPoints = new SimpleStringProperty();
+
+    public String getStringPoints() {
+        return stringPoints.get();
+    }
+
+    public void setStringPoints(String value) {
+        stringPoints.set(value);
+    }
+
+    public StringProperty stringPointsProperty() {
+        return stringPoints;
+    }
+    private final StringProperty stringFieldGoals = new SimpleStringProperty();
+
+    public String getStringFieldGoals() {
+        return stringFieldGoals.get();
+    }
+
+    public void setStringFieldGoals(String value) {
+        stringFieldGoals.set(value);
+    }
+
+    public StringProperty stringFieldGoalsProperty() {
+        return stringFieldGoals;
+    }
+    private final StringProperty stringFreeThrows = new SimpleStringProperty();
+
+    public String getStringFreeThrows() {
+        return stringFreeThrows.get();
+    }
+
+    public void setStringFreeThrows(String value) {
+        stringFreeThrows.set(value);
+    }
+
+    public StringProperty stringFreeThrowsProperty() {
+        return stringFreeThrows;
+    }
+    private final StringProperty stringThreePointers = new SimpleStringProperty();
+
+    public String getStringThreePointers() {
+        return stringThreePointers.get();
+    }
+
+    public void setStringThreePointers(String value) {
+        stringThreePointers.set(value);
+    }
+
+    public StringProperty stringThreePointersProperty() {
+        return stringThreePointers;
+    }
+    private final StringProperty stringDefensiveRebounds = new SimpleStringProperty();
+
+    public String getStringDefensiveRebounds() {
+        return stringDefensiveRebounds.get();
+    }
+
+    public void setStringDefensiveRebounds(String value) {
+        stringDefensiveRebounds.set(value);
+    }
+
+    public StringProperty stringDefensiveReboundsProperty() {
+        return stringDefensiveRebounds;
+    }
+    private final StringProperty stringOffensiveRebounds = new SimpleStringProperty();
+
+    public String getStringOffensiveRebounds() {
+        return stringOffensiveRebounds.get();
+    }
+
+    public void setStringOffensiveRebounds(String value) {
+        stringOffensiveRebounds.set(value);
+    }
+
+    public StringProperty stringOffensiveReboundsProperty() {
+        return stringOffensiveRebounds;
+    }
+    private final StringProperty stringTotalRebounds = new SimpleStringProperty();
+
+    public String getStringTotalRebounds() {
+        return stringTotalRebounds.get();
+    }
+
+    public void setStringTotalRebounds(String value) {
+        stringTotalRebounds.set(value);
+    }
+
+    public StringProperty stringTotalReboundsProperty() {
+        return stringTotalRebounds;
+    }
+    private final StringProperty stringAssists = new SimpleStringProperty();
+
+    public String getStringAssists() {
+        return stringAssists.get();
+    }
+
+    public void setStringAssists(String value) {
+        stringAssists.set(value);
+    }
+
+    public StringProperty stringAssistsProperty() {
+        return stringAssists;
+    }
+    private final StringProperty stringSteals = new SimpleStringProperty();
+
+    public String getStringSteals() {
+        return stringSteals.get();
+    }
+
+    public void setStringSteals(String value) {
+        stringSteals.set(value);
+    }
+
+    public StringProperty stringStealsProperty() {
+        return stringSteals;
+    }
+    private final StringProperty stringBlocks = new SimpleStringProperty();
+
+    public String getStringBlocks() {
+        return stringBlocks.get();
+    }
+
+    public void setStringBlocks(String value) {
+        stringBlocks.set(value);
+    }
+
+    public StringProperty stringBlocksProperty() {
+        return stringBlocks;
+    }
+    private final StringProperty stringTurnovers = new SimpleStringProperty();
+
+    public String getStringTurnovers() {
+        return stringTurnovers.get();
+    }
+
+    public void setStringTurnovers(String value) {
+        stringTurnovers.set(value);
+    }
+
+    public StringProperty stringTurnoversProperty() {
+        return stringTurnovers;
+    }
+    private final StringProperty stringPersonalFouls = new SimpleStringProperty();
+
+    public String getStringPersonalFouls() {
+        return stringPersonalFouls.get();
+    }
+
+    public void setStringPersonalFouls(String value) {
+        stringPersonalFouls.set(value);
+    }
+
+    public StringProperty stringPersonalFoulsProperty() {
+        return stringPersonalFouls;
+    }
+    private final StringProperty stringStamina = new SimpleStringProperty();
+
+    public String getStringStamina() {
+        return stringStamina.get();
+    }
+
+    public void setStringStamina(String value) {
+        stringStamina.set(value);
+    }
+
+    public StringProperty stringStaminaProperty() {
+        return stringStamina;
+    }
+    private final StringProperty stringPlayer = new SimpleStringProperty();
+
+    public String getStringPlayer() {
+        return stringPlayer.get();
+    }
+
+    public void setStringPlayer(String value) {
+        stringPlayer.set(value);
+    }
+
+    public StringProperty stringPlayerProperty() {
+        return stringPlayer;
+    }
+    private final StringProperty stringJersey = new SimpleStringProperty();
+
+    public String getStringJersey() {
+        return stringJersey.get();
+    }
+
+    public void setStringJersey(String value) {
+        stringJersey.set(value);
+    }
+
+    public StringProperty stringJerseyProperty() {
+        return stringJersey;
+    }
+    
+    
+    
 } // end class InGamePlayer

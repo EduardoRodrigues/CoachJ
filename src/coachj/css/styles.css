@@ -49,6 +49,14 @@
     -fx-text-fill: #4F94CD;
 }
 
+.shootingChart {
+    -fx-font: bold 12px 'Consolas';   
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color:#36648B;
+    -fx-text-alignment: center;
+    -fx-padding: 4px 2px 2px 2px;
+}
+
 .boldLabel {
     -fx-font: bold 14px 'Candara';   
 }

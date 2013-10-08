@@ -128,13 +128,14 @@ public class SeasonController implements Initializable {
         this.resources = rb;
 
         /**
-         * Retrieving auxiliary values
+         * Retrieving auxiliary values and updating teams' standing data
          */
         String completeFranchiseName = FranchiseUtils.getFranchiseCompleteName(userFranchiseId,
                 connection);
         completeFranchiseNameLabel.setText(completeFranchiseName);
         seasonLabel.setText(resources.getString("ch_temporada") + " " + season);
         currentDate = ScheduleUtils.getNextScheduledDate(season, connection);
+        FranchiseUtils.updateAllFranchisesStandingData(season, connection);                
         
         /**
          * If the current date retrieved from the schedule is different from that
@@ -271,11 +272,24 @@ public class SeasonController implements Initializable {
     }
     
     /**
-     * Loads the roster central scene
+     * Loads the team central scene
      */
     @FXML
     private void gotoTeamCentral() {
         SceneUtils.loadScene(application, TeamCentralController.class.getClass(), "TeamCentral.fxml");
+
+        /**
+         * Closing connection
+         */
+        connection.close();
+    }
+    
+    /**
+     * Loads the standings table scene
+     */
+    @FXML
+    private void gotoStandings() {
+        SceneUtils.loadScene(application, StandingsController.class.getClass(), "Standings.fxml");
 
         /**
          * Closing connection

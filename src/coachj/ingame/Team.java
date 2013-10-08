@@ -399,7 +399,7 @@ public class Team {
                  * Player is in foul trouble, something that's ignored up from
                  * the last 3:00 of the 4th quarter and overtime
                  */
-                if (gameData.getPeriod() > 3 && gameData.getTimeLeft() > 180
+                if (gameData.getPeriod() > 3 && gameData.getTimeLeft() > 180                        
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getPersonalFouls() > 4) {
                     System.out.println("foul trouble in 4th"); // delete
@@ -434,7 +434,7 @@ public class Team {
                         && gameData.getTimeLeft() > 180))
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60 + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        < 50 + this.coach.getRotationUse() / 4) {
+                        < 40 + this.coach.getRotationUse() / 4) {
                     System.out.println("tired"); // delete
                     return currentPlayer.getRosterPosition();
                 }
@@ -443,11 +443,11 @@ public class Team {
                  * Player is tired in the last 3:00 of the last quarter or
                  * overtime, when the tiredness of the starters is ignored
                  */
-                if ((gameData.getPeriod() > 3 && gameData.getTimeLeft() > 180)
+                if ((gameData.getPeriod() > 3 && gameData.getTimeLeft() < 180)
                         && currentPlayer.getRosterPosition() > 5
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        < 50 + this.coach.getRotationUse() / 4) {
+                        < 40 + this.coach.getRotationUse() / 4) {
                     System.out.println("tired in 4th"); // delete
                     return currentPlayer.getRosterPosition();
                 }
@@ -523,11 +523,9 @@ public class Team {
                         < gameData.getPeriod() * this.coach.getPatience() / 25
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        > 50 + this.coach.getRotationUse() / 4
-                        && (currentPlayer.getBaseAttributes().getPosition()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())
-                        || currentPlayer.getBaseAttributes().getPosition2()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition()))) {
+                        > 40 + this.coach.getRotationUse() / 4
+                        && currentPlayer.getBaseAttributes().getPosition()
+                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())) {
                     System.out.println("normal sub prior 4th"); // delete
                     return currentPlayer.getRosterPosition();
                 }
@@ -536,7 +534,7 @@ public class Team {
                  * Game is in the last 3:00 of the fourth quarter or overtime,
                  * when the starters have priority to enter
                  */
-                if (gameData.getPeriod() > 3 && gameData.getTimeLeft() > 180
+                if (gameData.getPeriod() > 3 && gameData.getTimeLeft() < 180
                         && currentPlayer.getRosterPosition() < 5) {
                     System.out.println("normal sub in 4th"); // delete
                     return currentPlayer.getRosterPosition();
@@ -549,11 +547,9 @@ public class Team {
                         && !currentPlayer.isEjected()
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        > 50 + this.coach.getRotationUse() / 4
-                        && (currentPlayer.getBaseAttributes().getPosition()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())
-                        || currentPlayer.getBaseAttributes().getPosition2()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition()))) {
+                        > 40 + this.coach.getRotationUse() / 4
+                         && currentPlayer.getBaseAttributes().getPosition()
+                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())) {
                     System.out.println("sub in blowout"); // delete
                     return currentPlayer.getRosterPosition();
                 }

@@ -141,11 +141,11 @@
                 <TableView fx:id="awayTeamBoxScoreTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
                   <columns>
                     <TableColumn editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" text="%ch_numero" fx:id="awayTeamPlayerJerseyTableColumn" />
-                    <TableColumn maxWidth="500.0" minWidth="200.0" prefWidth="200.0" text="%ch_atleta" fx:id="awayTeamPlayerCompleteNameTableColumn" />
+                    <TableColumn maxWidth="500.0" minWidth="240.0" prefWidth="240.0" text="%ch_atleta" fx:id="awayTeamPlayerCompleteNameTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_min" fx:id="awayTeamPlayerMinutesTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_pts" fx:id="awayTeamPlayerPointsTableColumn" />
                     <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_fg" fx:id="awayTeamPlayerFieldGoalsTableColumn" />
-                    <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_ft" fx:id="awayTeamPlayerFreeTrowsTableColumn" />
+                    <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_ft" fx:id="awayTeamPlayerFreeThrowsTableColumn" />
                     <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_tp" fx:id="awayTeamPlayerThreePointersTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_dr" fx:id="awayTeamPlayerDefensiveReboundsTableColumn" />
                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%ch_or" fx:id="awayTeamPlayerOffensiveReboundsTableColumn" />

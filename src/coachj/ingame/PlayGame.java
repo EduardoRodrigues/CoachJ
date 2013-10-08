@@ -309,6 +309,7 @@ public class PlayGame {
      */
     private void startPeriod(int period) {
 
+        
         System.out.println("Start of period: " + period);
 
         /**
@@ -329,6 +330,7 @@ public class PlayGame {
             restPlayers(5);
         }
 
+        checkForSubstitutions(5);
         resetPlayersSubstitutionTime(periodLength);
 
         /**
@@ -976,7 +978,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events
@@ -1030,7 +1032,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events
@@ -1091,7 +1093,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events
@@ -1165,7 +1167,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
     }
 
     /**
@@ -1204,7 +1206,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events
@@ -1476,7 +1478,7 @@ public class PlayGame {
         /**
          * Checking for substitutions
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events
@@ -1760,7 +1762,7 @@ public class PlayGame {
         /**
          * Checking for substitutions before inbounding the ball
          */
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Selecting the inbound pass zone.
@@ -2067,10 +2069,9 @@ public class PlayGame {
     }
 
     /**
-     * Checks for substitutions. Each team can make up to 2 substitutions at a
-     * time
+     * Checks for substitutions.
      */
-    private void checkForSubstitution() {
+    private void checkForSubstitutions(int maxSubstitutions) {
         int playerInRosterPosition;
         int playerOutRosterPosition;
         Team currentTeam;
@@ -2083,7 +2084,7 @@ public class PlayGame {
             playerOutRosterPosition = 0;
             currentTeam = this.teams.get(i);
 
-            for (int j = 0; j < GameParameters.MAX_SUBSTITUTIONS.getParameterValue(); j++) {
+            for (int j = 0; j <= maxSubstitutions; j++) {
 
                 /**
                  * Retrieving if there's a player to leave the court, if there
@@ -2096,7 +2097,7 @@ public class PlayGame {
                     playerInRosterPosition = currentTeam.getPlayerToReplace(
                             playerOutRosterPosition, this);
 
-                    if (playerOutRosterPosition > 0) {
+                    if (playerInRosterPosition > 0) {
                         makeSubstitutions(i, playerInRosterPosition, playerOutRosterPosition);
                         System.out.println("In: " + playerInRosterPosition);
                         System.out.println("Out: " + playerOutRosterPosition);
@@ -2184,7 +2185,7 @@ public class PlayGame {
         this.setOfficialTimeoutCalled(true);
         restPlayers(1);
         zeroMomenta();
-        checkForSubstitution();
+        checkForSubstitutions(3);
 
         /**
          * Creating play log and adding it to the observable list
@@ -2211,7 +2212,7 @@ public class PlayGame {
         this.teams.get(caller).setLastTimeoutCall(this.timeLeft);
         restPlayers(1);
         zeroMomenta();
-        checkForSubstitution();
+        checkForSubstitutions(3);
 
         /**
          * Creating play log and adding it to the observable list
@@ -3188,7 +3189,7 @@ public class PlayGame {
          * be replaced
          */
         activeOffensivePlayer.setShootingFreeThrows(true);
-        checkForSubstitution();
+        checkForSubstitutions(2);
 
         /**
          * Updating events and resetting the shotclock
@@ -3700,6 +3701,7 @@ public class PlayGame {
      */
     private void updatePlayersTimeStats(int elapsedTime) {
         InGamePlayer currentPlayer;
+        String playerName;
 
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < teams.get(i).getPlayers().size(); j++) {
@@ -3708,10 +3710,55 @@ public class PlayGame {
 
                 if (currentPlayer.isOnCourt()) {
                     updatePlayerSecondsOnTheCourt(currentPlayer, elapsedTime);
-                    updatePlayerPlayingTime(currentPlayer, elapsedTime);
+                    updatePlayerPlayingTime(currentPlayer, elapsedTime);                    
                 } else {
                     updatePlayerSecondsInTheBench(currentPlayer, elapsedTime);
                 }
+                
+                playerName = currentPlayer.getBaseAttributes().getPosition()
+                            + " " + currentPlayer.getBaseAttributes().getFirstName()
+                            + " " + currentPlayer.getBaseAttributes().getLastName();
+
+                    if (currentPlayer.isOnCourt()) {
+                        playerName += " (on court)";
+                    } else {
+                        playerName += " ";
+                    }
+                
+                /**
+                 * Updating JavaFX properties
+                 */
+                currentPlayer.setStringPlayingTime(TimeUtils.intToTime(
+                        currentPlayer.getPlayingTime()));
+                currentPlayer.setStringPoints(String.format("%02d", currentPlayer
+                        .getPoints()));
+                currentPlayer.setStringFieldGoals(StatsUtils.getBoxScoreShootingPercentage(
+                        currentPlayer.getFieldGoalsMade(), currentPlayer.getFieldGoalsAttempted()));
+                currentPlayer.setStringFreeThrows(StatsUtils.getBoxScoreShootingPercentage(
+                        currentPlayer.getFreeThrowsMade(), currentPlayer.getFreeThrowsAttempted()));
+                currentPlayer.setStringThreePointers(StatsUtils.getBoxScoreShootingPercentage(
+                        currentPlayer.getThreePointersMade(), currentPlayer.getThreePointersAttempted()));
+                currentPlayer.setStringDefensiveRebounds(String.format("%02d", currentPlayer
+                        .getDefensiveRebounds()));
+                currentPlayer.setStringOffensiveRebounds(String.format("%02d", currentPlayer
+                        .getOffensiveRebounds()));
+                currentPlayer.setStringTotalRebounds(String.format("%02d", currentPlayer
+                        .getTotalRebounds()));
+                currentPlayer.setStringAssists(String.format("%02d", currentPlayer
+                        .getAssists()));
+                currentPlayer.setStringSteals(String.format("%02d", currentPlayer
+                        .getSteals()));
+                currentPlayer.setStringBlocks(String.format("%02d", currentPlayer
+                        .getBlocks()));
+                currentPlayer.setStringTurnovers(String.format("%02d", currentPlayer
+                        .getTurnovers()));
+                currentPlayer.setStringPersonalFouls(String.format("%02d", currentPlayer
+                        .getPersonalFouls()));
+                currentPlayer.setStringStamina(String.format("%02d", currentPlayer
+                        .getCurrentStaminaLevel()));
+                currentPlayer.setStringPlayer(playerName);     
+                currentPlayer.setStringJersey(String.format("%02d", currentPlayer
+                        .getBaseAttributes().getJersey()));
             }
         }
     }

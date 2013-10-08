@@ -26,8 +26,7 @@ public enum GameParameters {
     SCOOP_SHOT_DIFFICULTY (90),
     FINGER_ROLL_DIFFICULTY (85),
     DUNK_DIFFICULTY (80),
-    FREE_THROW_DIFFICULTY (80),
-    MAX_SUBSTITUTIONS (2),
+    FREE_THROW_DIFFICULTY (80),    
     COLLECTIVE_FOULS_LIMIT (5);
     private final int parameterValue;
 

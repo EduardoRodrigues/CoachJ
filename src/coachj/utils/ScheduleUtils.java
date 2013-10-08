@@ -196,7 +196,7 @@ public class ScheduleUtils {
 
         return nextScheduledDate;
     }
-    
+
     /**
      * Returns the id for the next game to be played
      *
@@ -224,15 +224,14 @@ public class ScheduleUtils {
         try {
             if (resultSet.next()) {
                 nextGameId = resultSet.getInt("id");
-            } 
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return nextGameId;
     }
-    
-    
+
     /**
      * Returns the number of games already schedule in the given date
      *
@@ -427,7 +426,7 @@ public class ScheduleUtils {
      * @return
      */
     private static String getRandomScheduleDate(short season,
-            DatabaseDirectConnection connection) {        
+            DatabaseDirectConnection connection) {
 
         String randomScheduleDate = null;
         String sqlStatement = "SELECT date FROM game "
@@ -446,44 +445,81 @@ public class ScheduleUtils {
         }
 
         return randomScheduleDate;
-    }    
+    }
 
     /**
      * Returns a list with ScheduleGame objects containing the schedule for the
      * given franchise in the given season
-     * 
+     *
      * @param franchiseId Franchise's id
      * @param season Season year
      * @param connection Database connection used to retrieve data
-     * @return 
+     * @return
      */
     public static ArrayList<ScheduleGame> getFranchiseSchedule(short franchiseId,
             int season, DatabaseDirectConnection connection) {
-        
+
         ArrayList<ScheduleGame> schedule = new ArrayList<>();
         ScheduleGame game;
         ResultSet resultSet;
         int gameId;
         String sqlStatement;
-        
-        sqlStatement = "SELECT id FROM game WHERE (homeTeam = " + franchiseId 
+
+        sqlStatement = "SELECT id FROM game WHERE (homeTeam = " + franchiseId
                 + " OR awayTeam = " + franchiseId + ") AND season = " + season
                 + " ORDER BY date";
-        
+
         resultSet = connection.getResultSet(sqlStatement);
-        
+
         try {
             while (resultSet.next()) {
                 gameId = resultSet.getInt("id");
                 game = ScheduleGameBuilder.buildScheduleGame(gameId, franchiseId, connection);
-                
-                schedule.add(game);                
+
+                schedule.add(game);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return schedule;
     }
-    
+
+    /**
+     * Returns a list with ScheduleGame objects containing the played games for
+     * the given franchise in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static ArrayList<ScheduleGame> getFranchisePlayedGame(short franchiseId,
+            int season, DatabaseDirectConnection connection) {
+
+        ArrayList<ScheduleGame> schedule = new ArrayList<>();
+        ScheduleGame game;
+        ResultSet resultSet;
+        int gameId;
+        String sqlStatement;
+
+        sqlStatement = "SELECT id FROM game WHERE (homeTeam = " + franchiseId
+                + " OR awayTeam = " + franchiseId + ") AND played = 1 AND season = "
+                + season + " ORDER BY date";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            while (resultSet.next()) {
+                gameId = resultSet.getInt("id");
+                game = ScheduleGameBuilder.buildScheduleGame(gameId, franchiseId, connection);
+
+                schedule.add(game);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ScheduleUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return schedule;
+    }
 } // end class ScheduleUtils

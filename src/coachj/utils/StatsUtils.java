@@ -7,7 +7,7 @@ import coachj.structures.StatItem;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -85,7 +85,7 @@ public class StatsUtils {
     public static ArrayList<StatItem> getStatsDescriptorsList(ResourceBundle rb) {
         ArrayList<StatItem> statsList = new ArrayList<>();
         StatItem currentStatListItem;
-        Map<String, String> statsDescriptor = new HashMap<>();
+        Map<String, String> statsDescriptor = new LinkedHashMap<>();
 
         /**
          * Adding stats to the hashmap
@@ -355,5 +355,104 @@ public class StatsUtils {
         }
 
         return positionAverage;
+    }
+
+    /**
+     * Returns the shooting data by the given player from the given court
+     * zone in the given game of the given season
+     *
+     * @param playerId Player's id
+     * @param season Season year
+     * @param gameId Game's id
+     * @param courtZone Court zone
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getPlayerGameZoneShootingData(int playerId, int season,
+            String gameId, int courtZone, DatabaseDirectConnection connection) {
+
+        String playerGameZoneShootingData;
+        int playerGameZoneHitShots = getPlayerGameZoneHitShots(playerId, season,
+                gameId, courtZone, connection);
+        int playerGameZoneMissedShots = getPlayerGameZoneMissedShots(playerId, season,
+                gameId, courtZone, connection);
+        int playerGameTotalZoneShots = playerGameZoneHitShots + playerGameZoneMissedShots;
+        double playerGameZoneShootingPercentage = (double) playerGameZoneHitShots
+                / playerGameTotalZoneShots * 100;
+        playerGameZoneShootingData = " " + playerGameZoneHitShots + "-" + playerGameTotalZoneShots
+                + "\n(" + String.format("%01.1f%%", playerGameZoneShootingPercentage)
+                + ")";        
+        
+        return playerGameZoneShootingData;
+    }
+
+    /**
+     * Returns the numbers of shots hit by the given player from the given court
+     * zone in the given game of the given season
+     *
+     * @param playerId Player's id
+     * @param season Season year
+     * @param gameId Game's id
+     * @param courtZone Court zone
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getPlayerGameZoneHitShots(int playerId, int season,
+            String gameId, int courtZone, DatabaseDirectConnection connection) {
+
+        int playerGameZoneHitShots = 0;
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS value FROM play_log "
+                + "WHERE season = " + season + " AND game LIKE '" + gameId + "' "
+                + "AND activeOffensivePlayer = "  + playerId + " AND playType != "
+                + "'hit free-throw' AND playType LIKE 'hit%' AND ballTo IN (SELECT id FROM "
+                + "court_spot WHERE courtZone = " + courtZone + ")";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            playerGameZoneHitShots = resultSet.getInt("value");
+        } catch (SQLException ex) {
+            Logger.getLogger(StatsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return playerGameZoneHitShots;
+    }
+
+    /**
+     * Returns the numbers of shots missed by the given player from the given
+     * court zone in the given game of the given season
+     *
+     * @param playerId Player's id
+     * @param season Season year
+     * @param gameId Game's id
+     * @param courtZone Court zone
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getPlayerGameZoneMissedShots(int playerId, int season,
+            String gameId, int courtZone, DatabaseDirectConnection connection) {
+
+        int playerGameZoneMissedShots = 0;
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS value FROM play_log "
+                + "WHERE season = " + season + " AND game LIKE '" + gameId + "' "
+                + "AND activeOffensivePlayer = "  + playerId + " AND playType != "
+                + "'missed free-throw' AND playType LIKE 'missed%' AND ballTo IN (SELECT id FROM "
+                + "court_spot WHERE courtZone = " + courtZone + ")";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            playerGameZoneMissedShots = resultSet.getInt("value");
+        } catch (SQLException ex) {
+            Logger.getLogger(StatsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return playerGameZoneMissedShots;
     }
 } // end StatsUtils

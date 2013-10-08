@@ -118,6 +118,49 @@ public class FranchiseUtils {
     }
 
     /**
+     * Returns the franchise's wins and losses in a suitable format for schedule
+     * displaying purposes
+     *
+     * @param franchiseId Franchise's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getFranchiseScheduleWinsLosses(int franchiseId,
+            DatabaseDirectConnection connection) {
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT homeWins, homeLosses, awayWins, awayLosses "
+                + "FROM franchise WHERE id = " + franchiseId;
+        String franchiseScheduleWinsLosses = null;
+        int franchiseHomeWins;
+        int franchiseHomeLosses;
+        int franchiseAwayWins;
+        int franchiseAwayLosses;
+        int franchiseTotalWins;
+        int franchiseTotalLosses;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            franchiseHomeWins = resultSet.getInt("homeWins");
+            franchiseHomeLosses = resultSet.getInt("homeLosses");
+            franchiseAwayWins = resultSet.getInt("awayWins");
+            franchiseAwayLosses = resultSet.getInt("awayLosses");
+            franchiseTotalLosses = franchiseAwayLosses + franchiseHomeLosses;
+            franchiseTotalWins = franchiseHomeWins + franchiseAwayWins;
+            franchiseScheduleWinsLosses = "(" + franchiseTotalWins + "-"
+                    + franchiseTotalLosses + ")";
+        } catch (SQLException ex) {
+            Logger.getLogger(CountingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseScheduleWinsLosses;
+    }
+
+    /**
      * Return the id of the franchise's coach or 0 if the franchise currently
      * does not have a coach
      *
@@ -806,11 +849,11 @@ public class FranchiseUtils {
 
     /**
      * Returns the top rebounder for a team in a given game
-     * 
+     *
      * @param franchiseId Franchise's id
      * @param GameId Game's id
      * @param connection Database connection used to retrieve data
-     * @return 
+     * @return
      */
     public static String getGameTopRebounder(int franchiseId, int GameId,
             DatabaseDirectConnection connection) {
@@ -840,14 +883,14 @@ public class FranchiseUtils {
         }
         return gameTopRebounder;
     }
-    
+
     /**
      * Returns the top scorer for a team in a given game
-     * 
+     *
      * @param franchiseId Franchise's id
      * @param GameId Game's id
      * @param connection Database connection used to retrieve data
-     * @return 
+     * @return
      */
     public static String getGameTopScorer(int franchiseId, int GameId,
             DatabaseDirectConnection connection) {
@@ -877,14 +920,14 @@ public class FranchiseUtils {
         }
         return gameTopScorer;
     }
-    
+
     /**
      * Returns the top assistant for a team in a given game
-     * 
+     *
      * @param franchiseId Franchise's id
      * @param GameId Game's id
      * @param connection Database connection used to retrieve data
-     * @return 
+     * @return
      */
     public static String getGameTopAssistant(int franchiseId, int GameId,
             DatabaseDirectConnection connection) {
@@ -913,5 +956,181 @@ public class FranchiseUtils {
             Logger.getLogger(RosterUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return gameTopAssistant;
+    }
+
+    /**
+     * Updates the standing data for the given franchise in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     */
+    public static void updateFranchiseStandingsData(int franchiseId, int season,
+            DatabaseDirectConnection connection) {
+        ResultSet resultSet;
+        String sqlStatement;
+
+        int homeWins = getFranchiseHomeWins(franchiseId, season, connection);
+        int homeLosses = getFranchiseHomeLosses(franchiseId, season, connection);
+        int awayWins = getFranchiseAwayWins(franchiseId, season, connection);
+        int awayLosses = getFranchiseAwayLosses(franchiseId, season, connection);
+        int totalWins = homeWins + awayWins;
+        int totalLosses = homeLosses + awayLosses;
+        int totalGames = totalWins + totalLosses == 0 ? 1 : totalWins + totalLosses;
+        double record = (double) totalWins / totalGames;
+        String currentStreak = StandingsUtils.getFranchiseStreak(franchiseId, 
+                season, connection);
+        String last10 = StandingsUtils.getFranchiseLast10(franchiseId, season, 
+                connection);
+
+        sqlStatement = "UPDATE franchise SET homeWins = " + homeWins + ", "
+                + "homeLosses = " + homeLosses + ", awayWins = " + awayWins + ", "
+                + "awayLosses = " + awayLosses + ", record = " + record + ", "
+                + "last10 = '" + last10 + "', streak = '" + currentStreak + "' "
+                + "WHERE id = " + franchiseId;
+
+        connection.executeSQL(sqlStatement);
+    }
+
+    /**
+     * Returns the number of home wins recorded by a team in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getFranchiseHomeWins(int franchiseId, int season,
+            DatabaseDirectConnection connection) {
+
+        int franchiseHomeWins = 0;
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS homeWins FROM game WHERE "
+                + "homeTeam = " + franchiseId + " AND season = " + season
+                + " AND played = 1 AND type = 'R' AND homeScore > awayScore";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            franchiseHomeWins = resultSet.getInt("homeWins");
+        } catch (SQLException ex) {
+            Logger.getLogger(FranchiseUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseHomeWins;
+    }
+    
+    /**
+     * Returns the number of home losses recorded by a team in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getFranchiseHomeLosses(int franchiseId, int season,
+            DatabaseDirectConnection connection) {
+
+        int franchiseHomeLosses = 0;
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS homeLosses FROM game WHERE "
+                + "homeTeam = " + franchiseId + " AND season = " + season
+                + " AND played = 1 AND type = 'R' AND homeScore < awayScore";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            franchiseHomeLosses = resultSet.getInt("homeLosses");
+        } catch (SQLException ex) {
+            Logger.getLogger(FranchiseUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseHomeLosses;
+    }
+
+    /**
+     * Returns the number of away wins recorded by a team in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getFranchiseAwayWins(int franchiseId, int season,
+            DatabaseDirectConnection connection) {
+
+        int franchiseAwayWins = 0;
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS awayWins FROM game WHERE "
+                + "awayTeam = " + franchiseId + " AND season = " + season
+                + " AND played = 1 AND type = 'R'AND homeScore < awayScore";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            franchiseAwayWins = resultSet.getInt("awayWins");
+        } catch (SQLException ex) {
+            Logger.getLogger(FranchiseUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseAwayWins;
+    }
+    
+    /**
+     * Returns the number of away losses recorded by a team in the given season
+     *
+     * @param franchiseId Franchise's id
+     * @param season Season year
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static int getFranchiseAwayLosses(int franchiseId, int season,
+            DatabaseDirectConnection connection) {
+
+        int franchiseAwayLosses = 0;
+        ResultSet resultSet;
+        String sqlStatement = "SELECT COUNT(id) AS awayLosses FROM game WHERE "
+                + "awayTeam = " + franchiseId + " AND season = " + season
+                + " AND played = 1 AND type = 'R' AND homeScore > awayScore";
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            resultSet.first();
+            franchiseAwayLosses = resultSet.getInt("awayLosses");
+        } catch (SQLException ex) {
+            Logger.getLogger(FranchiseUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return franchiseAwayLosses;
+    }
+
+    /**
+     * Update the standing data for all the franchises
+     *
+     * @param season
+     * @param connection Database connection used to retrieve data
+     */
+    public static void updateAllFranchisesStandingData(int season,
+            DatabaseDirectConnection connection) {
+        ResultSet resultSet;
+        String sqlStatement = "SELECT id FROM franchise ORDER BY id";
+        short franchiseId;
+
+        resultSet = connection.getResultSet(sqlStatement);
+
+        try {
+            while (resultSet.next()) {
+                franchiseId = resultSet.getShort("id");
+                updateFranchiseStandingsData(franchiseId, season, connection);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FranchiseUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }
 } // end FranchiseUtils

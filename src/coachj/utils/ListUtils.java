@@ -229,26 +229,13 @@ public class ListUtils {
 
         ObservableList<ScheduledGame> observableList = FXCollections
                 .observableArrayList();
-
-        /**
-         * Checking if there's an active database connection, otherwise, create
-         * it
-         */
-        if (connection == null) {
-            connection = new DatabaseDirectConnection();
-        }
-
-        /**
+         /**
          * Variables that store the database connection, resultset, sql
          * statement, ScheduledGame object instance and its fields
          */
         ResultSet resultSet;
         ScheduledGame game;       
-
-        /**
-         * opening connection and retrieving data into the resultset
-         */
-        // // connection.open();
+        
         resultSet = connection.getResultSet(sqlStatement);
 
         /**
@@ -265,9 +252,13 @@ public class ListUtils {
                 game.setPlayed(resultSet.getBoolean("played"));
                 game.setAwayScore(resultSet.getShort("awayScore"));
                 game.setAwayTeam(FranchiseUtils.getFranchiseCompleteName(
+                        resultSet.getShort("awayTeam"), connection) 
+                        + " " + FranchiseUtils.getFranchiseScheduleWinsLosses(
                         resultSet.getShort("awayTeam"), connection));
                 game.setHomeScore(resultSet.getShort("homeScore"));
                 game.setHomeTeam(FranchiseUtils.getFranchiseCompleteName(
+                        resultSet.getShort("homeTeam"), connection)
+                        + " " + FranchiseUtils.getFranchiseScheduleWinsLosses(
                         resultSet.getShort("homeTeam"), connection));
                 observableList.add(game);
             }

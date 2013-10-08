@@ -28,10 +28,10 @@
                   <columns>
                     <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_data" fx:id="scheduleDateTableColumn" />
                     <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_oponente" fx:id="scheduleOpponentTableColumn" />
-                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_resultado" fx:id="scheduleResultTableColumn" />
-                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_pontos" fx:id="scheduleTopScorerTableColumn" />
-                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_rebotes" fx:id="scheduleTopRebounderTableColumn" />
-                    <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_assistencias" fx:id="scheduleTopAssistantTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_resultado" fx:id="scheduleResultTableColumn" />
+                    <TableColumn maxWidth="240.0" minWidth="240.0" prefWidth="240.0" text="%ch_pontos" fx:id="scheduleTopScorerTableColumn" />
+                    <TableColumn maxWidth="240.0" minWidth="240.0" prefWidth="240.0" text="%ch_rebotes" fx:id="scheduleTopRebounderTableColumn" />
+                    <TableColumn maxWidth="240.0" minWidth="240.0" prefWidth="240.0" text="%ch_assistencias" fx:id="scheduleTopAssistantTableColumn" />
                   </columns>
                 </TableView>
                 <Label styleClass="h2" text="%ch_agenda_jogos" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
@@ -100,7 +100,7 @@
                   <columns>
                     <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_data" fx:id="gameDateTableColumn" />
                     <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="%ch_oponente" fx:id="gameOpponentTableColumn" />
-                    <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_resultado" fx:id="gameResultTableColumn" />
+                    <TableColumn maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="%ch_resultado" fx:id="gameResultTableColumn" />
                     <TableColumn maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="%ch_minutos" fx:id="gameMinutesTableColumn" />
                     <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_pontos" fx:id="gamePointsTableColumn" />
                     <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="%ch_fg" fx:id="gameFieldGoalsTableColumn" />
@@ -176,7 +176,7 @@
                   </items>
                 </ComboBox>
                 <Button mnemonicParsing="false" onMouseClicked="#generateComparisonChart" text="%ch_gerar_gráfico" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="70.0" />
-                <BarChart fx:id="playerComparisonBarChart" legendSide="RIGHT" title="%ch_grafico_comparativo" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0">
+                <BarChart fx:id="playerComparisonBarChart" barGap="20.0" categoryGap="20.0" legendSide="RIGHT" title="%ch_grafico_comparativo" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0">
                   <xAxis>
                     <CategoryAxis fx:id="comparisonCategoryAxis" side="BOTTOM" />
                   </xAxis>
@@ -198,9 +198,129 @@
             </AnchorPane>
           </content>
         </Tab>
+        <Tab text="%ch_mapa_arremessos">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainFxmlClass">
+              <children>
+                <Label styleClass="h2" text="%ch_mapa_arremessos" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                <ImageView fitHeight="339.2088586664417" fitWidth="637.50439453125" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="110.0">
+                  <image>
+                    <Image url="@img/court.jpg" />
+                  </image>
+                </ImageView>
+                <Label styleClass="boldLabel" text="%ch_escolha_atleta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="playerShootingChartComboBox" prefWidth="250.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Label styleClass="boldLabel" text="%ch_escolha_jogo" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="50.0" />
+                <ComboBox fx:id="gameShootingChartComboBox" prefWidth="250.0" promptText="%ch_temporada" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="70.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="Item 1" />
+                      <String fx:value="Item 2" />
+                      <String fx:value="Item 3" />
+                    </FXCollections>
+                  </items>
+                </ComboBox>
+                <Button mnemonicParsing="false" onMouseClicked="#generateShootingMap" text="%ch_gerar_mapa" AnchorPane.leftAnchor="560.0" AnchorPane.topAnchor="70.0" />
+                <Label fx:id="shootingChartZone1Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="114.0">
+                  <tooltip>
+                    <Tooltip text="%ch_canto_direito" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone2Label" layoutY="150.0" rotate="315.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="145.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_direito_arco" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone8Label" rotate="270.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="190.0" AnchorPane.topAnchor="268.0">
+                  <tooltip>
+                    <Tooltip text="%ch_topo_arco" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone7Label" rotate="270.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="268.0">
+                  <tooltip>
+                    <Tooltip text="%ch_topo_garrafao" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone6Label" rotate="0.0" styleClass="shootingChart" text="0.00%" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="268.0">
+                  <tooltip>
+                    <Tooltip text="%ch_garrafao" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone3Label" rotate="0.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="207.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_direito_tabela" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone9Label" rotate="0.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="329.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_esquerdo_tabela" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone12Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="413.0">
+                  <tooltip>
+                    <Tooltip text="%ch_canto_esquerdo" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone13Label" rotate="45.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="400.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_esquerdo_arco" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone10Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="365.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_esquerdo_garrafao" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone4Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="170.0">
+                  <tooltip>
+                    <Tooltip text="%ch_lado_direito_garrafao" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone14Label" rotate="270.0" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="260.0" AnchorPane.topAnchor="268.0">
+                  <tooltip>
+                    <Tooltip text="%ch_campo_ofensivo" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone15Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="268.0">
+                  <tooltip>
+                    <Tooltip text="%ch_campo_defensivo" />
+                  </tooltip>
+                </Label>
+                <Label fx:id="shootingChartZone5Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="214.0">
+                  <tooltip>
+                    <Tooltip text="%ch_cotovelo_direito" />
+                  </tooltip>
+                </Label>
+                <Label id="shootingChartZone5Label" fx:id="shootingChartZone11Label" styleClass="shootingChart" text="0.00%" textAlignment="CENTER" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="335.0">
+                  <tooltip>
+                    <Tooltip text="%ch_cotovelo_esquerdo" />
+                  </tooltip>
+                </Label>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
       </tabs>
     </TabPane>
     <Button mnemonicParsing="false" onAction="#goBack" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" />
+    <ComboBox fx:id="franchiseSelectComboBox" prefWidth="300.0" promptText="%ch_outra_franquia" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="20.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <Button mnemonicParsing="false" onMouseClicked="#changeFranchise" text="Ok" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0" />
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />

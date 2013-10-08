@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.StandingsController">
+  <children>
+    <Label id="seasonLabel" prefWidth="800.0" styleClass="h1" text="%ch_tabela_classificacao" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+        <Image url="@img/checkList64.png" />
+      </image>
+    </ImageView>
+    <TableView fx:id="standingsTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
+      <columns>
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_numero" fx:id="standingsSeedTableColumn" />
+        <TableColumn minWidth="240.0" prefWidth="240.0" text="%ch_franquia" fx:id="standingsFranchiseTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_jogos" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_vitorias_derrotas" fx:id="standingsRecordTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_vitorias_pct" fx:id="standingsPercentageTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_jogos_atras" fx:id="standingsGamesBehindTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_em_casa" fx:id="standingsHomeTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="%ch_visitante" fx:id="standingsRoadTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" sortable="false" text="%ch_sequencia" fx:id="standingsStreakTableColumn" />
+        <TableColumn maxWidth="80.0" minWidth="80.0" prefWidth="80.0" sortable="false" text="%ch_ultimos_10" fx:id="standingsLast10TableColumn" />
+      </columns>
+    </TableView>
+    <Button mnemonicParsing="false" onMouseClicked="#goBack" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+  </children>
+  <stylesheets>
+    <URL value="@css/styles.css" />
+  </stylesheets>
+</AnchorPane>

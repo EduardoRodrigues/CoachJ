@@ -31,6 +31,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
@@ -108,7 +109,7 @@ public class GameController implements Initializable {
     @FXML
     private TableColumn awayTeamPlayerFieldGoalsTableColumn;
     @FXML
-    private TableColumn awayTeamPlayerFreeTrowsTableColumn;
+    private TableColumn awayTeamPlayerFreeThrowsTableColumn;
     @FXML
     private TableColumn awayTeamPlayerThreePointersTableColumn;
     @FXML
@@ -152,7 +153,7 @@ public class GameController implements Initializable {
     @FXML
     private TableColumn homeTeamPlayerFieldGoalsTableColumn;
     @FXML
-    private TableColumn homeTeamPlayerFreeTrowsTableColumn;
+    private TableColumn homeTeamPlayerFreeThrowsTableColumn;
     @FXML
     private TableColumn homeTeamPlayerThreePointersTableColumn;
     @FXML
@@ -285,7 +286,7 @@ public class GameController implements Initializable {
         scoringLogHomeScoreTableColumn.setText(game.getTeams().get(2).getAbbreviature());
         updateScoreBoard();
         updateGameInfoPanel();
-        
+
         /**
          * Allowing tableViews to resize and fit properly
          */
@@ -385,7 +386,10 @@ public class GameController implements Initializable {
      * Binds rosters to the boxscore table views
      */
     private void bindBoxScoreTableViews() {
-        
+
+        /**
+         * Away team boxscore
+         */
         awayTeamPlayerJerseyTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
             @Override
@@ -400,249 +404,53 @@ public class GameController implements Initializable {
         });
 
         awayTeamPlayerCompleteNameTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    String playerName = p.getValue().getBaseAttributes().getPosition()
-                            + " " + p.getValue().getBaseAttributes().getFirstName()
-                            + " " + p.getValue().getBaseAttributes().getLastName();
-
-                    if (p.getValue().isOnCourt()) {
-                        playerName += " (" + resources.getString("ch_em_quadra") + ")";
-                    } else {
-                        playerName += " ";
-                    }
-                    return new SimpleStringProperty(playerName);
-                } else {
-                    return new SimpleStringProperty("------");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPlayer"));
 
         awayTeamPlayerMinutesTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(TimeUtils.intToTime(p.getValue()
-                            .getPlayingTime()));
-                } else {
-                    return new SimpleStringProperty("00:00");
-                }
-            }
-        });        
-               
+                new PropertyValueFactory<InGamePlayer, String>("stringPlayingTime"));
+
         awayTeamPlayerPointsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getPoints()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPoints"));
 
         awayTeamPlayerFieldGoalsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getFieldGoalsMade(), p.getValue().getFieldGoalsAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringFieldGoals"));
 
-        awayTeamPlayerFreeTrowsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getFreeThrowsMade(), p.getValue().getFreeThrowsAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+        awayTeamPlayerFreeThrowsTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringFreeThrows"));
 
         awayTeamPlayerThreePointersTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getThreePointersMade(), p.getValue().getThreePointersAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringThreePointers"));
 
         awayTeamPlayerDefensiveReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getDefensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveRebounds"));
 
         awayTeamPlayerOffensiveReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getOffensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveRebounds"));
 
         awayTeamPlayerTotalReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getDefensiveRebounds() + p.getValue().getOffensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringTotalRebounds"));
 
         awayTeamPlayerAssistsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getAssists()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringAssists"));
 
         awayTeamPlayerStealsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getSteals()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringSteals"));
 
         awayTeamPlayerBlocksTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getBlocks()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringBlocks"));
 
         awayTeamPlayerTurnoversTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getTurnovers()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringTurnovers"));
 
         awayTeamPlayerPersonalFoulsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getPersonalFouls()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPersonalFouls"));
 
         awayTeamPlayerStaminaTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getCurrentStaminaLevel()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringStamina"));
 
-        /*awayTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getCurrentZoneLocation()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
-
-        awayTeamPlayerOffensiveMomentumTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d",
-                            p.getValue().getOffensiveMomentum()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
-
-        awayTeamPlayerDefensiveMomentumTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d",
-                            p.getValue().getDefensiveMomentum()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });*/
-
-        //awayTeamBoxScoreTableView.setItems(awayTeamBoxScoreList);
-
+        /**
+         * Home team box score
+         */
         homeTeamPlayerJerseyTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
             @Override
@@ -657,248 +465,49 @@ public class GameController implements Initializable {
         });
 
         homeTeamPlayerCompleteNameTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    String playerName = p.getValue().getBaseAttributes().getPosition()
-                            + " " + p.getValue().getBaseAttributes().getFirstName()
-                            + " " + p.getValue().getBaseAttributes().getLastName();
-
-                    if (p.getValue().isOnCourt()) {
-                        playerName += " (" + resources.getString("ch_em_quadra") + ")";
-                    } else {
-                        playerName += " ";
-                    }
-                    return new SimpleStringProperty(playerName);
-                } else {
-                    return new SimpleStringProperty("------");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPlayer"));
 
         homeTeamPlayerMinutesTableColumn.setCellValueFactory(
-                new Callback<CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(TimeUtils.intToTime(p.getValue()
-                            .getPlayingTime()));
-                } else {
-                    return new SimpleStringProperty("00:00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPlayingTime"));
 
         homeTeamPlayerPointsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getPoints()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPoints"));
 
         homeTeamPlayerFieldGoalsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getFieldGoalsMade(), p.getValue().getFieldGoalsAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringFieldGoals"));
 
-        homeTeamPlayerFreeTrowsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getFreeThrowsMade(), p.getValue().getFreeThrowsAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+        homeTeamPlayerFreeThrowsTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringFreeThrows"));
 
         homeTeamPlayerThreePointersTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(StatsUtils.getBoxScoreShootingPercentage(
-                            p.getValue().getThreePointersMade(), p.getValue().getThreePointersAttempted()));
-                } else {
-                    return new SimpleStringProperty("00-00 (0.000)");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringThreePointers"));
 
         homeTeamPlayerDefensiveReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getDefensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveRebounds"));
 
         homeTeamPlayerOffensiveReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getOffensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveRebounds"));
 
         homeTeamPlayerTotalReboundsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getDefensiveRebounds() + p.getValue().getOffensiveRebounds()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringTotalRebounds"));
 
         homeTeamPlayerAssistsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getAssists()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringAssists"));
 
         homeTeamPlayerStealsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getSteals()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringSteals"));
 
         homeTeamPlayerBlocksTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getBlocks()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringBlocks"));
 
         homeTeamPlayerTurnoversTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getTurnovers()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringTurnovers"));
 
         homeTeamPlayerPersonalFoulsTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getPersonalFouls()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                new PropertyValueFactory<InGamePlayer, String>("stringPersonalFouls"));
 
         homeTeamPlayerStaminaTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getCurrentStaminaLevel()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
-
-        /*homeTeamPlayerCurrentLocationTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%02d",
-                            p.getValue().getCurrentZoneLocation()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
-
-        homeTeamPlayerOffensiveMomentumTableColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d",
-                            p.getValue().getOffensiveMomentum()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
-
-        homeTeamPlayerDefensiveMomentumTableColumn.setCellValueFactory(
-                new Callback<CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d",
-                            p.getValue().getDefensiveMomentum()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });*/
-
-        //homeTeamBoxScoreTableView.setItems(homeTeamBoxScoreList);
+                new PropertyValueFactory<InGamePlayer, String>("stringStamina"));
     }
 
     /**
@@ -1045,7 +654,6 @@ public class GameController implements Initializable {
          */
         //awayTeamBoxScoreList.setAll(game.getTeams().get(1).getPlayers());
         //homeTeamBoxScoreList.setAll(game.getTeams().get(2).getPlayers());
-
         /**
          * Setting up table views
          */
