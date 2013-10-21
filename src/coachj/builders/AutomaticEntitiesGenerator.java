@@ -17,6 +17,7 @@ public class AutomaticEntitiesGenerator {
      * Generates n Coach entities.
      *
      * @param quantity Number of coaches to be generated
+     * @param connection Database connection used to retrieve data
      */
     public static void generateCoaches(int quantity,
             DatabaseDirectConnection connection) {
@@ -46,6 +47,7 @@ public class AutomaticEntitiesGenerator {
      * Generates n GeneralManager entities.
      *
      * @param quantity Number of general managers to be generated
+     * @param connection Database connection used to retrieve data
      */
     public static void generateGeneralManagers(int quantity,
             DatabaseDirectConnection connection) {
@@ -75,6 +77,7 @@ public class AutomaticEntitiesGenerator {
      * Generates n Referee entities.
      *
      * @param quantity Number of referees to be generated
+     * @param connection Database connection used to retrieve data
      */
     public static void generateReferees(int quantity,
             DatabaseDirectConnection connection) {
@@ -104,6 +107,7 @@ public class AutomaticEntitiesGenerator {
      * Generates n Player entities.
      *
      * @param quantity Number of players to be generated
+     * @param connection Database connection used to retrieve data
      */
     public static void generatePlayers(int quantity,
             DatabaseDirectConnection connection) {
@@ -120,8 +124,7 @@ public class AutomaticEntitiesGenerator {
             lastName = NamingUtils.getRandomLastName("player", connection);
             country = NamingUtils.getLastNameCountry(lastName, connection);
             firstName = NamingUtils.getRandomFirstName(country, connection);
-            position = PositionUtils.getRandomPosition();
-            System.out.println("Generating player: " + i); // delete
+            position = PositionUtils.getRandomPosition();            
 
             PlayerBuilder playerBuilder = new PlayerBuilder(Integer.parseInt(country),
                     firstName, lastName, position);

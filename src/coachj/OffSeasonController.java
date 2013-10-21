@@ -562,7 +562,7 @@ public class OffSeasonController implements Initializable {
     }
 
     /**
-     * Creates a task objects that creates new entities
+     * Creates a task object that creates new entities
      *
      * @param entityName Name of the entity to be created
      * @return

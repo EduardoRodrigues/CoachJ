@@ -412,20 +412,13 @@ public class DraftController implements Initializable {
             String draftSQL = CoachUtils.getCoachDraftingSQL(coachId, connection);
             int playerId;
             String franchiseName = FranchiseUtils.getFranchiseCompleteName(nextFranchise,
-                    connection);
-
-            /*SceneUtils.warning(resources.getString("ch_rodada") + ": "
-             + round + "\n" + resources.getString("ch_escolha") + ": "
-             + pick + "\n" + resources.getString("ch_franquia")
-             + ": " + franchiseName,
-             resources.getString("ch_atencao"));*/
+                    connection);           
 
             try {
 
                 /**
                  * Retrieving the picked player and executing draft operation
-                 */
-                // // connection.open();
+                 */               
                 resultSet = connection.getResultSet(draftSQL);
                 resultSet.first();
                 playerId = resultSet.getInt("id");

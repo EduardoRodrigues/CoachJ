@@ -40,7 +40,7 @@ public class DateUtils {
             calculatedDate = dateFormat.format(calendar.getTime());
 
         } catch (ParseException ex) {
-            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return calculatedDate;

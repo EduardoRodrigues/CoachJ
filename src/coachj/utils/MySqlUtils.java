@@ -181,8 +181,7 @@ public class MySqlUtils {
                 sqlStatement = "CHECK TABLE " + tableNames.get(i) + " EXTENDED";
                 resultSet = connection.getResultSet(sqlStatement);
                 resultSet.first();
-                tableStatus = resultSet.getString("Msg_text");
-                System.out.println(tableNames.get(i) + ": " + tableStatus); // delete
+                tableStatus = resultSet.getString("Msg_text");                
 
                 if (!tableStatus.equalsIgnoreCase("OK")) {
                     return false;
