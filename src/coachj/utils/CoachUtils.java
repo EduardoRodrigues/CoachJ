@@ -585,4 +585,35 @@ public class CoachUtils {
 
         return coachRosterOrderingString;
     }
+    
+    /**
+     * Returns the coach's complete name
+     *
+     * @param coachId Coach's id
+     * @param connection Database connection used to retrieve data
+     * @return
+     */
+    public static String getCoachCompleteName(int coachId,
+            DatabaseDirectConnection connection) {
+
+
+        ResultSet resultSet;
+        String sqlStatement = "SELECT firstName, lastName FROM coach "
+                + "WHERE id = " + coachId;
+        String coachCompleteName = null;
+
+        try {
+            /**
+             * Executing query, retrieving result and returning
+             */
+            resultSet = connection.getResultSet(sqlStatement);
+            resultSet.first();
+            coachCompleteName = resultSet.getString("firstName") + " "
+                    + resultSet.getString("lastName");
+        } catch (SQLException ex) {
+            Logger.getLogger(CoachUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return coachCompleteName;
+    }
 } // end CoachUtils

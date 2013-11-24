@@ -51,7 +51,7 @@ public class CoachJ extends Application {
          * retrieving league's name
          */
         this.stage = primaryStage;
-        String leagueName = SettingsUtils.getSetting("name", "South American Basketball League");
+        String leagueName = SettingsUtils.getSetting("name", "All Americas Basketball League");
 
         /**
          * Creating and opening database connection

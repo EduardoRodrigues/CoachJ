@@ -870,6 +870,9 @@ public class TeamCentralController implements Initializable {
         playerGameByGameStatsTableView.setItems(playerGameByGameStatsList);
     }
 
+    /**
+     * Generates the stats comparison chart
+     */
     @FXML
     private void generateComparisonChart() {
         /**
@@ -934,6 +937,9 @@ public class TeamCentralController implements Initializable {
         playerComparisonBarChart.getData().add(positionAverageSeries);
     }
 
+    /**
+     * Generates the shooting map for a player
+     */
     @FXML
     private void generateShootingMap() {
         /**

@@ -62,4 +62,8 @@ public class BoxScoreTableCellFactory<S, T> implements Callback<TableColumn<S, T
         };
         return cell;
     }
+// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
+    // #[regen=yes,id=DCE.1E3D9607-0CEC-6DAA-6CD8-756A76DDF136]
+    // </editor-fold> 
+ 
 } // end class BoxScoreTableCellFactory

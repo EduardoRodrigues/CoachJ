@@ -6,12 +6,15 @@ import coachj.ingame.PlayGame;
 import coachj.ingame.InGamePlayer;
 import coachj.structures.Play;
 import coachj.utils.ArenaUtils;
+import coachj.utils.CoachUtils;
+import coachj.utils.FranchiseUtils;
 import coachj.utils.SceneUtils;
 import coachj.utils.ScheduleUtils;
 import coachj.utils.SettingsUtils;
-import coachj.utils.StatsUtils;
 import coachj.utils.TimeUtils;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -29,7 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -63,6 +65,8 @@ public class GameController implements Initializable {
     @FXML
     private Label scoreboardAwayTeamLabel;
     @FXML
+    private Label scoreboardAwayTeamRecordLabel;
+    @FXML
     private Label scoreboardAwayTeamScoreLabel;
     @FXML
     private Label scoreboardAwayTeamTimeoutsLabel;
@@ -76,6 +80,8 @@ public class GameController implements Initializable {
     private Label scoreboardShotClockLabel;
     @FXML
     private Label scoreboardHomeTeamLabel;
+    @FXML
+    private Label scoreboardHomeTeamRecordLabel;
     @FXML
     private Label scoreboardHomeTeamScoreLabel;
     @FXML
@@ -271,15 +277,22 @@ public class GameController implements Initializable {
         game = new PlayGame(gameId, connection);
 
         /**
-         * Setting up scoreboard, game info panel and others information display
-         * controls
+         * Setting up scoreboard, game info panel and others information display controls
          */
         scoreboardAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
+        scoreboardAwayTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
+                game.getTeams().get(1).getId(), connection));
         scoreboardHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
+        scoreboardHomeTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
+                game.getTeams().get(2).getId(), connection));
         awayTeamTab.setText("Boxscore: " + game.getTeams().get(1).getCompleteName());
         homeTeamTab.setText("Boxscore: " + game.getTeams().get(2).getCompleteName());
-        awayTeamCompleteNameLabel.setText(game.getTeams().get(1).getCompleteName());
-        homeTeamCompleteNameLabel.setText(game.getTeams().get(2).getCompleteName());
+        awayTeamCompleteNameLabel.setText(game.getTeams().get(1).getCompleteName() + " ("
+                + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(1)
+                .getCoachId(), connection) + ")");
+        homeTeamCompleteNameLabel.setText(game.getTeams().get(2).getCompleteName()+ " ("
+                + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(2)
+                .getCoachId(), connection) + ")");
         playByPlayAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
         playByPlayHomeScoreTableColumn.setText(game.getTeams().get(2).getAbbreviature());
         scoringLogAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
@@ -721,8 +734,7 @@ public class GameController implements Initializable {
                     System.out.println("Task: " + game.getCurrentEvent()); // delete
 
                     /**
-                     * To avoid exception caused by the updating of the
-                     * observable lists, they are refreshed later
+                     * To avoid exception caused by the updating of the observable lists, they are refreshed later
                      */
                     Platform.runLater(new Runnable() {
                         @Override
@@ -740,8 +752,7 @@ public class GameController implements Initializable {
             }
 
             /**
-             * Method to be executed when the playGameTask completes
-             * successfully
+             * Method to be executed when the playGameTask completes successfully
              */
             @Override
             protected void succeeded() {
@@ -763,7 +774,12 @@ public class GameController implements Initializable {
             @Override
             protected Void call() throws Exception {
                 System.out.println("Starting save game task"); // delete
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                System.out.println("Início: " + dateFormat.format(cal.getTime()));
                 game.savePlayLogs();
+                Calendar cal2 = Calendar.getInstance();
+                System.out.println("Fim: " + dateFormat.format(cal2.getTime()));
                 game.savePlayerData();
                 game.saveTeamData();
                 game.save();
