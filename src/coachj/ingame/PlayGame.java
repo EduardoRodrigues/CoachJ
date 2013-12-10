@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -309,8 +310,8 @@ public class PlayGame {
      */
     private void startPeriod(int period) {
 
-
-        System.out.println("Start of period: " + period);
+        System.out.println("3p average: " + this.threePointersAverage * 1.2);
+        System.out.println("Start of period: " + period); // delete
 
         /**
          * Setting up period length
@@ -450,7 +451,7 @@ public class PlayGame {
                 } else if (this.currentEvent.equalsIgnoreCase("bad pass turnover")) {
                     processBadPassTurnover();
                 } else if (this.currentEvent.equalsIgnoreCase("after turnover inbound pass")) {
-                    processInboundPass();
+                    processAfterBasketInboundPass();
                 } else if (this.currentEvent.equalsIgnoreCase("drive")) {
                     processDrive();
                 } else if (this.currentEvent.equalsIgnoreCase("hit shot")) {
@@ -461,6 +462,8 @@ public class PlayGame {
                     processFake();
                 } else if (this.currentEvent.equalsIgnoreCase("after basket inbound pass")) {
                     processAfterBasketInboundPass();
+                } else if (this.currentEvent.equalsIgnoreCase("after foul inbound pass")) {
+                    processAfterFoulInboundPass();
                 } else if (this.currentEvent.equalsIgnoreCase("back down")) {
                     processBackDown();
                 } else if (this.currentEvent.equalsIgnoreCase("failed back down")) {
@@ -765,7 +768,8 @@ public class PlayGame {
          * Checking if it's a random pass or a directed one
          */
         if (passDestinationZone == -1) {
-            destinationZone = MathUtils.generateRandomInt(1, 13);
+            destinationZone = getRandomOccupiedCourtZone(activeOffensivePlayer.getRosterPosition(),
+                    ballPossession);
         } else {
             destinationZone = passDestinationZone;
         }
@@ -810,7 +814,7 @@ public class PlayGame {
          * Bad pass turnover
          */
         if (offensiveEffort < MathUtils.generateRandomInt(1, (int) distance * 2)
-                || offensiveEffort < MathUtils.generateRandomInt(1, 100)) {
+                || activeOffensivePlayer.getBaseAttributes().getPass() < MathUtils.generateRandomInt(0, 50)) {
             this.lastEvent = this.currentEvent;
             this.currentEvent = "bad pass turnover";
         } else if (defensiveEffort > offensiveEffort * 1.5) {
@@ -831,14 +835,14 @@ public class PlayGame {
              * player
              */
             if (passDestinationPlayer == null) {
-                activeOffensivePlayer = getRandomPlayer(lastActiveOffensivePlayer.getRosterPosition(),
+                activeOffensivePlayer = getPlayerInCourtZone(destinationZone, lastActiveOffensivePlayer.getRosterPosition(),
                         ballPossession);
             } else {
                 activeOffensivePlayer = passDestinationPlayer;
             }
 
             lastActiveDefensivePlayer = activeDefensivePlayer;
-            activeDefensivePlayer = getRandomPlayer(lastActiveDefensivePlayer.getRosterPosition(),
+            activeDefensivePlayer = getPlayerInCourtZone(destinationZone, lastActiveOffensivePlayer.getRosterPosition(),
                     3 - ballPossession);
 
             /**
@@ -1105,7 +1109,7 @@ public class PlayGame {
             this.freeThrowsToShoot = 2;
             this.currentEvent = "free-throw";
         } else {
-            this.currentEvent = "after turnover inbound pass";
+            this.currentEvent = "after foul inbound pass";
         }
     }
 
@@ -1188,18 +1192,7 @@ public class PlayGame {
          */
         createPlay();
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
-
-        /**
-         * Switching possession and active players
-         */
-        this.ballPossession = 3 - this.ballPossession;
-        activeOffensivePlayer = getRandomPlayer(0, ballPossession);
-        lastActiveOffensivePlayer = getRandomPlayer(activeOffensivePlayer.getRosterPosition(),
-                ballPossession);
-        activeDefensivePlayer = getRandomPlayer(0, 3 - ballPossession);
-        lastActiveDefensivePlayer = getRandomPlayer(activeDefensivePlayer.getRosterPosition(),
-                3 - ballPossession);
-
+        
         /**
          * Resetting shotclock
          */
@@ -1412,11 +1405,6 @@ public class PlayGame {
          */
         activeOffensivePlayer.updateTurnovers();
         teams.get(ballPossession).updateTurnovers();
-
-        /**
-         * Switching possession
-         */
-        this.ballPossession = 3 - this.ballPossession;
 
         /**
          * Creating play log and adding it to the observable list
@@ -1843,7 +1831,8 @@ public class PlayGame {
          * If the effort is more than 5% smaller than the defensive one, it means the ball was
          * stolen by the defender
          */
-        if (this.offensiveEffort < (this.defensiveEffort * 0.95)) {
+        if (this.offensiveEffort < this.defensiveEffort * 0.95 
+                || activeOffensivePlayer.getBaseAttributes().getDrive() < MathUtils.generateRandomInt(0, 50)) {
             /**
              * Updating events
              */
@@ -1856,7 +1845,8 @@ public class PlayGame {
          * If the offensive effort is 1 to 5% smaller than the defensive one, the active player
          * loses control of the ball
          */
-        if (this.offensiveEffort < (this.defensiveEffort)) {
+        if (this.offensiveEffort < this.defensiveEffort
+                || activeOffensivePlayer.getBaseAttributes().getDrive() < MathUtils.generateRandomInt(0, 50)) {
             /**
              * Updating events
              */
@@ -2817,7 +2807,7 @@ public class PlayGame {
         checkForTimeout();
 
         /**
-         * Selecting the inbound pass zone.If the game is in the last 2:00 of the quarter and a
+         * Selecting the inbound pass zone. If the game is in the last 2:00 of the quarter and a
          * timeout was called, the ball is inbounded in the offensive halfcourt
          */
         int originalSpot;
@@ -2869,6 +2859,59 @@ public class PlayGame {
     }
 
     /**
+     * Processes after foul inbound pass events
+     */
+    private void processAfterFoulInboundPass() {
+
+        /**
+         * Checking timeout before inbounding the ball
+         */
+        checkForTimeout();
+
+        /**
+         * Selecting the inbound pass zone in the offensive halfcourt
+         */
+        int originalSpot = 106;
+        int destinationZone = MathUtils.generateRandomInt(1, 2);
+
+        int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+        CourtSpot newCourtSpot = courtSpots.get(newSpot);
+
+        /**
+         * Updating ball location
+         */
+        updateBallLocation(originalSpot, newSpot);
+
+        /**
+         * Selecting the new active players, the ball is usually inbounded to the playmaker.
+         */
+        activeOffensivePlayer = teams.get(ballPossession).getBestPlaymaker();
+        activeDefensivePlayer = getRandomPlayer(0, 3 - ballPossession);
+        lastActiveOffensivePlayer = getRandomPlayer(activeOffensivePlayer.getRosterPosition(),
+                ballPossession);
+        lastActiveDefensivePlayer = getRandomPlayer(activeDefensivePlayer.getRosterPosition(),
+                3 - ballPossession);
+
+        /**
+         * Moving the active players to the zone where the ball is inbounded
+         */
+        activeOffensivePlayer.setCurrentZoneLocation(newCourtSpot.getCourtZone());
+        activeDefensivePlayer.setCurrentZoneLocation(newCourtSpot.getCourtZone());
+
+        /**
+         * Creating play log and adding it to the observable list
+         */
+        createPlay();
+        sleep(MathUtils.generateRandomInt(1, 5) * 1000);
+
+        /**
+         * Updating events
+         */
+        this.lastEvent = this.currentEvent;
+        this.currentEvent = "player decision";
+    }
+
+    /**
      * Ends the game and realize database procedures
      */
     private void processEndGame() {
@@ -2876,6 +2919,8 @@ public class PlayGame {
         this.currentEvent = "end of game";
         createPlay();
         System.out.println("Game halted"); // delete
+        System.out.println("Printing player log for home center");
+        this.teams.get(2).getPlayers().get(0).printMovementLog();
     }
 
     /**
@@ -2903,9 +2948,9 @@ public class PlayGame {
         }
 
         /**
-         * If the defensive effort is 45% greater than the offensive effort, a block happened
+         * If the defensive effort is 40% greater than the offensive effort, a block happened
          */
-        if (this.defensiveEffort > (this.offensiveEffort * 1.45)) {
+        if (this.defensiveEffort > (this.offensiveEffort * 1.40)) {
             this.lastEvent = this.currentEvent;
             this.currentEvent = "block";
             return;
@@ -3844,7 +3889,9 @@ public class PlayGame {
                 if (currentPlayer.isOnCourt()
                         && !currentPlayer.equals(this.activeOffensivePlayer)
                         && !currentPlayer.equals(this.activeDefensivePlayer)) {
-                    currentPlayer.move();
+                    currentPlayer.move(this);
+                } else {
+                    //currentPlayer.setCurrentZoneLocation(16);
                 }
             }
         }
@@ -3854,6 +3901,7 @@ public class PlayGame {
      * Returns a random player on the court, trying to select the player closest to the ball
      *
      * @param excludedRosterPosition Roster position to be ignored during the search
+     * @param team Team which has the ball
      * @return
      */
     public InGamePlayer getRandomPlayer(int excludedRosterPosition, int team) {
@@ -3893,6 +3941,78 @@ public class PlayGame {
             }
         }
         return randomPlayer;
+    }
+
+    public InGamePlayer getPlayerInCourtZone(int courtZone, int excludedRosterPosition, int team) {
+        InGamePlayer currentPlayer;
+        InGamePlayer playerInCourtZone = null;
+
+        /**
+         * Looping through the team's roster to check if there's a player in the current zone
+         */
+        for (int i = 0; i < 15; i++) {
+
+            currentPlayer = teams.get(team).getPlayers().get(i);
+
+            /**
+             * Checking if the player is on the court and is in the same court zone as the ball or
+             * in a adjacent one;
+             */
+            if (currentPlayer.getCurrentZoneLocation() == courtZone
+                    && currentPlayer.getBaseAttributes().getPlayable()
+                    && currentPlayer.isOnCourt()
+                    && currentPlayer.getRosterPosition() != excludedRosterPosition) {
+                playerInCourtZone = currentPlayer;
+                break;
+            }
+        }
+
+        /**
+         * If there's no player in the current zone, pick a random player
+         */
+        if (playerInCourtZone == null) {
+            playerInCourtZone = getRandomPlayer(excludedRosterPosition, team);
+        }
+
+        return playerInCourtZone;
+    }
+
+    /**
+     * Returns a random zone court which is currently occupied by a player from the team with the
+     * possession
+     *
+     * @param excludedRosterPosition Roster position to be ignored during the search
+     * @param team Team which has the ball
+     * @return
+     */
+    private int getRandomOccupiedCourtZone(int excludedRosterPosition, int team) {
+        InGamePlayer currentPlayer;
+        int randomOccupiedCourtZone;
+        ArrayList<Integer> occupiedCourtZones = new ArrayList<>();
+
+        /**
+         * Looping through the players to retrieve their positions on the court, shuffling the
+         * ArrayList and randomly picking one element
+         */
+        for (int i = 0; i < 15; i++) {
+
+            currentPlayer = teams.get(team).getPlayers().get(i);
+
+            /**
+             * Checking if the player is on the court and is in the same court zone as the ball or
+             * in a adjacent one;
+             */
+            if (currentPlayer.getBaseAttributes().getPlayable()
+                    && currentPlayer.isOnCourt()
+                    && currentPlayer.getRosterPosition() != excludedRosterPosition) {
+                occupiedCourtZones.add(currentPlayer.getCurrentZoneLocation());
+            }
+        }
+
+        Collections.shuffle(occupiedCourtZones);
+        randomOccupiedCourtZone = occupiedCourtZones.get(MathUtils.generateRandomInt(0, occupiedCourtZones.size() - 1));
+
+        return randomOccupiedCourtZone;
     }
 
     /**
@@ -4119,6 +4239,7 @@ public class PlayGame {
                  * Updating player data
                  */
                 int happinessLevelAdjust = result.equalsIgnoreCase("W") ? 1 : -1;
+                int seasonMomentum = currentPlayer.getDefensiveMomentum() + currentPlayer.getOffensiveMomentum();
                 int regularSeasonExperienceAdjust = this.gameType.equalsIgnoreCase("R")
                         ? 1 : 0;
                 int playoffsExperienceAdjust = this.gameType.equalsIgnoreCase("P")
@@ -4131,6 +4252,7 @@ public class PlayGame {
                         + "regularSeasonExperience = regularSeasonExperience + "
                         + regularSeasonExperienceAdjust + ", playoffsExperience = "
                         + "playoffsExperience + " + playoffsExperienceAdjust + ", "
+                        + "seasonMomentum = seasonMomentum + " + seasonMomentum + ", "
                         + "gamesWithTeam = gamesWithTeam + 1 WHERE id = "
                         + currentPlayer.getBaseAttributes().getId();
 

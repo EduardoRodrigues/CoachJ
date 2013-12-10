@@ -106,8 +106,8 @@ public class Team {
                 PlayerUtils.populatePlayerArrays(player);
 
                 /**
-                 * If the player's roster position and less than or equal to 5, he's starting the game and his location
-                 * is set, otherwise, his location is set to the bench (0)
+                 * If the player's roster position and less than or equal to 5, he's starting the
+                 * game and his location is set, otherwise, his location is set to the bench (0)
                  */
                 if (rosterPosition <= 5) {
                     player.setOnCourt(true);
@@ -214,7 +214,8 @@ public class Team {
         int currentPlayerRate = 0;
 
         /**
-         * Iterating through the array list to find the best playmaker or a player who plays at the point
+         * Iterating through the array list to find the best playmaker or a player who plays at the
+         * point
          */
         for (int i = 0; i < players.size(); i++) {
             /**
@@ -231,8 +232,7 @@ public class Team {
                 /**
                  * if he plays at the point, get him and leave the loop
                  */
-                if (currentPlayer.getBaseAttributes().getPosition().equals("PG")
-                        || currentPlayer.getBaseAttributes().getPosition2().equals("PG")) {
+                if (currentPlayer.getBaseAttributes().getPosition().equals("PG")) {                    
                     bestPlaymaker = currentPlayer;
                     break;
                 } else {
@@ -257,14 +257,14 @@ public class Team {
     public InGamePlayer getBestOutsideShooter() {
 
         InGamePlayer bestOutsideShooter = null;
-        int bestPlayerRate = 0;        
+        int bestPlayerRate = 0;
 
         /**
          * Iterating through the array list to find the best ball handler
          */
         for (int i = 0; i < players.size(); i++) {
-            InGamePlayer currentPlayer = players.get(i);            
-            
+            InGamePlayer currentPlayer = players.get(i);
+
             if (currentPlayer.getBaseAttributes().getPlayable() && currentPlayer.isOnCourt()
                     && currentPlayer.getBaseAttributes().getThreePointers() > bestPlayerRate) {
                 bestPlayerRate = currentPlayer.getBaseAttributes().getThreePointers();
@@ -383,15 +383,16 @@ public class Team {
      * Returns the roster position for the player to be replaced
      *
      * @param gameData PlayGame object with data to be processed
-     * @return The roster position of the player who'll be replaced or 0 if no suitable player was found
+     * @return The roster position of the player who'll be replaced or 0 if no suitable player was
+     * found
      */
     public int getPlayerToBeReplaced(PlayGame gameData) {
         int playerToBeReplaced = 0;
         InGamePlayer currentPlayer;
 
         /**
-         * Checking player to be replaced based on several criteria. We iterate through the players array list to find
-         * it
+         * Checking player to be replaced based on several criteria. We iterate through the players
+         * array list to find it
          */
         for (int i = 0; i < this.players.size(); i++) {
 
@@ -422,8 +423,8 @@ public class Team {
                 }
 
                 /**
-                 * Player is in foul trouble, something that's ignored up from the last 3:00 of the 4th quarter and
-                 * overtime
+                 * Player is in foul trouble, something that's ignored up from the last 3:00 of the
+                 * 4th quarter and overtime
                  */
                 if (gameData.getPeriod() > 3 && gameData.getTimeLeft() > 180
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
@@ -442,7 +443,8 @@ public class Team {
                 }
 
                 /**
-                 * Player has committed too many turnovers accordingly to the coach's patience attribute
+                 * Player has committed too many turnovers accordingly to the coach's patience
+                 * attribute
                  */
                 if (currentPlayer.getTurnovers() > gameData.getPeriod()
                         * this.coach.getPatience() / 25) {
@@ -451,8 +453,8 @@ public class Team {
                 }
 
                 /**
-                 * Player is tired and we aren't in the last 3:00 of the 4th quarter or overtime, when the tiredness of
-                 * the starters is ignored
+                 * Player is tired and we aren't in the last 3:00 of the 4th quarter or overtime,
+                 * when the tiredness of the starters is ignored
                  */
                 if ((gameData.getPeriod() < 4 || (gameData.getPeriod() > 3
                         && gameData.getTimeLeft() > 180))
@@ -464,8 +466,8 @@ public class Team {
                 }
 
                 /**
-                 * Player is tired in the last 3:00 of the last quarter or overtime, when the tiredness of the starters
-                 * is ignored
+                 * Player is tired in the last 3:00 of the last quarter or overtime, when the
+                 * tiredness of the starters is ignored
                  */
                 if ((gameData.getPeriod() > 3 && gameData.getTimeLeft() < 180)
                         && currentPlayer.getRosterPosition() > 5
@@ -477,8 +479,8 @@ public class Team {
                 }
 
                 /**
-                 * Player has a very low rate when combining his offensive and defensive momenta and wasn't replace in
-                 * the last minutes.
+                 * Player has a very low rate when combining his offensive and defensive momenta and
+                 * wasn't replace in the last minutes.
                  */
                 if (currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getOffensiveMomentum() + currentPlayer
@@ -515,8 +517,8 @@ public class Team {
         InGamePlayer playerToBeReplaced = this.players.get(playerToBeReplacedRosterPosition - 1);
 
         /**
-         * Checking player to be replaced based on several criteria. We iterate through the players array list to find
-         * it
+         * Checking player to be replaced based on several criteria. We iterate through the players
+         * array list to find it
          */
         for (int i = 0; i < this.players.size(); i++) {
 
@@ -526,15 +528,16 @@ public class Team {
             currentPlayer = this.players.get(i);
 
             /**
-             * A player only can enter the game if he's in the, is playable and wasn't ejected from it
+             * A player only can enter the game if he's in the, is playable and wasn't ejected from
+             * it
              */
             if (!currentPlayer.isOnCourt() && currentPlayer.getBaseAttributes().getPlayable()
                     && !currentPlayer.isEjected()) {
 
                 /**
-                 * Game is not in the last 3:00 of the 4th quarter or overtime. Player hasn't committed too many
-                 * turnovers, is not tired and wasn't replaced recently and plays at the same position as the player
-                 * who'll be replaced
+                 * Game is not in the last 3:00 of the 4th quarter or overtime. Player hasn't
+                 * committed too many turnovers, is not tired and wasn't replaced recently and plays
+                 * at the same position as the player who'll be replaced
                  */
                 if ((gameData.getPeriod() < 4 || (gameData.getPeriod() > 3
                         && gameData.getTimeLeft() > 180))
@@ -543,15 +546,15 @@ public class Team {
                         < gameData.getPeriod() * this.coach.getPatience() / 25
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        > 30 + this.coach.getRotationUse() / 4
-                        /*&& currentPlayer.getBaseAttributes().getPosition()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())*/) {
+                        > 30 + this.coach.getRotationUse() / 4 /*&& currentPlayer.getBaseAttributes().getPosition()
+                         .equals(playerToBeReplaced.getBaseAttributes().getPosition())*/) {
                     System.out.println("normal sub prior 4th"); // delete
                     return currentPlayer.getRosterPosition();
                 }
 
                 /**
-                 * Game is in the last 3:00 of the fourth quarter or overtime, when the starters have priority to enter
+                 * Game is in the last 3:00 of the fourth quarter or overtime, when the starters
+                 * have priority to enter
                  */
                 if (gameData.getPeriod() > 3 && gameData.getTimeLeft() < 180
                         && currentPlayer.getRosterPosition() < 5) {
@@ -566,9 +569,8 @@ public class Team {
                         && !currentPlayer.isEjected()
                         && currentPlayer.getSubstitutionTime() > gameData.getTimeLeft() + 60
                         && currentPlayer.getCurrentStaminaLevel()
-                        > 30 + this.coach.getRotationUse() / 4
-                        /*&& currentPlayer.getBaseAttributes().getPosition()
-                        .equals(playerToBeReplaced.getBaseAttributes().getPosition())*/) {
+                        > 30 + this.coach.getRotationUse() / 4 /*&& currentPlayer.getBaseAttributes().getPosition()
+                         .equals(playerToBeReplaced.getBaseAttributes().getPosition())*/) {
                     System.out.println("sub in blowout"); // delete
                     return currentPlayer.getRosterPosition();
                 }
@@ -576,8 +578,8 @@ public class Team {
         }
 
         /**
-         * No suitable player to replace was found, but the player to be replaced is either injured, ejected or in foul
-         * trouble
+         * No suitable player to replace was found, but the player to be replaced is either injured,
+         * ejected or in foul trouble
          */
         for (int i = 0; i < this.players.size(); i++) {
 

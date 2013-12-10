@@ -76,173 +76,116 @@ public class CourtUtils {
     /**
      * Returns a hashmap with all the adjacent zones of the court
      *
+     * @param courtZone Given court zone
      * @return
      */
-    private static Map<Integer, ArrayList<Integer>> getCourtAdjacentZonesMap() {
-        Map<Integer, ArrayList<Integer>> courtAdjacentZonesMap = new HashMap<>();
-        ArrayList<Integer> zone = new ArrayList<>();
+    private static ArrayList<Integer> getCourtAdjacentZones(int courtZone) {
+        ArrayList<Integer> courtAdjacentZones = new ArrayList<>();
 
         /**
-         * Inserting adjacent zones arrays into the map
-         *
-         * Zone 1 (right corner)
+         * Checking the given zone and populating the array with the adjacent zones
          */
-        zone.add(2);
-        zone.add(4);
-        zone.add(5);
-        courtAdjacentZonesMap.put(1, zone);
-        zone.clear();
-
-        /**
-         * Zone 2 (right wing)
-         */
-        zone.add(1);
-        zone.add(4);
-        zone.add(5);
-        zone.add(8);
-        zone.add(14);
-        courtAdjacentZonesMap.put(2, zone);
-        zone.clear();
-
-        /**
-         * Zone 3 (right low post)
-         */
-        zone.add(4);
-        zone.add(6);
-        courtAdjacentZonesMap.put(3, zone);
-        zone.clear();
-
-        /**
-         * Zone 4 (right side of the lane)
-         */
-        zone.add(1);
-        zone.add(2);
-        zone.add(3);
-        zone.add(5);
-        zone.add(6);
-        zone.add(7);
-        courtAdjacentZonesMap.put(4, zone);
-        zone.clear();
-
-        /**
-         * Zone 5 (right elbow)
-         */
-        zone.add(1);
-        zone.add(2);
-        zone.add(4);
-        zone.add(6);
-        zone.add(7);
-        zone.add(8);
-        courtAdjacentZonesMap.put(5, zone);
-        zone.clear();
-
-        /**
-         * Zone 6 (lane)
-         */
-        zone.add(3);
-        zone.add(4);
-        zone.add(5);
-        zone.add(7);
-        zone.add(9);
-        zone.add(10);
-        zone.add(11);
-        courtAdjacentZonesMap.put(6, zone);
-        zone.clear();
-
-        /**
-         * Zone 7 (top of the key)
-         */
-        zone.add(4);
-        zone.add(5);
-        zone.add(6);
-        zone.add(8);
-        zone.add(10);
-        zone.add(11);
-        zone.add(11);
-        courtAdjacentZonesMap.put(7, zone);
-        zone.clear();
-
-        /**
-         * Zone 8 (top of the arc)
-         */
-        zone.add(2);
-        zone.add(5);
-        zone.add(7);
-        zone.add(11);
-        zone.add(13);
-        zone.add(14);
-        courtAdjacentZonesMap.put(8, zone);
-        zone.clear();
-
-        /**
-         * Zone 9 (left low post)
-         */
-        zone.add(6);
-        zone.add(10);
-        courtAdjacentZonesMap.put(9, zone);
-        zone.clear();
-
-        /**
-         * Zone 10 (left side of the lane)
-         */
-        zone.add(6);
-        zone.add(7);
-        zone.add(9);
-        zone.add(11);
-        zone.add(12);
-        zone.add(13);
-        courtAdjacentZonesMap.put(10, zone);
-        zone.clear();
-
-        /**
-         * Zone 11 (left elbow)
-         */
-        zone.add(6);
-        zone.add(7);
-        zone.add(8);
-        zone.add(10);
-        zone.add(12);
-        zone.add(13);
-        courtAdjacentZonesMap.put(11, zone);
-        zone.clear();
-
-        /*
-         * Zone 12 (left corner)
-         */
-        zone.add(10);
-        zone.add(11);
-        zone.add(13);
-        courtAdjacentZonesMap.put(12, zone);
-        zone.clear();
-
-        /**
-         * Zone 13 (left wing)
-         */
-        zone.add(8);
-        zone.add(10);
-        zone.add(11);
-        zone.add(12);
-        zone.add(14);
-        courtAdjacentZonesMap.put(13, zone);
-        zone.clear();
-
-        /**
-         * Zone 14 (offensive halfcourt)
-         */
-        zone.add(2);
-        zone.add(8);
-        zone.add(13);
-        courtAdjacentZonesMap.put(14, zone);
-        zone.clear();
-
-        /**
-         * Zone 15 (defensive halfcourt)
-         */
-        zone.add(14);
-        courtAdjacentZonesMap.put(15, zone);
-        zone.clear();
-
-        return courtAdjacentZonesMap;
+        switch (courtZone) {
+            case 1: // right corner
+                courtAdjacentZones.add(2);
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(5);
+                break;
+            case 2: // right wing                 
+                courtAdjacentZones.add(1);
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(5);
+                courtAdjacentZones.add(8);
+                courtAdjacentZones.add(14);
+                break;
+            case 3: // right low post
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(6);
+                break;
+            case 4: // right side of the lane
+                courtAdjacentZones.add(1);
+                courtAdjacentZones.add(2);
+                courtAdjacentZones.add(3);
+                courtAdjacentZones.add(5);
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(7);
+                break;
+            case 5: // right elbow
+                courtAdjacentZones.add(1);
+                courtAdjacentZones.add(2);
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(7);
+                courtAdjacentZones.add(8);
+                break;
+            case 6: // lane
+                courtAdjacentZones.add(3);
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(5);
+                courtAdjacentZones.add(7);
+                courtAdjacentZones.add(9);
+                courtAdjacentZones.add(10);
+                courtAdjacentZones.add(11);
+                break;
+            case 7: // top of the key
+                courtAdjacentZones.add(4);
+                courtAdjacentZones.add(5);
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(8);
+                courtAdjacentZones.add(10);
+                courtAdjacentZones.add(11);
+                courtAdjacentZones.add(11);
+                break;
+            case 8: // top of the arc
+                courtAdjacentZones.add(2);
+                courtAdjacentZones.add(5);
+                courtAdjacentZones.add(7);
+                courtAdjacentZones.add(11);
+                courtAdjacentZones.add(13);
+                courtAdjacentZones.add(14);
+                break;
+            case 9: // left low post
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(10);
+                break;
+            case 10: // left side of the lane
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(7);
+                courtAdjacentZones.add(9);
+                courtAdjacentZones.add(11);
+                courtAdjacentZones.add(12);
+                courtAdjacentZones.add(13);
+                break;
+            case 11: // left elbow
+                courtAdjacentZones.add(6);
+                courtAdjacentZones.add(7);
+                courtAdjacentZones.add(8);
+                courtAdjacentZones.add(10);
+                courtAdjacentZones.add(12);
+                courtAdjacentZones.add(13);
+                break;
+            case 12: // left corner
+                courtAdjacentZones.add(10);
+                courtAdjacentZones.add(11);
+                courtAdjacentZones.add(13);
+                break;
+            case 13: // left wing
+                courtAdjacentZones.add(8);
+                courtAdjacentZones.add(10);
+                courtAdjacentZones.add(11);
+                courtAdjacentZones.add(12);
+                courtAdjacentZones.add(14);
+                break;
+            case 14: // offensive halfcourt
+                courtAdjacentZones.add(2);
+                courtAdjacentZones.add(8);
+                courtAdjacentZones.add(13);
+                break;
+            case 15: // defensive halfcourt
+                courtAdjacentZones.add(14);
+                break;
+        }
+        return courtAdjacentZones;
     }
 
     /**
@@ -254,21 +197,18 @@ public class CourtUtils {
      */
     public static boolean isAdjacentZone(int firstCourtZone, int secondCourtZone) {
         boolean adjacentZone;
-        Map<Integer, ArrayList<Integer>> courtAdjacentZonesMap = getCourtAdjacentZonesMap();
-        ArrayList<Integer> adjacentZones;
+        ArrayList<Integer> courtAdjacentZones = getCourtAdjacentZones(firstCourtZone);        
 
         /**
-         * Checking if the first court zone is found in the court map, if true,
-         * check if the second zone is in adjacent zones list
+         * Checking if the first court zone is found in the court map, if true, check if the second zone is in adjacent
+         * zones list
          */
-        if (!courtAdjacentZonesMap.containsKey(firstCourtZone)) {
+        if (!courtAdjacentZones.contains(firstCourtZone)) {
             return false;
         } else if (firstCourtZone == secondCourtZone) {
             return true;
         } else {
-            adjacentZones = courtAdjacentZonesMap.get(firstCourtZone);
-
-            if (adjacentZones.contains(secondCourtZone)) {
+            if (courtAdjacentZones.contains(secondCourtZone)) {
                 adjacentZone = true;
             } else {
                 adjacentZone = false;
@@ -286,18 +226,14 @@ public class CourtUtils {
      */
     public static int getAdjacentZone(int courtZone) {
         int adjacentZone;
-        Map<Integer, ArrayList<Integer>> courtAdjacentZonesMap = getCourtAdjacentZonesMap();
-        ArrayList<Integer> adjacentZones;
+        ArrayList<Integer> courtAdjacentZones = getCourtAdjacentZones(courtZone);        
 
         /**
-         * Retrieving the list of adjacent zones to that zone, adding the
-         * current one to the list, shuffling the list and getting the first
-         * element from it
-         */
-        adjacentZones = courtAdjacentZonesMap.get(courtZone);
-        adjacentZones.add(courtZone);
-        Collections.shuffle(adjacentZones);
-        adjacentZone = adjacentZones.get(0);
+         * Retrieving the list of adjacent zones to that zone, adding the current one to the list, shuffling the list
+         * and getting the first element from it
+         */        
+        Collections.shuffle(courtAdjacentZones);
+        adjacentZone = courtAdjacentZones.get(MathUtils.generateRandomInt(0, courtAdjacentZones.size() - 1));
 
         return adjacentZone;
     }
@@ -310,7 +246,7 @@ public class CourtUtils {
      * @return
      */
     public static double distanceBetweenCourtSpots(CourtSpot from, CourtSpot to) {
-        double distance = Math.sqrt(Math.pow(to.getDistanceX() - from.getDistanceX(), 2) 
+        double distance = Math.sqrt(Math.pow(to.getDistanceX() - from.getDistanceX(), 2)
                 + Math.pow(to.getDistanceY() - from.getDistanceY(), 2));
         distance = Math.abs(distance);
 
@@ -344,12 +280,12 @@ public class CourtUtils {
 
         return randomCourtZoneSpot;
     }
-    
+
     /**
      * Returns a random sectioned zone of the court
-     * 
+     *
      * @param zoneSections Array list containing the sectioned zones
-     * @return 
+     * @return
      */
     public static int getRandomSectionedZone(ArrayList<Integer> zoneSections) {
         int randomSectionedZone = MathUtils.generateRandomInt(0, zoneSections.size() - 1);

@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.SeasonController">
+<AnchorPane id="AnchorPane" fx:id="mainContent" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="coachj.SeasonController">
   <children>
     <Label fx:id="seasonLabel" styleClass="h1" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
     <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="h1_img" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -77,7 +77,7 @@
       </tabs>
     </TabPane>
     <Button id="gameCenterButton" fx:id="gotoNextGameButton" disable="false" mnemonicParsing="false" onMouseClicked="#gotoNextGame" text="%ch_ir_proximo_jogo" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
-    <Button fx:id="gameCenterButton" disable="true" layoutX="160.0" mnemonicParsing="false" text="%ch_detalhes_jogo" AnchorPane.bottomAnchor="10.0" />
+    <Button fx:id="gameCenterButton" disable="true" layoutX="160.0" mnemonicParsing="false" text="%ch_detalhes_jogo" visible="false" AnchorPane.bottomAnchor="10.0" />
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />

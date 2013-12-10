@@ -420,15 +420,15 @@ public class PreSeasonController implements Initializable {
                 * player.getMarketValue();
         playerProposal = playerProjectedSalary * ((1 + (double) player.getGreed() / 100));
         franchiseOffer = playerProjectedSalary * ((1 + (double) generator.nextInt(
-                franchiseGeneralManagerDealingStrategy) / 100));
+                franchiseGeneralManagerDealingStrategy + 1) / 100));
 
         /**
          * Updating proposal values
          */
         playerProjectedSalaryLabel.setText(DecimalFormat.getCurrencyInstance()
                 .format(playerProjectedSalary));
-        failedContractAttemptsProgressBar.setProgress((double) player
-                .getFailedContractAttempts() / 3);
+        failedContractAttemptsProgressBar.setProgress((double) (player
+                .getFailedContractAttempts() / 3) * 100);
         playerProposalLabel.setText(DecimalFormat.getCurrencyInstance()
                 .format(playerProposal));
         franchiseAssetsLabel.setText(DecimalFormat.getCurrencyInstance()

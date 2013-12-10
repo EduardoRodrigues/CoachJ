@@ -197,7 +197,7 @@ public class PlayerUtils {
             agreeWithTerms = true;
         } else {
             differenceRate = (1 - (double) offer.getSalary() / playerProjectedSalary) * 100;
-            if (differenceRate < generator.nextInt(player.getGreed()) + offer.getLength()) {
+            if (differenceRate < generator.nextInt(player.getGreed() + 1) + offer.getLength()) {
                 agreeWithTerms = false;
             } else {
                 agreeWithTerms = true;
@@ -339,7 +339,7 @@ public class PlayerUtils {
          * Since passing is one of the most commom actions, populate the array
          * with 10 of that, then add more based on player's passing attribute
          */
-        populatePlayerDecisionArray(player, "pass", 10);
+        populatePlayerDecisionArray(player, "pass", 20);
         populatePlayerDecisionArray(player, "pass", player.getBaseAttributes().getPass() / 8);
 
         /* 

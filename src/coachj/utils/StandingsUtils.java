@@ -46,7 +46,7 @@ public class StandingsUtils {
         String last10;
         double gamesBehind;
         String sqlStatement = "SELECT * FROM franchise ORDER BY (homeWins + awayWins) DESC, "
-                + " record DESC, tiebreaker DESC";
+                + " record DESC, (homeLosses + awayLosses), tiebreaker DESC";
 
         resultSet = connection.getResultSet(sqlStatement);
 

@@ -196,13 +196,13 @@
         </Tab>
       </tabs>
     </TabPane>
-    <Button fx:id="pauseGameButton" disable="true" mnemonicParsing="false" onMouseClicked="#pauseGame" text="%ch_pausar_partida" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="10.0" />
+    <Button fx:id="pauseGameButton" disable="true" mnemonicParsing="false" onMouseClicked="#pauseGame" text="%ch_pausar_partida" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="118.0" />
     <Label styleClass="h3" text="%ch_ultima_jogada_pontuacao" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="lastScoringPlayScoreLabel" styleClass="boldLabel" text="-----" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="lastScoringPlayLabel" text="-----" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="lastScorerStatsLineLabel" text="-----" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" />
     <Label fx:id="savingInformationLabel" styleClass="boldLabel" text="%ch_salvando_jogo" visible="false" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="10.0" />
-    <Button fx:id="saveGameButton" mnemonicParsing="false" onMouseClicked="#saveGame" text="%ch_salvar_partida" visible="false" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="160.0" />
+    <Button fx:id="saveGameButton" mnemonicParsing="false" onMouseClicked="#saveGame" text="%ch_salvar_partida" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="14.0" />
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />

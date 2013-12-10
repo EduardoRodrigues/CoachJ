@@ -7,8 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Utility class for naming data that aims to decrease the number of repeated
- * names
+ * Utility class for naming data that aims to decrease the number of repeated names
  *
  * @author Eduardo M. Rodrigues
  * @version 1.0
@@ -17,8 +16,7 @@ import java.util.logging.Logger;
 public class NamingUtils {
 
     /**
-     * Retrieves the id of the country with lowest number of last names in the
-     * referenced table
+     * Retrieves the id of the country with lowest number of last names in the referenced table
      *
      * @param referencedTable Table to look for the country
      * @param connection Connection used to reach database
@@ -60,7 +58,7 @@ public class NamingUtils {
                 resultSet = connection.getResultSet(sqlStatement);
                 resultSet.first();
                 country = resultSet.getString("country");
-            }            
+            }
         } catch (SQLException ex) {
             Logger.getLogger(NamingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,8 +67,7 @@ public class NamingUtils {
     }
 
     /**
-     * Retrieves a random last name with the lowest occurrence rate in the given
-     * table
+     * Retrieves a random last name with the lowest occurrence rate in the given table
      *
      * @param referencedTable Table with occurrences
      * @param connection Connection used to reach database
@@ -95,13 +92,16 @@ public class NamingUtils {
                     + " AND country IN (SELECT country FROM first_name) "
                     + " ORDER BY RAND() LIMIT 1";
             resultSet = connection.getResultSet(sqlStatement);
-            resultSet.first();
-            lastName = resultSet.getString("name");
+            //resultSet.first();
+            //lastName = resultSet.getString("name");
 
             /**
              * If all last names already have been used, pick a random one
              */
-            if (lastName == null) {
+            if (resultSet.first()) {
+                lastName = resultSet.getString("name");
+            } else {
+                //if (lastName.equalsIgnoreCase("null")) {
                 sqlStatement = "SELECT name FROM last_name"
                         + " WHERE country != " + getCountryWithMostLastNames(referencedTable,
                         connection)
@@ -110,17 +110,17 @@ public class NamingUtils {
                 resultSet.first();
                 lastName = resultSet.getString("name");
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(NamingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-       return lastName;
+        return lastName;
     }
 
     /**
-     * Retrieves a random first name from the same country of the given last
-     * name, trying not to create an already taken one
+     * Retrieves a random first name from the same country of the given last name, trying not to
+     * create an already taken one
      *
      * @param country Country of the Last name given
      * @param connection Connection used to reach database
@@ -131,7 +131,7 @@ public class NamingUtils {
         /*
          * Variables that retrieve the resultset, store sql statements and 
          * the first name retrieved from the table
-         */       
+         */
         ResultSet resultSet;
         String sqlStatement;
         String firstName = null;
@@ -146,7 +146,7 @@ public class NamingUtils {
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             firstName = resultSet.getString("name");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(NamingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -155,9 +155,8 @@ public class NamingUtils {
     }
 
     /**
-     * Since MySQL currently does not support the LIMIT clause in subqueries,
-     * this method was created to query a table and return the id of the country
-     * with more last names within it.
+     * Since MySQL currently does not support the LIMIT clause in subqueries, this method was
+     * created to query a table and return the id of the country with more last names within it.
      *
      * @param referencedTable Table to look for the country
      * @param connection Connection used to reach database
@@ -168,7 +167,7 @@ public class NamingUtils {
         /*
          * Variables that retrieve the resultset, store sql statements and 
          * the country retrieved from the table
-         */    
+         */
         ResultSet resultSet;
         String sqlStatement;
         String country = null;
@@ -182,7 +181,7 @@ public class NamingUtils {
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             country = resultSet.getString("country");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(NamingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -202,7 +201,7 @@ public class NamingUtils {
         /*
          * Variables that retrieve the resultset, store sql statements 
          * and the country retrieved from the table
-         */ 
+         */
         ResultSet resultSet;
         String sqlStatement;
         String country = null;
@@ -217,7 +216,7 @@ public class NamingUtils {
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             country = resultSet.getString("country");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(NamingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }

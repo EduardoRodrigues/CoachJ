@@ -543,14 +543,14 @@ public class CoachUtils {
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             attributesMap.put(resultSet.getShort("rebound"),
-                    "(offensiveRebound + defensiveRebound - injuryImpact)");
+                    "(seasonMomentum + offensiveRebound + defensiveRebound - injuryImpact)");
             attributesMap.put(resultSet.getShort("technique"),
-                    "technique - injuryImpact");
-            attributesMap.put(resultSet.getShort("pass"), "pass - injuryImpact");
+                    "(seasonMomentum + technique - injuryImpact)");
+            attributesMap.put(resultSet.getShort("pass"), "(seasonMomentum + pass - injuryImpact)");
             attributesMap.put(resultSet.getShort("shoot"),
-                    "(fieldGoals + threePointers - injuryImpact)");
+                    "(seasonMomentum + fieldGoals + threePointers - injuryImpact)");
             attributesMap.put(resultSet.getShort("defense"),
-                    "(contest + oneOnOneDefense + helpDefense - injuryImpact)");
+                    "(seasonMomentum + contest + oneOnOneDefense + helpDefense - injuryImpact)");
         } catch (SQLException ex) {
             Logger.getLogger(GeneralManagerUtils.class.getName()).log(Level.SEVERE, null, ex);
         }

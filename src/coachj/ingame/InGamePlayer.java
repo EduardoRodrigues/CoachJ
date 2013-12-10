@@ -59,6 +59,7 @@ public class InGamePlayer {
     private Player baseAttributes;
     private ArrayList<String> decisionArray = new ArrayList<>();
     private ArrayList<Integer> movementArray = new ArrayList<>();
+    private ArrayList<String> movementLog = new ArrayList<>();
 
     /**
      * Constructor
@@ -103,6 +104,7 @@ public class InGamePlayer {
             InGamePlayer bestQuickShooter = team.getBestQuickShooter();
             InGamePlayer hottestShooter = team.getHottestShooter();
             System.out.println("Got best passing options"); // delete
+            System.out.println("Best Playmaker: " + bestPlaymaker.getCompleteName()); // delete
 
             /**
              * Checking if the player's team is currently trailing
@@ -221,13 +223,12 @@ public class InGamePlayer {
                     || game.getLastEvent().equalsIgnoreCase("ball to offensive court")
                     || game.getLastEvent().equalsIgnoreCase("after turnover inbound pass")
                     || game.getLastEvent().equalsIgnoreCase("after basket inbound pass")
+                    || game.getLastEvent().equalsIgnoreCase("carry ball")
                     || game.getLastEvent().equalsIgnoreCase("inbound pass")
                     || game.getLastEvent().equalsIgnoreCase("defensive rebound"))
-                    && !game.getActiveOffensivePlayer().equals(bestPlaymaker)
-                    && (!game.getActiveOffensivePlayer().getBaseAttributes().getPosition()
-                    .equalsIgnoreCase("PG")
-                    || !game.getActiveOffensivePlayer().getBaseAttributes().getPosition2()
-                    .equalsIgnoreCase("PG"))) {
+                    && !this.equals(bestPlaymaker)
+                    && !this.getBaseAttributes().getPosition()
+                    .equalsIgnoreCase("PG")) {
                 playerDecision = "ball to playmaker";
                 return playerDecision;
             }
@@ -388,7 +389,7 @@ public class InGamePlayer {
                 /**
                  * Player is an above-the-average outside shooter and has an open look
                  */
-                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage()
+                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage() * 1.2
                         && game.isOpenLook()) {
                     playerDecision = "shoot";
                     return playerDecision;
@@ -398,7 +399,7 @@ public class InGamePlayer {
                  * Player is an above-the-average outside shooter, and is on a mismatch against a smaller player, and is
                  * shooting above .300, and the shotclock is within coach's tempo dynamics
                  */
-                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage()
+                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage() * 1.2
                         && this.baseAttributes.getHeight()
                         > game.getActiveDefensivePlayer().baseAttributes.getHeight()
                         && this.getThreePointersShootingPercentage() > 0.3
@@ -411,7 +412,7 @@ public class InGamePlayer {
                  * Player is an above-the-average outside shooter, and is shooting above .300, and the shotclock is
                  * within coach's tempo dynamics
                  */
-                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage()
+                if (this.baseAttributes.getThreePointers() > game.getThreePointersAverage() * 1.2
                         && this.getThreePointersShootingPercentage() > 0.3
                         && game.getShotClock() < 5 + coach.getTempo() / 10) {
                     playerDecision = "shoot";
@@ -443,7 +444,7 @@ public class InGamePlayer {
                  * Player is neither a good outside shooter or passer, but can drive the ball, and the shotclock is
                  * above coach's tempo dynamics
                  */
-                if (this.baseAttributes.getDrive() > game.getDriveAverage()
+                if (this.baseAttributes.getDrive() > game.getDriveAverage() * 1.2
                         && game.getShotClock() > 5 + coach.getTempo() / 10
                         && !game.getLastEvent().equalsIgnoreCase("drive")) {
                     playerDecision = "drive";
@@ -459,7 +460,7 @@ public class InGamePlayer {
                 /**
                  * Player is a good jump shooter and has an open look
                  */
-                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage()
+                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage() * 1.2
                         && game.isOpenLook()) {
                     playerDecision = "shoot";
                     return playerDecision;
@@ -469,7 +470,7 @@ public class InGamePlayer {
                  * Player is a good jump shooter, and is on a mismatch against a smaller player, and is shooting above
                  * .300, and the shotclock is within coach's tempo dynamics
                  */
-                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage()
+                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage() * 1.2
                         && this.baseAttributes.getHeight()
                         > game.getActiveDefensivePlayer().baseAttributes.getHeight()
                         && this.getFieldGoalsShootingPercentage() > 0.3
@@ -482,7 +483,7 @@ public class InGamePlayer {
                  * Player is a good jump shooter, and is shooting above .300, and the shotclock is within coach's tempo
                  * dynamics
                  */
-                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage()
+                if (this.baseAttributes.getPullUpJumper() > game.getJumpShotAverage() * 1.2
                         && this.getFieldGoalsShootingPercentage() > 0.3
                         && game.getShotClock() < 5 + coach.getTempo() / 10) {
                     playerDecision = "shoot";
@@ -498,10 +499,9 @@ public class InGamePlayer {
                     playerDecision = "pass";
                     return playerDecision;
                 }
-                
+
                 /**
-                 * Player isn't a good jump shooter and is a big man, and the shotclock is above coach's tempo
-                 * dynamics
+                 * Player isn't a good jump shooter and is a big man, and the shotclock is above coach's tempo dynamics
                  */
                 if ((this.baseAttributes.getPosition().equals("C")
                         || this.baseAttributes.getPosition2().equals("C"))
@@ -514,7 +514,7 @@ public class InGamePlayer {
                  * Player is neither a good jump shooter or passer, but can drive the ball, and the shotclock is above
                  * coach's tempo dynamics
                  */
-                if (this.baseAttributes.getDrive() > game.getDriveAverage()
+                if (this.baseAttributes.getDrive() > game.getDriveAverage() * 1.2
                         && game.getShotClock() > 5 + coach.getTempo() / 10
                         && !game.getLastEvent().equalsIgnoreCase("drive")) {
                     playerDecision = "drive";
@@ -530,7 +530,7 @@ public class InGamePlayer {
                 /**
                  * Player is a good low-post shooter and has an open look
                  */
-                if (this.baseAttributes.getLowPost() > game.getLowPostAverage()
+                if (this.baseAttributes.getLowPost() > game.getLowPostAverage() * 1.2
                         && game.isOpenLook()) {
                     playerDecision = "shoot";
                     return playerDecision;
@@ -540,7 +540,7 @@ public class InGamePlayer {
                  * Player is a good low-post shooter, and is on a mismatch against a smaller player, and is shooting
                  * above .300, and the shotclock is within coach's tempo dynamics
                  */
-                if (this.baseAttributes.getLowPost() > game.getLowPostAverage()
+                if (this.baseAttributes.getLowPost() > game.getLowPostAverage() * 1.2
                         && this.baseAttributes.getHeight()
                         > game.getActiveDefensivePlayer().baseAttributes.getHeight()
                         && this.getFieldGoalsShootingPercentage() > 0.3
@@ -553,7 +553,7 @@ public class InGamePlayer {
                  * Player is a good low-post shooter, and is shooting above .300, and the shotclock is within coach's
                  * tempo dynamics
                  */
-                if (this.baseAttributes.getLowPost() > game.getLowPostAverage()
+                if (this.baseAttributes.getLowPost() > game.getLowPostAverage() * 1.2
                         && this.getFieldGoalsShootingPercentage() > 0.3
                         && game.getShotClock() < 5 + coach.getTempo() / 10) {
                     playerDecision = "shoot";
@@ -564,7 +564,7 @@ public class InGamePlayer {
                  * Player isn't a good low-post shooter, but is on a mismatch against a smaller player and hasn't failed
                  * to back down before, and the shotclock is within coach's tempo dynamics
                  */
-                if (this.baseAttributes.getLowPost() > game.getLowPostAverage()
+                if (this.baseAttributes.getLowPost() > game.getLowPostAverage() * 1.2
                         && this.baseAttributes.getHeight()
                         > game.getActiveDefensivePlayer().baseAttributes.getHeight()
                         && game.getShotClock() < 5 + coach.getTempo() / 10
@@ -592,7 +592,7 @@ public class InGamePlayer {
                 /**
                  * Player is a good near-the-basket scorer and has an open look
                  */
-                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage()
+                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage() * 1.2
                         && game.isOpenLook()) {
                     playerDecision = "shoot";
                     return playerDecision;
@@ -601,7 +601,7 @@ public class InGamePlayer {
                 /**
                  * Player is a good near-the-basket scorer and is very agressive
                  */
-                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage()
+                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage() * 1.2
                         && this.baseAttributes.getAggressiveness()
                         > game.getAggressivenessAverage()) {
                     playerDecision = "shoot";
@@ -612,7 +612,7 @@ public class InGamePlayer {
                  * Player is a good near-the-basket scorer, but it's not very agressive, and the shotclock is within
                  * coach's tempo dynamics
                  */
-                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage()
+                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage() * 1.2
                         && game.getShotClock() < 5 + coach.getTempo() / 10) {
                     playerDecision = "shoot";
                     return playerDecision;
@@ -622,7 +622,7 @@ public class InGamePlayer {
                  * Player is a good near-the-basket scorer, but it's not very agressive, and the shotclock is above
                  * coach's tempo dynamics
                  */
-                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage()
+                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage() * 1.2
                         && game.getShotClock() > 5 + coach.getTempo() / 10) {
                     playerDecision = "pass";
                     return playerDecision;
@@ -632,13 +632,12 @@ public class InGamePlayer {
                  * Player isn't a good near-the-basket finisher, but is a good passer, and the shotclock is above
                  * coach's tempo dynamics
                  */
-                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage()
+                if (this.baseAttributes.getInThePaint() > game.getInThePaintAverage() * 1.2
                         && game.getShotClock() > 5 + coach.getTempo() / 10) {
                     playerDecision = "pass";
                     return playerDecision;
                 }
             }
-
 
         } catch (Exception e) {
             System.err.println("Player Decision Error: " + e.getStackTrace());
@@ -1957,9 +1956,15 @@ public class InGamePlayer {
 
     /**
      * Moves the player on the court
+     *
+     * @param game Game data
      */
-    public void move() {
+    public void move(PlayGame game) {
 
+        this.movementLog.add(game.getPeriod() + " - " + TimeUtils.intToTime(game.getTimeLeft()) + " :" 
+         + CourtUtils.getCourtZoneDescription(this.currentZoneLocation, 
+         "pt", game.getConnection())); // delete*/
+        
         /**
          * If the player is in the defensive halfcourt (15) he can only move to the offensive halfcourt (14)
          */
@@ -1996,20 +2001,71 @@ public class InGamePlayer {
         /**
          * If the player is another zone, retrieves a random zone from the player's movement array and check if it's
          * adjacent to the player's current zone location, if true, the player moves to the retrieved zones, otherwise,
-         * the player stays in the same zone. The loop tries for 3 times move the player to another cell just to provide
-         * more flow to the game
+         * the player stays in the same zone. The loop tries for (currentStaminaLevel / 30) times move the player to
+         * another cell just to provide more flow to the game.
          */
-        int moveTo;
+        int moveTo = this.currentZoneLocation;
+        int randomLocation;
+        int adjacentZone;
+        ArrayList<Integer> possibleLocations = new ArrayList<>();
+        possibleLocations.add(moveTo);
 
-        for (int i = 0; i < 3; i++) {
-            moveTo = this.getMovementArray().get(MathUtils.generateRandomInt(0,
+        for (int i = 0; i < this.currentStaminaLevel / 10; i++) {
+            randomLocation = this.getMovementArray().get(MathUtils.generateRandomInt(0,
                     this.getMovementArray().size() - 1));
-            if (CourtUtils.isAdjacentZone(moveTo, this.currentZoneLocation)
-                    && moveTo != this.currentZoneLocation) {
-                this.currentZoneLocation = moveTo;
-                return;
+            if (CourtUtils.isAdjacentZone(randomLocation, this.currentZoneLocation)
+                    && randomLocation != this.currentZoneLocation && randomLocation < 14) {
+                possibleLocations.add(randomLocation);
             }
+            
+            adjacentZone = CourtUtils.getAdjacentZone(this.currentZoneLocation);
+            possibleLocations.add(adjacentZone);
         }
+        
+        moveTo = possibleLocations.get(MathUtils.generateRandomInt(0, possibleLocations.size() - 1));
+        
+        System.out.println("Current Location: " + this.currentZoneLocation); // delete
+        System.out.println("Possible locations: " + possibleLocations.toString()); // delete 
+        System.out.println("Chosen location: " + moveTo);
+        /**
+         * Checking if the player hasn't moved to make him to an adjacent zone
+         */
+        if (moveTo == this.currentZoneLocation) {
+            moveTo = CourtUtils.getAdjacentZone(moveTo);
+        }
+
+        /**
+         * Preventing a center/power forward with a low threePointer attribute to move to outside the perimeter
+         */
+        if (this.getBaseAttributes().getPosition().equalsIgnoreCase("C")) {
+            System.out.println("Center/Power Forward moving to outside");
+            System.out.println("Player " + this.getCompleteName());
+            System.out.println(game.getPeriod() + " - " + TimeUtils.intToTime(game.getTimeLeft()) + " :"
+                    + CourtUtils.getCourtZoneDescription(this.currentZoneLocation,
+                    "pt", game.getConnection()));
+            System.out.println("Is center? " + (this.getBaseAttributes().getPosition().equalsIgnoreCase("C")
+                    || this.getBaseAttributes().getPosition2().equalsIgnoreCase("C")));
+            System.out.println("Outside? " + (game.getCourtSpots().get(moveTo).getBasketPoints() == 3));
+                    System.out.println("Good outside shooter? " + (this.getBaseAttributes().getThreePointers() < game.getThreePointersAverage() * 1.2));
+        }
+
+        if (this.getBaseAttributes().getPosition().equalsIgnoreCase("C")
+                || this.getBaseAttributes().getPosition2().equalsIgnoreCase("C")
+                && (game.getCourtSpots().get(moveTo).getBasketPoints() == 3
+                && this.getBaseAttributes().getThreePointers() < game.getThreePointersAverage() * 1.2)) {
+            return;
+        }
+
+        /**
+         * Preventing players from going back to the offensive and defensive halfcourts once the offensive possession
+         * has started
+         */
+        if (game.getCourtSpots().get(moveTo).getCourtZone() == CourtZones.OFFENSIVE_HALFCOURT.getCourtZone()
+                || game.getCourtSpots().get(moveTo).getCourtZone() == CourtZones.DEFENSIVE_HALFCOURT.getCourtZone()) {
+            return;
+        }
+
+        this.currentZoneLocation = moveTo;
     }
 
     /**
@@ -2650,5 +2706,12 @@ public class InGamePlayer {
 
     public StringProperty stringJerseyProperty() {
         return stringJersey;
+    }
+
+    public void printMovementLog() {
+        for (int i = 0; i < this.movementLog.size(); i++) {
+            System.out.println(this.movementLog.get(i).toString());
+        }
+
     }
 } // end class InGamePlayer
