@@ -10,6 +10,8 @@ import javafx.util.Callback;
  *
  * @author Eduardo M. Rodrigues
  * @version 1.0
+ * @param <S>
+ * @param <T>
  * @date 03/09/2013
  */
 public class BoxScoreTableCellFactory<S, T> implements Callback<TableColumn<S, T>, TableCell<S, T>> {
@@ -19,14 +21,15 @@ public class BoxScoreTableCellFactory<S, T> implements Callback<TableColumn<S, T
 
     @Override
     public TableCell<S, T> call(TableColumn<S, T> p) {
-        TableCell<S, T> cell = new TableCell<S, T>() {
+        TableCell<S, T> cell;
+        cell = new TableCell<S, T>() {
             @Override
             protected void updateItem(Object item, boolean empty) {
                 // CSS Styles
                 String onTheCourt = "onTheCourt";
                 String inTheBench = "inTheBench";
                 String notPlayable = "notPlayable";
-                String cssStyle;
+                String cssStyle = "inTheBench";
 
                 InGamePlayer player = null;
                 if (getTableRow() != null) {
@@ -41,15 +44,15 @@ public class BoxScoreTableCellFactory<S, T> implements Callback<TableColumn<S, T
                 super.updateItem((T) item, empty);
 
                 //Determine how to format the cell based on the status of the container.
-                if (player.isOnCourt()) {
+                if (player == null) {
+                    cssStyle = "table-cell";
+                } /*else if (player.isOnCourt()) {
                     cssStyle = onTheCourt;
-                } else {
-                    cssStyle = inTheBench;
-                }
-
-                if (player.isEjected() || !player.getBaseAttributes().getPlayable()) {
+                }*/ else if (player.isEjected() || !player.getBaseAttributes().getPlayable()) {
                     cssStyle = notPlayable;
-                }
+                } /*else {
+                    cssStyle = inTheBench;
+                }*/
 
                 //Set the CSS style on the cell and set the cell's text.
                 getStyleClass().add(cssStyle);
@@ -65,5 +68,5 @@ public class BoxScoreTableCellFactory<S, T> implements Callback<TableColumn<S, T
 // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
     // #[regen=yes,id=DCE.1E3D9607-0CEC-6DAA-6CD8-756A76DDF136]
     // </editor-fold> 
- 
+
 } // end class BoxScoreTableCellFactory

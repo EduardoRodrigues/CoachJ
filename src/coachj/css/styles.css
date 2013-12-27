@@ -28,7 +28,7 @@
 /* cores */
 
 .mainFxmlClass, .tab-pane, .tab {
-    -fx-background-color: #FDF5E6;    
+    -fx-background-color: #FFFFFF;    
 }
 
 .menu-bar, .menu-item, .menu {   
@@ -142,6 +142,8 @@
 .table-cell {
     -fx-padding: 4px 0px 0px 2px;
     -fx-font: 13px 'Consolas';
+    /*-fx-border-color: gray;
+    -f-border-width: 0.5 0.5 0 0;*/
 }
 
 .date_bar {
@@ -191,6 +193,21 @@
 }
 
 .chart-title {
-  -fx-text-fill: #4682b4;
-  -fx-font: bold 20px 'Consolas';
+    -fx-text-fill: #4682b4;
+    -fx-font: bold 20px 'Consolas';
+}
+
+.onTheCourt {
+    -fx-background-color: #33cc00;
+    -fx-text-fill: #FFFFFF;
+}
+
+.inTheBench {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #000000;
+}
+
+.notPlayable  {
+    -fx-background-color: #EE0000;
+    -fx-text-fill: #FFFFFF;
 }

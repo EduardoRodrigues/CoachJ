@@ -137,7 +137,13 @@ public class GameController implements Initializable {
     @FXML
     private TableColumn awayTeamPlayerStaminaTableColumn;
     @FXML
-    private TableColumn awayTeamPlayerCurrentLocationTableColumn;
+    private TableColumn awayTeamPlayerPerformanceIndexTableColumn;
+    @FXML
+    private TableColumn awayTeamPlayerOffensiveIndexTableColumn;
+    @FXML
+    private TableColumn awayTeamPlayerDefensiveIndexTableColumn;
+    @FXML
+    private TableColumn awayTeamPlayerEfficiencyIndexTableColumn;
     @FXML
     private TableColumn awayTeamPlayerOffensiveMomentumTableColumn;
     @FXML
@@ -181,7 +187,13 @@ public class GameController implements Initializable {
     @FXML
     private TableColumn homeTeamPlayerStaminaTableColumn;
     @FXML
-    private TableColumn homeTeamPlayerCurrentLocationTableColumn;
+    private TableColumn homeTeamPlayerPerformanceIndexTableColumn;
+    @FXML
+    private TableColumn homeTeamPlayerOffensiveIndexTableColumn;
+    @FXML
+    private TableColumn homeTeamPlayerDefensiveIndexTableColumn;
+    @FXML
+    private TableColumn homeTeamPlayerEfficiencyIndexTableColumn;
     @FXML
     private TableColumn homeTeamPlayerOffensiveMomentumTableColumn;
     @FXML
@@ -222,6 +234,113 @@ public class GameController implements Initializable {
     private Label lastScoringPlayScoreLabel;
     @FXML
     private Label savingInformationLabel;
+    @FXML
+    private Tab scoringTab;
+    @FXML
+    private Label scoringTabAwayTeamLabel;
+    @FXML
+    private Label scoringTabAwayTeamFieldGoalsLabel;
+    @FXML
+    private Label scoringTabAwayTeamThreePointersLabel;
+    @FXML
+    private Label scoringTabAwayTeamFreeThrowsLabel;
+    @FXML
+    private Label scoringTabAwayTeamPointsInThePaintLabel;
+    @FXML
+    private Label scoringTabAwayTeamScoringDroughtLabel;
+    @FXML
+    private Label scoringTabAwayTeamBiggestLeadLabel;
+    @FXML
+    private Label scoringTabAwayTeamLongestRunLabel;
+    @FXML
+    private Label scoringTabAwayTeamCurrentRunLabel;
+    @FXML
+    private Label scoringTabAwayTeamSecondChancePointsLabel;
+    @FXML
+    private Label scoringTabAwayTeamBenchPointsLabel;
+    @FXML
+    private Label scoringTabAwayTeamFastbreakPointsLabel;
+    @FXML
+    private Label scoringTabHomeTeamLabel;
+    @FXML
+    private Label scoringTabHomeTeamFieldGoalsLabel;
+    @FXML
+    private Label scoringTabHomeTeamThreePointersLabel;
+    @FXML
+    private Label scoringTabHomeTeamFreeThrowsLabel;
+    @FXML
+    private Label scoringTabHomeTeamPointsInThePaintLabel;
+    @FXML
+    private Label scoringTabHomeTeamScoringDroughtLabel;
+    @FXML
+    private Label scoringTabHomeTeamBiggestLeadLabel;
+    @FXML
+    private Label scoringTabHomeTeamLongestRunLabel;
+    @FXML
+    private Label scoringTabHomeTeamCurrentRunLabel;
+    @FXML
+    private Label scoringTabHomeTeamSecondChancePointsLabel;
+    @FXML
+    private Label scoringTabHomeTeamBenchPointsLabel;
+    @FXML
+    private Label scoringTabHomeTeamFastbreakPointsLabel;
+    @FXML
+    private Tab moreStatsTab;
+    @FXML
+    private Label moreStatsTabAwayTeamLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamOffensiveReboundsLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamDefensiveReboundsLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamTotalReboundsLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamAssistsLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamBlocksLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamStealsLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamTurnoversLabel;
+    @FXML
+    private Label moreStatsTabAwayTeamFoulsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamOffensiveReboundsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamDefensiveReboundsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamTotalReboundsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamAssistsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamBlocksLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamStealsLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamTurnoversLabel;
+    @FXML
+    private Label moreStatsTabHomeTeamFoulsLabel;
+    @FXML
+    private Tab topPerformersStatsTab;
+    @FXML
+    private Label topPerformersTabAwayTeamLabel;
+@FXML
+    private Label topPerformersTabAwayTeamTopPerformerLabel;
+@FXML
+    private Label topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel;
+@FXML
+    private Label topPerformersTabAwayTeamTopPerformerStatsLabel;
+ @FXML
+    private Label topPerformersTabHomeTeamLabel;
+@FXML
+    private Label topPerformersTabHomeTeamTopPerformerLabel;
+@FXML
+    private Label topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel;
+@FXML
+    private Label topPerformersTabHomeTeamTopPerformerStatsLabel;
+
     /**
      * Keeps a reference to the application's thread
      */
@@ -280,24 +399,30 @@ public class GameController implements Initializable {
          * Setting up scoreboard, game info panel and others information display controls
          */
         scoreboardAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
+        scoringTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
+        moreStatsTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
+        topPerformersTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
         scoreboardAwayTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
                 game.getTeams().get(1).getId(), connection));
         scoreboardHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
+        scoringTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
+        moreStatsTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
+        topPerformersTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
         scoreboardHomeTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
                 game.getTeams().get(2).getId(), connection));
         awayTeamTab.setText("Boxscore: " + game.getTeams().get(1).getCompleteName());
         homeTeamTab.setText("Boxscore: " + game.getTeams().get(2).getCompleteName());
         awayTeamCompleteNameLabel.setText(game.getTeams().get(1).getCompleteName() + " ("
                 + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(1)
-                .getCoachId(), connection) + ")");
-        homeTeamCompleteNameLabel.setText(game.getTeams().get(2).getCompleteName()+ " ("
+                        .getCoachId(), connection) + ")");
+        homeTeamCompleteNameLabel.setText(game.getTeams().get(2).getCompleteName() + " ("
                 + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(2)
-                .getCoachId(), connection) + ")");
+                        .getCoachId(), connection) + ")");
         playByPlayAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
         playByPlayHomeScoreTableColumn.setText(game.getTeams().get(2).getAbbreviature());
         scoringLogAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
         scoringLogHomeScoreTableColumn.setText(game.getTeams().get(2).getAbbreviature());
-        updateScoreBoard();
+        updateGameStats();
         updateGameInfoPanel();
 
         /**
@@ -343,10 +468,13 @@ public class GameController implements Initializable {
     }
 
     /**
-     * Updates game's scoreboard
+     * Updates game's stats
      */
-    private void updateScoreBoard() {
+    private void updateGameStats() {
 
+        /**
+         * Retrieving stats from the PlayGame object
+         */
         String awayTeamFouls = String.valueOf(game.getTeams().get(1).getFouls());
         String awayTeamScore = String.valueOf(game.getTeams().get(1).getScore());
         String awayTeamTimeoutsLeft = String.valueOf(game.getTeams().get(1).getTimeoutsLeft());
@@ -360,6 +488,77 @@ public class GameController implements Initializable {
         String lastScoringPlay = game.getLastScoringPlay();
         String lastScorerStats = game.getLastScorerStats();
 
+        /**
+         * Scoring tab stats
+         */
+        String awayTeamFieldGoals = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(1).getFieldGoalsMade(),
+                game.getTeams().get(1).getFieldGoalsAttempted(), (double) game.getTeams().get(1).getFieldGoalsMade()
+                / game.getTeams().get(1).getFieldGoalsAttempted());
+        String awayTeamThreePointers = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(1).getThreePointersMade(),
+                game.getTeams().get(1).getThreePointersAttempted(), (double) game.getTeams().get(1).getThreePointersMade()
+                / game.getTeams().get(1).getThreePointersAttempted());
+        String awayTeamFreeThrows = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(1).getFreeThrowsMade(),
+                game.getTeams().get(1).getFreeThrowsAttempted(), (double) game.getTeams().get(1).getFreeThrowsMade()
+                / game.getTeams().get(1).getFreeThrowsAttempted());
+        String awayTeamPointsInThePaint = String.format("%01d", game.getTeams().get(1).getPointsInThePaint());
+        String awayTeamScoringDrought = TimeUtils.intToTime(game.getTeams().get(1).getScoringDrought());
+        String awayTeamBiggestLead = String.format("%01d", game.getTeams().get(1).getBiggestLead());
+        String awayTeamLongestRun = String.format("%01d", game.getTeams().get(1).getLongestRun());
+        String awayTeamCurrentRun = String.format("%01d", game.getTeams().get(1).getCurrentRun());
+        String awayTeamSecondChancePoints = String.format("%01d", game.getTeams().get(1).getSecondChancePoints());
+        String awayTeamBenchPoints = String.format("%01d", game.getTeams().get(1).getBenchPoints());
+        String awayTeamFastbreakPoints = String.format("%01d", game.getTeams().get(1).getFastbreakPoints());
+
+        String homeTeamFieldGoals = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(2).getFieldGoalsMade(),
+                game.getTeams().get(2).getFieldGoalsAttempted(), (double) game.getTeams().get(2).getFieldGoalsMade()
+                / game.getTeams().get(2).getFieldGoalsAttempted());
+        String homeTeamThreePointers = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(2).getThreePointersMade(),
+                game.getTeams().get(2).getThreePointersAttempted(), (double) game.getTeams().get(2).getThreePointersMade()
+                / game.getTeams().get(2).getThreePointersAttempted());
+        String homeTeamFreeThrows = String.format("%01d/%01d (%01.3f%%)", game.getTeams().get(2).getFreeThrowsMade(),
+                game.getTeams().get(2).getFreeThrowsAttempted(), (double) game.getTeams().get(2).getFreeThrowsMade()
+                / game.getTeams().get(2).getFreeThrowsAttempted());
+        String homeTeamPointsInThePaint = String.format("%01d", game.getTeams().get(2).getPointsInThePaint());
+        String homeTeamScoringDrought = TimeUtils.intToTime(game.getTeams().get(2).getScoringDrought());
+        String homeTeamBiggestLead = String.format("%01d", game.getTeams().get(2).getBiggestLead());
+        String homeTeamLongestRun = String.format("%01d", game.getTeams().get(2).getLongestRun());
+        String homeTeamCurrentRun = String.format("%01d", game.getTeams().get(2).getCurrentRun());
+        String homeTeamSecondChancePoints = String.format("%01d", game.getTeams().get(2).getSecondChancePoints());
+        String homeTeamBenchPoints = String.format("%01d", game.getTeams().get(2).getBenchPoints());
+        String homeTeamFastbreakPoints = String.format("%01d", game.getTeams().get(2).getFastbreakPoints());
+
+        /**
+         * Retrieving top performers
+         */
+        InGamePlayer awayTeamBestPerformer = game.getTeams().get(1).getBestPerformer();
+        InGamePlayer homeTeamBestPerformer = game.getTeams().get(2).getBestPerformer();
+        
+        /**
+         * More stats tab
+         */
+        String awayTeamDefensiveRebounds = String.format("%01d", game.getTeams().get(1).getDefensiveRebounds());
+        String awayTeamOffensiveRebounds = String.format("%01d", game.getTeams().get(1).getOffensiveRebounds());
+        String awayTeamTotalRebounds = String.format("%01d", game.getTeams().get(1).getDefensiveRebounds()
+                + game.getTeams().get(1).getOffensiveRebounds());
+        String awayTeamAssists = String.format("%01d", game.getTeams().get(1).getAssists());
+        String awayTeamBlocks = String.format("%01d", game.getTeams().get(1).getBlocks());
+        String awayTeamSteals = String.format("%01d", game.getTeams().get(1).getSteals());
+        String awayTeamTurnovers = String.format("%01d", game.getTeams().get(1).getTurnovers());
+        String awayTeamTotalFouls = String.format("%01d", game.getTeams().get(1).getTotalFouls());
+
+        String homeTeamDefensiveRebounds = String.format("%01d", game.getTeams().get(2).getDefensiveRebounds());
+        String homeTeamOffensiveRebounds = String.format("%01d", game.getTeams().get(2).getOffensiveRebounds());
+        String homeTeamTotalRebounds = String.format("%01d", game.getTeams().get(2).getDefensiveRebounds()
+                + game.getTeams().get(2).getOffensiveRebounds());
+        String homeTeamAssists = String.format("%01d", game.getTeams().get(2).getAssists());
+        String homeTeamBlocks = String.format("%01d", game.getTeams().get(2).getBlocks());
+        String homeTeamSteals = String.format("%01d", game.getTeams().get(2).getSteals());
+        String homeTeamTurnovers = String.format("%01d", game.getTeams().get(2).getTurnovers());
+        String homeTeamTotalFouls = String.format("%01d", game.getTeams().get(2).getTotalFouls());
+
+        /**
+         * Updating main scoreboard
+         */
         scoreboardAwayTeamFoulsLabel.setText(awayTeamFouls);
         scoreboardAwayTeamScoreLabel.setText(awayTeamScore);
         scoreboardAwayTeamTimeoutsLabel.setText(awayTeamTimeoutsLeft);
@@ -372,9 +571,91 @@ public class GameController implements Initializable {
         scoreboardShotClockLabel.setText(shotClock);
         scoreboardTimeLeftLabel.setText(timeLeft);
 
+        /**
+         * Updating last scoring play
+         */
         lastScoringPlayScoreLabel.setText(lastScoringPlayScore);
         lastScoringPlayLabel.setText(lastScoringPlay);
         lastScorerStatsLineLabel.setText(lastScorerStats);
+
+        /**
+         * Updating scoring stats
+         */
+        scoringTabAwayTeamFieldGoalsLabel.setText(awayTeamFieldGoals);
+        scoringTabAwayTeamThreePointersLabel.setText(awayTeamThreePointers);
+        scoringTabAwayTeamFreeThrowsLabel.setText(awayTeamFreeThrows);
+        scoringTabAwayTeamPointsInThePaintLabel.setText(awayTeamPointsInThePaint);
+        scoringTabAwayTeamScoringDroughtLabel.setText(awayTeamScoringDrought);
+        scoringTabAwayTeamBiggestLeadLabel.setText(awayTeamBiggestLead);
+        scoringTabAwayTeamLongestRunLabel.setText(awayTeamLongestRun);
+        scoringTabAwayTeamCurrentRunLabel.setText(awayTeamCurrentRun);
+        scoringTabAwayTeamSecondChancePointsLabel.setText(awayTeamSecondChancePoints);
+        scoringTabAwayTeamBenchPointsLabel.setText(awayTeamBenchPoints);
+        scoringTabAwayTeamFastbreakPointsLabel.setText(awayTeamFastbreakPoints);
+
+        scoringTabHomeTeamFieldGoalsLabel.setText(homeTeamFieldGoals);
+        scoringTabHomeTeamThreePointersLabel.setText(homeTeamThreePointers);
+        scoringTabHomeTeamFreeThrowsLabel.setText(homeTeamFreeThrows);
+        scoringTabHomeTeamPointsInThePaintLabel.setText(homeTeamPointsInThePaint);
+        scoringTabHomeTeamScoringDroughtLabel.setText(homeTeamScoringDrought);
+        scoringTabHomeTeamBiggestLeadLabel.setText(homeTeamBiggestLead);
+        scoringTabHomeTeamLongestRunLabel.setText(homeTeamLongestRun);
+        scoringTabHomeTeamCurrentRunLabel.setText(homeTeamCurrentRun);
+        scoringTabHomeTeamSecondChancePointsLabel.setText(homeTeamSecondChancePoints);
+        scoringTabHomeTeamBenchPointsLabel.setText(homeTeamBenchPoints);
+        scoringTabHomeTeamFastbreakPointsLabel.setText(homeTeamFastbreakPoints);
+
+        /**
+         * Updating more stats
+         */
+        moreStatsTabAwayTeamDefensiveReboundsLabel.setText(awayTeamDefensiveRebounds);
+        moreStatsTabAwayTeamOffensiveReboundsLabel.setText(awayTeamOffensiveRebounds);
+        moreStatsTabAwayTeamTotalReboundsLabel.setText(awayTeamTotalRebounds);
+        moreStatsTabAwayTeamAssistsLabel.setText(awayTeamAssists);
+        moreStatsTabAwayTeamBlocksLabel.setText(awayTeamBlocks);
+        moreStatsTabAwayTeamStealsLabel.setText(awayTeamSteals);
+        moreStatsTabAwayTeamTurnoversLabel.setText(awayTeamTurnovers);
+        moreStatsTabAwayTeamFoulsLabel.setText(awayTeamTotalFouls);
+        
+        moreStatsTabHomeTeamDefensiveReboundsLabel.setText(homeTeamDefensiveRebounds);
+        moreStatsTabHomeTeamOffensiveReboundsLabel.setText(homeTeamOffensiveRebounds);
+        moreStatsTabHomeTeamTotalReboundsLabel.setText(homeTeamTotalRebounds);
+        moreStatsTabHomeTeamAssistsLabel.setText(homeTeamAssists);
+        moreStatsTabHomeTeamBlocksLabel.setText(homeTeamBlocks);
+        moreStatsTabHomeTeamStealsLabel.setText(homeTeamSteals);
+        moreStatsTabHomeTeamTurnoversLabel.setText(homeTeamTurnovers);
+        moreStatsTabHomeTeamFoulsLabel.setText(homeTeamTotalFouls);
+        
+        /**
+         * Updating best performers stats
+         */
+        topPerformersTabAwayTeamTopPerformerLabel.setText(awayTeamBestPerformer.getCompleteName());
+        topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f", 
+                awayTeamBestPerformer.getPerformanceIndex()));
+        topPerformersTabAwayTeamTopPerformerStatsLabel.setText(String.format("%01d PTS, %01d-%01d FG, %01d-%01d FT, "
+                + "%01d-%01d TP, %01d Reb, %01d Ass", awayTeamBestPerformer.getPoints(), 
+                awayTeamBestPerformer.getFieldGoalsMade(), 
+                awayTeamBestPerformer.getFieldGoalsAttempted(),
+                awayTeamBestPerformer.getFreeThrowsMade(),
+                awayTeamBestPerformer.getFreeThrowsAttempted(),
+                awayTeamBestPerformer.getThreePointersMade(),
+                awayTeamBestPerformer.getThreePointersAttempted(),
+                (awayTeamBestPerformer.getDefensiveRebounds()+ awayTeamBestPerformer.getOffensiveRebounds()),
+                awayTeamBestPerformer.getAssists()));
+        
+        topPerformersTabHomeTeamTopPerformerLabel.setText(homeTeamBestPerformer.getCompleteName());
+        topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f", 
+                homeTeamBestPerformer.getPerformanceIndex()));
+        topPerformersTabHomeTeamTopPerformerStatsLabel.setText(String.format("%01d PTS, %01d-%01d FG, %01d-%01d FT, "
+                + "%01d-%01d TP, %01d Reb, %01d Ass", homeTeamBestPerformer.getPoints(), 
+                homeTeamBestPerformer.getFieldGoalsMade(), 
+                homeTeamBestPerformer.getFieldGoalsAttempted(),
+                homeTeamBestPerformer.getFreeThrowsMade(),
+                homeTeamBestPerformer.getFreeThrowsAttempted(),
+                homeTeamBestPerformer.getThreePointersMade(),
+                homeTeamBestPerformer.getThreePointersAttempted(),
+                (homeTeamBestPerformer.getDefensiveRebounds()+ homeTeamBestPerformer.getOffensiveRebounds()),
+                homeTeamBestPerformer.getAssists()));        
     }
 
     /**
@@ -405,16 +686,16 @@ public class GameController implements Initializable {
          */
         awayTeamPlayerJerseyTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getBaseAttributes().getJersey()
-                            + "");
-                } else {
-                    return new SimpleStringProperty("000");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getBaseAttributes().getJersey()
+                                    + "");
+                        } else {
+                            return new SimpleStringProperty("000");
+                        }
+                    }
+                });
 
         awayTeamPlayerCompleteNameTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("stringPlayer"));
@@ -461,21 +742,39 @@ public class GameController implements Initializable {
         awayTeamPlayerStaminaTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("stringStamina"));
 
+        awayTeamPlayerPerformanceIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringPerformanceIndex"));
+
+        awayTeamPlayerOffensiveIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveIndex"));
+
+        awayTeamPlayerDefensiveIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveIndex"));
+
+        awayTeamPlayerEfficiencyIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringEfficiencyIndex"));
+
+        awayTeamPlayerOffensiveMomentumTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveMomentum"));
+
+        awayTeamPlayerDefensiveMomentumTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveMomentum"));
+
         /**
          * Home team box score
          */
         homeTeamPlayerJerseyTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<InGamePlayer, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getBaseAttributes().getJersey()
-                            + "");
-                } else {
-                    return new SimpleStringProperty("000");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<InGamePlayer, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getBaseAttributes().getJersey()
+                                    + "");
+                        } else {
+                            return new SimpleStringProperty("000");
+                        }
+                    }
+                });
 
         homeTeamPlayerCompleteNameTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("stringPlayer"));
@@ -521,6 +820,24 @@ public class GameController implements Initializable {
 
         homeTeamPlayerStaminaTableColumn.setCellValueFactory(
                 new PropertyValueFactory<InGamePlayer, String>("stringStamina"));
+
+        homeTeamPlayerPerformanceIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringPerformanceIndex"));
+
+        homeTeamPlayerOffensiveIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveIndex"));
+
+        homeTeamPlayerDefensiveIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveIndex"));
+
+        homeTeamPlayerEfficiencyIndexTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringEfficiencyIndex"));
+
+        homeTeamPlayerOffensiveMomentumTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringOffensiveMomentum"));
+
+        homeTeamPlayerDefensiveMomentumTableColumn.setCellValueFactory(
+                new PropertyValueFactory<InGamePlayer, String>("stringDefensiveMomentum"));
     }
 
     /**
@@ -530,63 +847,63 @@ public class GameController implements Initializable {
 
         playByPlayPeriodTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getPeriod()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getPeriod()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         playByPlayTimeTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getTime());
-                } else {
-                    return new SimpleStringProperty("00:00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getTime());
+                        } else {
+                            return new SimpleStringProperty("00:00");
+                        }
+                    }
+                });
 
         playByPlayAwayScoreTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getAwayScore()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getAwayScore()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         playByPlayHomeScoreTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getHomeScore()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getHomeScore()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         playByPlayTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getPlayDescription());
-                } else {
-                    return new SimpleStringProperty("------");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getPlayDescription());
+                        } else {
+                            return new SimpleStringProperty("------");
+                        }
+                    }
+                });
 
         //playByPlayTableView.setItems(game.getPlays());
     }
@@ -598,63 +915,63 @@ public class GameController implements Initializable {
 
         scoringLogPeriodTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getPeriod()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getPeriod()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         scoringLogTimeTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getTime());
-                } else {
-                    return new SimpleStringProperty("00:00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getTime());
+                        } else {
+                            return new SimpleStringProperty("00:00");
+                        }
+                    }
+                });
 
         scoringLogAwayScoreTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getAwayScore()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getAwayScore()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         scoringLogHomeScoreTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(String.format("%d", p.getValue().getHomeScore()));
-                } else {
-                    return new SimpleStringProperty("00");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(String.format("%d", p.getValue().getHomeScore()));
+                        } else {
+                            return new SimpleStringProperty("00");
+                        }
+                    }
+                });
 
         scoringLogTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<Play, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
-                if (p.getValue() != null) {
-                    return new SimpleStringProperty(p.getValue().getPlayDescription());
-                } else {
-                    return new SimpleStringProperty("------");
-                }
-            }
-        });
+                    @Override
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Play, String> p) {
+                        if (p.getValue() != null) {
+                            return new SimpleStringProperty(p.getValue().getPlayDescription());
+                        } else {
+                            return new SimpleStringProperty("------");
+                        }
+                    }
+                });
 
         //scoringLogTableView.setItems(this.game.getScoringPlays());
     }
@@ -739,7 +1056,7 @@ public class GameController implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            updateScoreBoard();
+                            updateGameStats();
                             playByPlayTableView.getItems().setAll(game.getPlays());
                             scoringLogTableView.getItems().setAll(game.getScoringPlays());
                             awayTeamBoxScoreTableView.getItems().setAll(game.getTeams().get(1).getPlayers());

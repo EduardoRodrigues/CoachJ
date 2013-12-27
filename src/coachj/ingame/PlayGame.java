@@ -165,7 +165,6 @@ public class PlayGame {
         this.season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
-
         try {
             resultSet.first();
 
@@ -304,6 +303,17 @@ public class PlayGame {
     }
 
     /**
+     * Switches the ball possesion
+     */
+    private void switchBallPossession() {
+        this.ballPossession = 3 - this.ballPossession;
+        this.teams.get(1).setSecondChance(false);
+        this.teams.get(2).setSecondChance(false);
+        this.teams.get(1).setFastbreak(false);
+        this.teams.get(2).setFastbreak(false);
+    }
+
+    /**
      * Sets up several fields to start a period
      *
      * @param period
@@ -420,6 +430,8 @@ public class PlayGame {
                     processEndGame();
                 } else if (this.currentEvent.equalsIgnoreCase("start of period")) {
                     startPeriod(this.period);
+                } else if (this.currentEvent.equalsIgnoreCase("shotclock violation")) {
+                    processShotclockViolation();
                 } else if (this.currentEvent.equalsIgnoreCase("missed shot")) {
                     processMissedShot();
                 } else if (this.currentEvent.equalsIgnoreCase("shooting foul")) {
@@ -482,8 +494,6 @@ public class PlayGame {
                     processReachingFoul();
                 } else if (this.currentEvent.equalsIgnoreCase("intentional foul")) {
                     processIntentionalFoul();
-                } else if (this.currentEvent.equalsIgnoreCase("shotclock violation")) {
-                    processShotclockViolation();
                 } else if (this.currentEvent.equalsIgnoreCase("loses control")) {
                     processLosesControl();
                 } else if (this.currentEvent.equalsIgnoreCase("steal")) {
@@ -504,6 +514,8 @@ public class PlayGame {
                     processQuickShot();
                 } else if (this.currentEvent.equalsIgnoreCase("shoot")) {
                     processShot();
+                } else if (this.currentEvent.equalsIgnoreCase("quick three-pointer")) {
+                    processQuickThreePointer();
                 } else if (this.currentEvent.equalsIgnoreCase("end of period")) {
                     processEndOfPeriod();
                 } else {
@@ -945,12 +957,20 @@ public class PlayGame {
         /**
          * Switching possession
          */
-        this.ballPossession = 3 - this.ballPossession;
-
+        //switchBallPossession();
         /**
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        /**
+         * Displaying stats if the offensive team has reached a certain number of turnovers
+         */
+        if (this.teams.get(ballPossession).getTurnovers() > this.period * 4) {
+            createTeamsComparisonStatsLinePlay("teams comparison: turnovers");
+        }
+
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         if (activeOffensivePlayer.getPersonalFouls() == GameParameters.PERSONAL_FOULS_LIMIT
@@ -1005,6 +1025,7 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -1068,6 +1089,7 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -1131,6 +1153,7 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -1167,7 +1190,7 @@ public class PlayGame {
             this.freeThrowsToShoot = 2;
             this.currentEvent = "free-throw";
         } else {
-            this.currentEvent = "after turnover inbound pass";
+            this.currentEvent = "after foul inbound pass";
         }
 
         /**
@@ -1192,7 +1215,7 @@ public class PlayGame {
          */
         createPlay();
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
-        
+
         /**
          * Resetting shotclock
          */
@@ -1312,6 +1335,14 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
+
+        /**
+         * Displaying stats if the defensive team has reached a certain number of blocks
+         */
+        if (this.teams.get(3 - ballPossession).getBlocks() > this.period * 2) {
+            createTeamsComparisonStatsLinePlay("teams comparison: blocks");
+        }
 
         /**
          * Updating ball location and possession data
@@ -1410,6 +1441,15 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        /**
+         * Displaying stats if the offensive team has reached a certain number of turnovers
+         */
+        if (this.teams.get(ballPossession).getTurnovers() > this.period * 4) {
+            createTeamsComparisonStatsLinePlay("teams comparison: turnovers");
+        }
+
         sleep(MathUtils.generateRandomInt(1, 6) * 1000);
 
         /**
@@ -1435,17 +1475,25 @@ public class PlayGame {
         activeOffensivePlayer.updateTurnovers();
         teams.get(ballPossession).updateTurnovers();
 
-
         /**
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        /**
+         * Displaying stats if the offensive team has reached a certain number of turnovers
+         */
+        if (this.teams.get(ballPossession).getTurnovers() > this.period * 4) {
+            createTeamsComparisonStatsLinePlay("teams comparison: turnovers");
+        }
+
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
          * Switching possession and active players
          */
-        this.ballPossession = 3 - this.ballPossession;
+        switchBallPossession();
         activeOffensivePlayer = getRandomPlayer(0, ballPossession);
         lastActiveOffensivePlayer = getRandomPlayer(activeOffensivePlayer.getRosterPosition(),
                 ballPossession);
@@ -1482,14 +1530,18 @@ public class PlayGame {
         teams.get(ballPossession).updateTurnovers();
 
         /**
-         * Switching possession
-         */
-        this.ballPossession = 3 - this.ballPossession;
-
-        /**
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        /**
+         * Displaying stats if the offensive team has reached a certain number of turnovers
+         */
+        if (this.teams.get(ballPossession).getTurnovers() > this.period * 4) {
+            createTeamsComparisonStatsLinePlay("teams comparison: turnovers");
+        }
+
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -1520,12 +1572,20 @@ public class PlayGame {
         /**
          * Switching possession
          */
-        this.ballPossession = 3 - this.ballPossession;
+        switchBallPossession();
 
         /**
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeDefensivePlayer);
+
+        /**
+         * Displaying stats if the defensive team has reached a certain number of steals
+         */
+        if (this.teams.get(ballPossession).getSteals() > this.period * 2) {
+            createTeamsComparisonStatsLinePlay("teams comparison: steals");
+        }
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -1603,7 +1663,7 @@ public class PlayGame {
 
         if (activeOffensivePlayer.equals(quickShooter)) {
             this.lastEvent = this.currentEvent;
-            this.currentEvent = "pass";
+            this.currentEvent = "shoot";
         } else {
 
             /**
@@ -1618,6 +1678,62 @@ public class PlayGame {
             double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
                     newCourtSpot);
             lastActiveOffensivePlayer = quickShooter;
+            lastActiveOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Updating events
+             */
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "completed pass";
+
+            /**
+             * Creating play log and adding it to the observable list
+             */
+            createPlay();
+
+            /**
+             * Making player shoot
+             */
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "shoot";
+        }
+    }
+
+    /**
+     * Processes quick three-pointer events
+     */
+    private void processQuickThreePointer() {
+        /**
+         * Finding the best outside shooter, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer outsideShooter = teams.get(this.ballPossession).getBestOutsideShooter();
+
+        if (activeOffensivePlayer.equals(outsideShooter)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "shoot";
+        } else {
+
+            /**
+             * If the quick shooter is another player, move him to outside the perimeter, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(threePointerZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = outsideShooter;
             lastActiveOffensivePlayer.setCurrentZoneLocation(destinationZone);
             updateBallLocation(ballLastLocation, newSpot);
 
@@ -1831,7 +1947,7 @@ public class PlayGame {
          * If the effort is more than 5% smaller than the defensive one, it means the ball was
          * stolen by the defender
          */
-        if (this.offensiveEffort < this.defensiveEffort * 0.95 
+        if (this.offensiveEffort < this.defensiveEffort * 0.95
                 || activeOffensivePlayer.getBaseAttributes().getDrive() < MathUtils.generateRandomInt(0, 50)) {
             /**
              * Updating events
@@ -2131,7 +2247,7 @@ public class PlayGame {
         /**
          * Updating events
          */
-        this.currentEvent = "substitution";
+        this.currentEvent = team == 1 ? "away substitution" : "home substitution";
 
         /**
          * Creating play log and adding it to the observable list
@@ -2346,7 +2462,7 @@ public class PlayGame {
          */
         this.offensiveEffort = activeOffensivePlayer
                 .calculateLongDefensiveHalfcourtThreePointerEffort(teams.get(ballPossession).getCoach(),
-                this, shotDistance);
+                        this, shotDistance);
         this.defensiveEffort = 0;
 
         /**
@@ -2372,7 +2488,7 @@ public class PlayGame {
          */
         this.offensiveEffort = activeOffensivePlayer
                 .calculateLongOffensiveHalfcourtThreePointerEffort(teams.get(ballPossession).getCoach(),
-                this, shotDistance);
+                        this, shotDistance);
         this.defensiveEffort = 0;
 
         /**
@@ -2799,7 +2915,7 @@ public class PlayGame {
         /**
          * Switching possession
          */
-        this.ballPossession = 3 - this.ballPossession;
+        switchBallPossession();
 
         /**
          * Checking timeout before inbounding the ball
@@ -2991,6 +3107,12 @@ public class PlayGame {
      */
     private void processMissedShot() {
         /**
+         * Retrieving the points to be awarded if the shot was hit
+         */
+        int basketPoints = this.courtSpots.get(this.ballCurrentLocation)
+                .getBasketPoints();
+
+        /**
          * Updating current event and decreasing active offensive player's offensive momentum
          */
         System.out.println("Entering missed shot: " + this.shotDescription); // delete
@@ -3009,6 +3131,33 @@ public class PlayGame {
          * Creating play log and adding it to the observable list and resetting the shotclock
          */
         createPlay();
+
+        if (basketPoints == 3) {
+            /**
+             * Displaying stats if the offensive team has reached a certain number of attempted
+             * three-pointers
+             */
+            if (this.teams.get(ballPossession).getThreePointersAttempted() > this.period * 3) {
+                createTeamsComparisonStatsLinePlay("teams comparison: three-pointers");
+            }
+        } else {
+            /**
+             * Displaying stats if the offensive team has reached a certain number of attempted
+             * field goals
+             */
+            if (this.teams.get(ballPossession).getFieldGoalsAttempted() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: field-goals");
+            }
+        }
+
+        /**
+         * Checking if the scoring drought is greater than 2 minutes to display an information about
+         * it
+         */
+        if (this.teams.get(ballPossession).getScoringDrought() > 120) {
+            createTeamsComparisonStatsLinePlay("team scoring drought");
+        }
+
         resetShotClock();
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
@@ -3017,12 +3166,6 @@ public class PlayGame {
          * aggressiveness to see if it's a shooting foul or just a missed shot
          */
         if (!openLook) {
-            /**
-             * Retrieving the points to be awarded if the shot was hit
-             */
-            int basketPoints = this.courtSpots.get(this.ballCurrentLocation)
-                    .getBasketPoints();
-
             if (this.referee.getShootingFouls() > MathUtils.generateRandomInt(0,
                     50 * basketPoints)
                     && this.activeDefensivePlayer.getBaseAttributes().getAggressiveness()
@@ -3059,7 +3202,15 @@ public class PlayGame {
          * Retrieving basket points and setting the playscore field
          */
         int basketPoints = courtSpots.get(ballCurrentLocation).getBasketPoints();
+        int lead;
         this.playScore = basketPoints;
+
+        /**
+         * Checking if the basket was in the paint
+         */
+        if (courtSpots.get(ballCurrentLocation).getCourtZone() == CourtZones.PAINT.getCourtZone()) {
+            this.teams.get(ballPossession).updatePointsInThePaint((short) 2);
+        }
 
         System.out.println("Last Event: " + this.lastEvent); // delete
         /**
@@ -3067,6 +3218,7 @@ public class PlayGame {
          * Furthermore, we increase offensive player's offensive momentum and decrease defensive
          * player's defensive momentum
          */
+
         if (basketPoints == 3) {
             activeOffensivePlayer.updateThreePointersMade();
         } else {
@@ -3089,9 +3241,64 @@ public class PlayGame {
 
         teams.get(ballPossession).updateScore(basketPoints);
         teams.get(ballPossession).updateRuns(basketPoints);
-        teams.get(ballPossession).updateLeads(basketPoints);
+
+        /**
+         * Checking whether the lead was increased or the game was tied
+         */
+        lead = teams.get(ballPossession).getScore() - teams.get(3 - ballPossession).getScore();
+
+        if (lead > 0) {
+            teams.get(ballPossession).updateLeads(lead);
+        } else if (lead == 0) {
+            teams.get(ballPossession).updateLeads(0);
+        }
+
         teams.get(3 - ballPossession).updateRuns(0);
         teams.get(3 - ballPossession).updateLeads(0);
+
+        /**
+         * Checking whether the points came from a second chance attempt
+         */
+        if (this.teams.get(ballPossession).isSecondChance()) {
+            this.teams.get(ballPossession).updateSecondChancePoints((short) basketPoints);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of second chance
+             * points
+             */
+            if (this.teams.get(ballPossession).getSecondChancePoints() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: second chance points");
+            }
+        }
+
+        /**
+         * Checking whether the points came from a fastbreak
+         */
+        if (this.teams.get(ballPossession).isFastbreak()) {
+            this.teams.get(ballPossession).updateFastbreakPoints((short) basketPoints);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of second chance
+             * points
+             */
+            if (this.teams.get(ballPossession).getFastbreakPoints() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: fastbreak points");
+            }
+        }
+
+        /**
+         * Checking whether the points came from a bench player
+         */
+        if (activeOffensivePlayer.getRosterPosition() > 5) {
+            this.teams.get(ballPossession).updateBenchPoints((short) basketPoints);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of bench points
+             */
+            if (this.teams.get(ballPossession).getBenchPoints() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: bench points");
+            }
+        }
 
         /**
          * Updating current event
@@ -3103,15 +3310,42 @@ public class PlayGame {
         }
 
         /**
-         * Updating scoring strings
+         * Updating scoring strings and resetting scoring drought
          */
         updateScoringStrings();
+        this.teams.get(ballPossession).setScoringDrought((short) 0);
 
         /**
          * Creating play log, adding it to the observable list, resetting the openlook to false and
          * the shotclock
          */
         createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        if (basketPoints == 3) {
+            /**
+             * Displaying stats if the offensive team has reached a certain number of three-pointers
+             */
+            if (this.teams.get(ballPossession).getThreePointersMade() > this.period * 3) {
+                createTeamsComparisonStatsLinePlay("teams comparison: three-pointers");
+            }
+
+        } else {
+            /**
+             * Displaying stats if the offensive team has reached a certain number of field goals
+             */
+            if (this.teams.get(ballPossession).getFieldGoalsMade() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: field-goals");
+            }
+        }
+
+        /**
+         * Checking whether the current run is big enough to be displayed on the play-by-play
+         */
+        if (teams.get(ballPossession).getCurrentRun() > 10) {
+            createTeamsComparisonStatsLinePlay("team run");
+        }
+
         setOpenLook(false);
         resetShotClock();
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
@@ -3122,7 +3356,8 @@ public class PlayGame {
         if (this.lastEvent.equalsIgnoreCase("completed pass")
                 || this.lastEvent.equalsIgnoreCase("inbound pass")
                 || this.lastEvent.equalsIgnoreCase("after turnover inbound pass")
-                || this.lastEvent.equalsIgnoreCase("after basket inbound pass")) {
+                || this.lastEvent.equalsIgnoreCase("after basket inbound pass")
+                || this.lastEvent.equalsIgnoreCase("ball to playmaker")) {
             lastActiveOffensivePlayer.updateAssists();
             lastActiveOffensivePlayer.updateOffensiveMomentum(1);
             teams.get(ballPossession).updateAssists();
@@ -3137,6 +3372,15 @@ public class PlayGame {
              * Creating play log and adding it to the observable list
              */
             createPlay();
+            createPlayerStatsLinePlay(ballPossession, lastActiveOffensivePlayer);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of assists
+             */
+            if (this.teams.get(ballPossession).getAssists() > this.period * 3) {
+                createTeamsComparisonStatsLinePlay("teams comparison: assists");
+            }
+
             sleep(MathUtils.generateRandomInt(1, 4) * 1000);
         }
 
@@ -3157,7 +3401,6 @@ public class PlayGame {
                 return;
             }
         }
-
 
         /**
          * If there's no shooting fall, update events
@@ -3181,6 +3424,7 @@ public class PlayGame {
          * Creating play log and adding it to the observable list
          */
         createPlay();
+        createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
 
         /**
@@ -3266,6 +3510,11 @@ public class PlayGame {
             activeOffensivePlayer.updateOffensiveMomentum(1);
             teams.get(ballPossession).updateFreeThrowsMade();
             teams.get(ballPossession).updateScore(1);
+            this.teams.get(ballPossession).setScoringDrought((short) 0);
+            teams.get(ballPossession).updateRuns(1);
+            teams.get(ballPossession).updateLeads(1);
+            teams.get(3 - ballPossession).updateRuns(0);
+            teams.get(3 - ballPossession).updateLeads(0);
             this.playScore = 1;
 
             /**
@@ -3284,6 +3533,29 @@ public class PlayGame {
              * Creating play log and adding it to the observable list
              */
             createPlay();
+            createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of free-throws
+             */
+            if (this.teams.get(ballPossession).getFreeThrowsMade() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: free-throws");
+            }
+
+            /**
+             * Checking whether the points came from a bench player
+             */
+            if (activeOffensivePlayer.getRosterPosition() > 5) {
+                this.teams.get(ballPossession).updateBenchPoints((short) 1);
+
+                /**
+                 * Displaying stats if the offensive team has reached a certain number of bench
+                 * points
+                 */
+                if (this.teams.get(ballPossession).getBenchPoints() > this.period * 5) {
+                    createTeamsComparisonStatsLinePlay("teams comparison: bench points");
+                }
+            }
 
             if (this.freeThrowsToShoot > 0) {
                 this.currentEvent = "free-throw";
@@ -3303,6 +3575,14 @@ public class PlayGame {
              * Creating play log and adding it to the observable list
              */
             createPlay();
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of attempted
+             * field goals
+             */
+            if (this.teams.get(ballPossession).getFreeThrowsAttempted() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: free-throws");
+            }
 
             if (this.freeThrowsToShoot > 0) {
                 this.currentEvent = "free-throw";
@@ -3394,6 +3674,7 @@ public class PlayGame {
             activeOffensivePlayer.updateOffensiveRebounds();
             activeOffensivePlayer.updateOffensiveMomentum(1);
             teams.get(ballPossession).updateOffensiveRebounds();
+            teams.get(ballPossession).setSecondChance(true);
 
             /**
              * Updating events
@@ -3405,6 +3686,16 @@ public class PlayGame {
              * Creating play log and adding it to the observable list
              */
             createPlay();
+            createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of offensive
+             * rebounds
+             */
+            if (this.teams.get(ballPossession).getOffensiveRebounds() > this.period * 2) {
+                createTeamsComparisonStatsLinePlay("teams comparison: offensive rebounds");
+            }
+
             sleep(MathUtils.generateRandomInt(1, 4) * 1000);
         } else {
             /**
@@ -3418,18 +3709,28 @@ public class PlayGame {
             this.currentEvent = "defensive rebound";
 
             /**
-             * Creating play log and adding it to the observable list
-             */
-            createPlay();
-            sleep(MathUtils.generateRandomInt(1, 4) * 1000);
-
-            /**
              * Updating stats and switching players
              */
             activeDefensivePlayer.updateDefensiveRebounds();
             activeDefensivePlayer.updateDefensiveMomentum(1);
+
+            /**
+             * Creating play log and adding it to the observable list
+             */
+            createPlay();
+            createPlayerStatsLinePlay(3 - ballPossession, activeDefensivePlayer);
+
+            /**
+             * Displaying stats if the defensive team has reached a certain number of defensive
+             * rebounds
+             */
+            if (this.teams.get(3 - ballPossession).getDefensiveRebounds() > this.period * 4) {
+                createTeamsComparisonStatsLinePlay("teams comparison: defensive rebounds");
+            }
+
+            sleep(MathUtils.generateRandomInt(1, 4) * 1000);
             teams.get(3 - ballPossession).updateDefensiveRebounds();
-            this.ballPossession = 3 - this.ballPossession;
+            switchBallPossession();
 
             activeOffensivePlayer = activeDefensivePlayer;
             lastActiveOffensivePlayer = getRandomPlayer(activeOffensivePlayer.getRosterPosition(),
@@ -3503,60 +3804,28 @@ public class PlayGame {
     }
 
     /**
-     * Creates a play object and adds to the observable list
+     * Creates a play object and adds it to the observable list
      *
      * @return
      */
     private void createPlay() {
 
+        /**
+         * Creating Play object and setting up basic attributes
+         */
         Play currentPlay = new Play();
-        currentPlay.setActiveDefensivePlayerId(activeDefensivePlayer.getBaseAttributes()
-                .getId());
-        currentPlay.setActiveOffensivePlayerId(activeOffensivePlayer.getBaseAttributes()
-                .getId());
-        currentPlay.setAwayScore(this.teams.get(1).getScore());
-        currentPlay.setBallFrom(this.ballLastLocation);
-        currentPlay.setBallTo(this.ballCurrentLocation);
-        currentPlay.setGameDate(this.gameDate);
-        currentPlay.setHomeScore(this.teams.get(2).getScore());
-        currentPlay.setLastActiveDefensivePlayerId(lastActiveDefensivePlayer.getBaseAttributes()
-                .getId());
-        currentPlay.setLastActiveOffensivePlayerId(lastActiveOffensivePlayer.getBaseAttributes()
-                .getId());
+        setPlayBasicAttributes(currentPlay);
+
+        /**
+         * Setting up narration attributes
+         */
         currentPlay.setNarrationId(getGameNarration(this.currentEvent).getId());
-        currentPlay.setPeriod(this.period);
         currentPlay.setPlayType(this.getCurrentEvent());
         currentPlay.setPlayDescription(parseNarration(getGameNarration(this.currentEvent)));
-        currentPlay.setPlayerInId(playerInId);
-        currentPlay.setPlayerOutId(playerOutId);
-        currentPlay.setPlayScore(this.playScore);
-        currentPlay.setSeason((short) this.season);
-        currentPlay.setShotClock(this.shotClock);
-        currentPlay.setTime(TimeUtils.intToTime(this.timeLeft));
 
         // delete
         System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
                 + parseNarration(getGameNarration(this.currentEvent)));
-        /*System.out.println("Open look: " + this.openLook);
-         System.out.println("Offensive Effort: " + offensiveEffort);
-         System.out.println("Defensive Effort: " + defensiveEffort);
-         System.out.println("Ball Last Location: " + ballLastLocation);
-         System.out.println("Ball Current Location: " + ballCurrentLocation);
-         System.out.println("Narration Id: " + getGameNarration(this.currentEvent).getId());
-         System.out.println("Active Offensive Player: " + activeOffensivePlayer.getCompleteName());
-         System.out.println("Active Offensive Player Current Location: "
-         + activeOffensivePlayer.getCurrentZoneLocation());
-         System.out.println("Last Active Offensive Player: " + lastActiveOffensivePlayer.getCompleteName());
-         System.out.println("Last Active Offensive Player Current Location: "
-         + lastActiveOffensivePlayer.getCurrentZoneLocation());
-         System.out.println("Active Defensive Player: " + activeDefensivePlayer.getCompleteName());
-         System.out.println("Active Defensive Player Current Location: "
-         + activeDefensivePlayer.getCurrentZoneLocation());
-         System.out.println("Last Active Defensive Player: " + lastActiveDefensivePlayer.getCompleteName());
-         System.out.println("Last Active Defensive Player Current Location: "
-         + lastActiveDefensivePlayer.getCurrentZoneLocation());
-
-         System.out.println(currentPlay.toString());*/
 
         try {
             this.plays.add(0, currentPlay);
@@ -3576,6 +3845,105 @@ public class PlayGame {
         }
 
         System.out.println("Leaving create play"); // delete       
+    }
+
+    /**
+     * Sets the basic attributes for the Play object, those which are commom to several narration
+     * scenarios
+     *
+     * @param play Play object
+     */
+    private void setPlayBasicAttributes(Play play) {
+        play.setActiveDefensivePlayerId(activeDefensivePlayer.getBaseAttributes()
+                .getId());
+        play.setActiveOffensivePlayerId(activeOffensivePlayer.getBaseAttributes()
+                .getId());
+        play.setAwayScore(this.teams.get(1).getScore());
+        play.setBallFrom(this.ballLastLocation);
+        play.setBallTo(this.ballCurrentLocation);
+        play.setGameDate(this.gameDate);
+        play.setHomeScore(this.teams.get(2).getScore());
+        play.setLastActiveDefensivePlayerId(lastActiveDefensivePlayer.getBaseAttributes()
+                .getId());
+        play.setLastActiveOffensivePlayerId(lastActiveOffensivePlayer.getBaseAttributes()
+                .getId());
+        play.setPeriod(this.period);
+        play.setPlayerInId(playerInId);
+        play.setPlayerOutId(playerOutId);
+        play.setPlayScore(this.playScore);
+        play.setSeason((short) this.season);
+        play.setShotClock(this.shotClock);
+        play.setTime(TimeUtils.intToTime(this.timeLeft));
+    }
+
+    /**
+     * Creates a play object with the stats for a given player and adds it to the observable list
+     *
+     * @param team Player's team
+     * @param player Player to create stats line
+     */
+    private void createPlayerStatsLinePlay(int team, InGamePlayer player) {
+
+        /**
+         * Creating Play object and setting up basic attributes
+         */
+        Play currentPlay = new Play();
+        setPlayBasicAttributes(currentPlay);
+
+        /**
+         * Setting up narration attributes
+         */
+        currentPlay.setNarrationId(getGameNarration("player stats").getId());
+        currentPlay.setPlayType("player stats");
+        currentPlay.setPlayDescription(this.teams.get(team).getAbbreviature() + " - "
+                + player.getStatsLine());
+
+        // delete
+        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
+                + parseNarration(getGameNarration(this.currentEvent)));
+
+        try {
+            this.plays.add(0, currentPlay);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //System.exit(0);
+        }
+    }
+
+    /**
+     * Creates a play object with the comparison stats for a given team and adds it to the
+     * observable list
+     *
+     * @param team Team
+     * @param stat Stat to be displayed
+     */
+    private void createTeamsComparisonStatsLinePlay(String stat) {
+
+        /**
+         * Creating Play object and setting up basic attributes
+         */
+        Play currentPlay = new Play();
+        setPlayBasicAttributes(currentPlay);
+
+        /**
+         * Setting up narration attributes
+         */
+        currentPlay.setNarrationId(getGameNarration(stat).getId());
+        currentPlay.setPlayType(stat);
+        currentPlay.setPlayDescription(parseNarration(getGameNarration(stat)));
+
+        // delete
+        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
+                + parseNarration(getGameNarration(stat)));
+
+        try {
+            this.plays.add(0, currentPlay);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //System.exit(0);
+        }
     }
 
     /**
@@ -3607,13 +3975,6 @@ public class PlayGame {
      */
     private void doPlay(int elapsedTime) {
 
-        /**
-         * If the game is not in fast mode, causes the thread to sleep
-         */
-        if (!this.fastMode) {
-            sleep(elapsedTime * 1000 + 2000);
-        }
-
         System.out.println("Time left: " + this.timeLeft);
         System.out.println("ShotClock: " + this.shotClock);
 
@@ -3627,16 +3988,18 @@ public class PlayGame {
         /**
          * Updating player's time stats, updating stamina and moving players
          */
-        updatePlayersTimeStats(elapsedTime);
+        updatePlayersStats(elapsedTime);
         movePlayers();
         updatePlayersCurrentStaminaLevel();
 
         /**
-         * Updating scores and gap between the teams
+         * Updating scores, gap between the teams and scoring droughts
          */
         this.awayScore = this.teams.get(1).getScore();
         this.homeScore = this.teams.get(2).getScore();
         this.gap = Math.abs(this.homeScore - this.awayScore);
+        this.teams.get(1).updateScoringDrought((short) elapsedTime);
+        this.teams.get(2).updateScoringDrought((short) elapsedTime);
 
         /**
          * Updating the leading team
@@ -3670,6 +4033,13 @@ public class PlayGame {
             this.shotClock = 0;
             this.lastEvent = this.currentEvent;
             this.currentEvent = "shotclock violation";
+        }
+
+        /**
+         * If the game is not in fast mode, causes the thread to sleep
+         */
+        if (!this.fastMode) {
+            sleep(elapsedTime * 1000 + 2000);
         }
     }
 
@@ -3706,6 +4076,80 @@ public class PlayGame {
                 this.teams.get(ballPossession).getAbbreviature());
         parsedNarration = parsedNarration.replace("[dtabb]",
                 this.teams.get(3 - ballPossession).getAbbreviature());
+        parsedNarration = parsedNarration.replace("[dtabb]",
+                this.teams.get(3 - ballPossession).getAbbreviature());
+        parsedNarration = parsedNarration.replace("[htabb]",
+                this.teams.get(2).getAbbreviature());
+        parsedNarration = parsedNarration.replace("[atabb]",
+                this.teams.get(1).getAbbreviature());
+        parsedNarration = parsedNarration.replace("[atdr]",
+                String.format("%01d", this.teams.get(1).getDefensiveRebounds()));
+        parsedNarration = parsedNarration.replace("[htdr]",
+                String.format("%01d", this.teams.get(2).getDefensiveRebounds()));
+        parsedNarration = parsedNarration.replace("[ator]",
+                String.format("%01d", this.teams.get(1).getOffensiveRebounds()));
+        parsedNarration = parsedNarration.replace("[htor]",
+                String.format("%01d", this.teams.get(2).getOffensiveRebounds()));
+        parsedNarration = parsedNarration.replace("[atcr]",
+                String.format("%d", this.teams.get(ballPossession).getCurrentRun()));
+        parsedNarration = parsedNarration.replace("[atsd]",
+                TimeUtils.intToTime(this.teams.get(ballPossession).getScoringDrought()));
+        parsedNarration = parsedNarration.replace("[away]",
+                this.teams.get(1).getCompleteName());
+        parsedNarration = parsedNarration.replace("[home]",
+                this.teams.get(2).getCompleteName());
+        parsedNarration = parsedNarration.replace("[atblk]",
+                String.format("%01d", this.teams.get(1).getBlocks()));
+        parsedNarration = parsedNarration.replace("[htblk]",
+                String.format("%01d", this.teams.get(2).getBlocks()));
+        parsedNarration = parsedNarration.replace("[atto]",
+                String.format("%01d", this.teams.get(1).getTurnovers()));
+        parsedNarration = parsedNarration.replace("[htto]",
+                String.format("%01d", this.teams.get(2).getTurnovers()));
+        parsedNarration = parsedNarration.replace("[atstl]",
+                String.format("%01d", this.teams.get(1).getSteals()));
+        parsedNarration = parsedNarration.replace("[htstl]",
+                String.format("%01d", this.teams.get(2).getSteals()));
+        parsedNarration = parsedNarration.replace("[atass]",
+                String.format("%01d", this.teams.get(1).getAssists()));
+        parsedNarration = parsedNarration.replace("[htass]",
+                String.format("%01d", this.teams.get(2).getAssists()));
+        parsedNarration = parsedNarration.replace("[httpm]",
+                String.format("%01d", this.teams.get(2).getThreePointersMade()));
+        parsedNarration = parsedNarration.replace("[attpm]",
+                String.format("%01d", this.teams.get(1).getThreePointersMade()));
+        parsedNarration = parsedNarration.replace("[httpa]",
+                String.format("%01d", this.teams.get(2).getThreePointersAttempted()));
+        parsedNarration = parsedNarration.replace("[attpa]",
+                String.format("%01d", this.teams.get(1).getThreePointersAttempted()));
+        parsedNarration = parsedNarration.replace("[htftm]",
+                String.format("%01d", this.teams.get(2).getFreeThrowsMade()));
+        parsedNarration = parsedNarration.replace("[atftm]",
+                String.format("%01d", this.teams.get(1).getFreeThrowsMade()));
+        parsedNarration = parsedNarration.replace("[htfta]",
+                String.format("%01d", this.teams.get(2).getFreeThrowsAttempted()));
+        parsedNarration = parsedNarration.replace("[atfta]",
+                String.format("%01d", this.teams.get(1).getFreeThrowsAttempted()));
+        parsedNarration = parsedNarration.replace("[htfgm]",
+                String.format("%01d", this.teams.get(2).getFieldGoalsMade()));
+        parsedNarration = parsedNarration.replace("[atfgm]",
+                String.format("%01d", this.teams.get(1).getFieldGoalsMade()));
+        parsedNarration = parsedNarration.replace("[htfga]",
+                String.format("%01d", this.teams.get(2).getFieldGoalsAttempted()));
+        parsedNarration = parsedNarration.replace("[atfga]",
+                String.format("%01d", this.teams.get(1).getFieldGoalsAttempted()));
+        parsedNarration = parsedNarration.replace("[htbp]",
+                String.format("%01d", this.teams.get(2).getBenchPoints()));
+        parsedNarration = parsedNarration.replace("[atbp]",
+                String.format("%01d", this.teams.get(1).getBenchPoints()));
+        parsedNarration = parsedNarration.replace("[htscp]",
+                String.format("%01d", this.teams.get(2).getSecondChancePoints()));
+        parsedNarration = parsedNarration.replace("[atscp]",
+                String.format("%01d", this.teams.get(1).getSecondChancePoints()));
+        parsedNarration = parsedNarration.replace("[htfbp]",
+                String.format("%01d", this.teams.get(2).getFastbreakPoints()));
+        parsedNarration = parsedNarration.replace("[atfbp]",
+                String.format("%01d", this.teams.get(1).getFastbreakPoints()));
 
         return parsedNarration;
     }
@@ -3713,7 +4157,7 @@ public class PlayGame {
     /**
      * Update time stats for players in the bench and on the court
      */
-    private void updatePlayersTimeStats(int elapsedTime) {
+    private void updatePlayersStats(int elapsedTime) {
         InGamePlayer currentPlayer;
         String playerName;
 
@@ -3735,6 +4179,12 @@ public class PlayGame {
 
                 if (currentPlayer.isOnCourt()) {
                     playerName += " (on court)";
+                } else if (currentPlayer.isEjected()) {
+                    playerName += " (ejected)";
+                } else if (currentPlayer.getPersonalFouls() == GameParameters.PERSONAL_FOULS_LIMIT.getParameterValue()) {
+                    playerName += " (fouled out)";
+                } else if (currentPlayer.getBaseAttributes().getInjuryImpact() > 0) {
+                    playerName += " (injured)";
                 } else {
                     playerName += " ";
                 }
@@ -3773,6 +4223,22 @@ public class PlayGame {
                 currentPlayer.setStringPlayer(playerName);
                 currentPlayer.setStringJersey(String.format("%02d", currentPlayer
                         .getBaseAttributes().getJersey()));
+                currentPlayer.setStringDefensiveMomentum(String.format("%02d", currentPlayer
+                        .getDefensiveMomentum()));
+                currentPlayer.setStringOffensiveMomentum(String.format("%02d", currentPlayer
+                        .getOffensiveMomentum()));
+
+                /**
+                 * Calculating performance indexes
+                 */
+                currentPlayer.updatePerformanceIndex();
+                currentPlayer.updateOffensiveIndex();
+                currentPlayer.updateDefensiveIndex();
+                currentPlayer.updateEfficiencyIndex();
+                currentPlayer.setStringPerformanceIndex(String.format("%01.2f", currentPlayer.getPerformanceIndex()));
+                currentPlayer.setStringOffensiveIndex(String.format("%01.2f", currentPlayer.getOffensiveIndex()));
+                currentPlayer.setStringDefensiveIndex(String.format("%01.2f", currentPlayer.getDefensiveIndex()));
+                currentPlayer.setStringEfficiencyIndex(String.format("%01.2f", currentPlayer.getEfficiencyIndex()));
             }
         }
     }
@@ -3864,7 +4330,6 @@ public class PlayGame {
     private void resetPlayersSubstitutionTime(int substitutionTime) {
 
         InGamePlayer currentPlayer;
-
 
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < teams.get(i).getPlayers().size(); j++) {
@@ -4106,8 +4571,8 @@ public class PlayGame {
                 + " periodsPlayed = " + this.period + ", "
                 + " awayTeamCoach = " + this.teams.get(AWAY_TEAM).getCoachId() + ", "
                 + " homeTeamCoach = " + this.teams.get(HOME_TEAM).getCoachId() + ", "
-                + " awayTeamLargestLead = " + this.teams.get(AWAY_TEAM).getLargestLead() + ", "
-                + " homeTeamLargestLead = " + this.teams.get(HOME_TEAM).getLargestLead() + ", "
+                + " awayTeamLargestLead = " + this.teams.get(AWAY_TEAM).getBiggestLead() + ", "
+                + " homeTeamLargestLead = " + this.teams.get(HOME_TEAM).getBiggestLead() + ", "
                 + " awayTeamBiggestRun = " + this.teams.get(AWAY_TEAM).getLongestRun() + ", "
                 + " homeTeamBiggestRun = " + this.teams.get(HOME_TEAM).getLongestRun() + ", "
                 + " attendance = " + this.attendance + ", "
@@ -4143,7 +4608,7 @@ public class PlayGame {
                     + " activeOffensivePlayer, lastActiveOffensivePlayer,"
                     + " activeDefensivePlayer, lastActiveDefensivePlayer, playType,"
                     + " narration, date, period, time, shotClock, awayScore, homeScore,"
-                    + "score, playerIn, playerOut) VALUES ("
+                    + "score, playerIn, playerOut, playDescription) VALUES ("
                     + currentPlay.getSeason() + ", "
                     + this.gameId + ", "
                     + currentPlay.getBallFrom() + ", "
@@ -4162,7 +4627,8 @@ public class PlayGame {
                     + currentPlay.getHomeScore() + ", "
                     + currentPlay.getPlayScore() + ", "
                     + currentPlay.getPlayerInId() + ", "
-                    + currentPlay.getPlayerOutId() + ")";
+                    + currentPlay.getPlayerOutId() + ", "
+                    + "'" + currentPlay.getPlayDescription() + "')";
 
             this.connection.executeSQL(sqlStatement);
         }
@@ -4202,7 +4668,8 @@ public class PlayGame {
                         + "fieldGoalsMade, freeThrowsAttempted, freeThrowsMade, "
                         + "threePointersAttempted, threePointersMade, assists, offensiveRebounds, "
                         + "defensiveRebounds, blocks, blockedShots, steals, turnovers, "
-                        + "personalFouls, technicalFouls) VALUES ("
+                        + "personalFouls, technicalFouls, performanceIndex, offensiveIndex, defensiveIndex, "
+                        + "efficiencyIndex) VALUES ("
                         + this.season + ", "
                         + this.gameId + ", "
                         + currentPlayer.getBaseAttributes().getId() + ", "
@@ -4231,7 +4698,11 @@ public class PlayGame {
                         + currentPlayer.getSteals() + ", "
                         + currentPlayer.getTurnovers() + ", "
                         + currentPlayer.getPersonalFouls() + ", "
-                        + currentPlayer.getTechnicalFouls() + ")";
+                        + currentPlayer.getTechnicalFouls() + ", "
+                        + currentPlayer.getPerformanceIndex() + ", "
+                        + currentPlayer.getOffensiveIndex() + ", "
+                        + currentPlayer.getDefensiveIndex() + ", "
+                        + currentPlayer.getEfficiencyIndex() + ")";
 
                 this.connection.executeSQL(sqlStatement);
 
@@ -4247,7 +4718,7 @@ public class PlayGame {
 
                 sqlStatement = "UPDATE player SET accumulatedFatigue = accumulatedFatigue + "
                         + Math.max(currentPlayer.getPlayingTime() / 600
-                        / currentPlayer.getBaseAttributes().getTirednessRate(), 1) + ", happinessLevel = "
+                                / currentPlayer.getBaseAttributes().getTirednessRate(), 1) + ", happinessLevel = "
                         + "happinessLevel + " + happinessLevelAdjust + ", "
                         + "regularSeasonExperience = regularSeasonExperience + "
                         + regularSeasonExperienceAdjust + ", playoffsExperience = "
@@ -4292,7 +4763,8 @@ public class PlayGame {
                     + "fieldGoalsMade, freeThrowsAttempted, freeThrowsMade, "
                     + "threePointersAttempted, threePointersMade, assists, offensiveRebounds, "
                     + "defensiveRebounds, blocks, blockedShots, steals, turnovers, "
-                    + "personalFouls, technicalFouls) VALUES ("
+                    + "personalFouls, technicalFouls, longestRun, biggestLead, pointsInThePaint, benchPoints, "
+                    + "secondChancePoints, fastbreakPoints) VALUES ("
                     + this.season + ", "
                     + this.gameId + ", "
                     + currentTeam.getId() + ", "
@@ -4316,7 +4788,13 @@ public class PlayGame {
                     + currentTeam.getSteals() + ", "
                     + currentTeam.getTurnovers() + ", "
                     + currentTeam.getTotalFouls() + ", "
-                    + currentTeam.getTechnicalFouls() + ")";
+                    + currentTeam.getTechnicalFouls() + ", "
+                    + currentTeam.getLongestRun() + ", "
+                    + currentTeam.getBiggestLead() + ", "
+                    + currentTeam.getPointsInThePaint() + ", "
+                    + currentTeam.getBenchPoints() + ", "
+                    + currentTeam.getSecondChancePoints() + ", "
+                    + currentTeam.getFastbreakPoints() + ")";
 
             this.connection.executeSQL(sqlStatement);
         }
@@ -4331,7 +4809,6 @@ public class PlayGame {
         try {
             if (!this.fastMode) {
                 Thread.sleep(miliseconds);
-
 
             }
         } catch (InterruptedException ex) {

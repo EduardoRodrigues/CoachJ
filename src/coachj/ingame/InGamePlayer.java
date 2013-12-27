@@ -56,6 +56,10 @@ public class InGamePlayer {
     private int currentStaminaLevel;
     private int staminaAdjustment;
     private int substitutionTime = 720;
+    private double performanceIndex = 0;
+    private double offensiveIndex = 0;
+    private double defensiveIndex = 0;
+    private double efficiencyIndex = 0;
     private Player baseAttributes;
     private ArrayList<String> decisionArray = new ArrayList<>();
     private ArrayList<Integer> movementArray = new ArrayList<>();
@@ -2170,6 +2174,39 @@ public class InGamePlayer {
         this.assists = (short) (this.assists + 1);
     }
 
+     public void updatePerformanceIndex() {
+        double index = this.points + (this.assists * 2) + (this.offensiveRebounds * 1.5) + this.defensiveRebounds
+                + (this.blocks * 1.5) - (this.blockedShots * 1.5) + this.steals - this.turnovers - this.personalFouls
+                - (this.technicalFouls * 2);
+        
+        this.setPerformanceIndex(index);
+    }
+     
+      public void updateOffensiveIndex() {
+        double index = this.points + (this.assists * 2) + (this.offensiveRebounds * 1.5) - (this.blockedShots * 1.5) 
+                - this.turnovers;
+        
+        this.setOffensiveIndex(index);
+    }
+    
+      public void updateDefensiveIndex() {
+        double index = this.defensiveRebounds + (this.blocks * 1.5) + this.steals - this.personalFouls
+                - (this.technicalFouls * 2);
+        
+        this.setDefensiveIndex(index);
+    }
+      
+    public void updateEfficiencyIndex() {
+        double index = (((double) this.fieldGoalsMade / this.fieldGoalsAttempted * 2) 
+                + ((double) this.freeThrowsMade / this.freeThrowsAttempted)
+                + ((double) this.threePointersMade / this.threePointersAttempted * 3)
+                + (this.assists * 2) + (this.offensiveRebounds * 1.5) + this.defensiveRebounds
+                + (this.blocks + 1.5) - (this.blockedShots * 1.5) + this.steals - this.turnovers - this.personalFouls
+                - (this.technicalFouls * 2)) / (this.playingTime / 60);
+        
+        this.setEfficiencyIndex(index);
+    }
+      
     /* comparing methods */
     @Override
     public int hashCode() {
@@ -2211,14 +2248,16 @@ public class InGamePlayer {
                 + this.threePointersMade + "-" + this.threePointersAttempted
                 + " TP, " + this.freeThrowsMade + "-" + this.freeThrowsAttempted
                 + " FT, " + this.getAssists() + " Ass, " + this.getDefensiveRebounds()
-                + " DR, " + this.getOffensiveRebounds() + " OR";
+                + " DR, " + this.getOffensiveRebounds() + " OR, " + this.getBlocks() + " Blk, "
+                + this.getSteals() + " Stl, " + this.getPersonalFouls() + " PF, "
+                + this.getTurnovers() + " TO";
     }
 
     @Override
     public String toString() {
         return "InGamePlayer{" + "personalFouls=" + personalFouls + ", secondsOnCourt=" + secondsOnCourt + ", secondsInBench=" + secondsInBench + ", ejected=" + ejected + ", onCourt=" + onCourt + ", shootingFreeThrows=" + shootingFreeThrows + ", defensiveMomentum=" + defensiveMomentum + ", offensiveMomentum=" + offensiveMomentum + ", rosterPosition=" + rosterPosition + ", currentZoneLocation=" + currentZoneLocation + ", staminaLevel=" + staminaLevel + ", currentStaminaLevel=" + currentStaminaLevel + ", substitutionTime=" + substitutionTime + '}';
     }
-
+    
     /* standard getters and setters */
     public short getPersonalFouls() {
         return personalFouls;
@@ -2496,6 +2535,39 @@ public class InGamePlayer {
     public void setTechnicalFouls(short technicalFouls) {
         this.technicalFouls = technicalFouls;
     }
+
+    public double getPerformanceIndex() {
+        return performanceIndex;
+    }
+
+    public void setPerformanceIndex(double performanceIndex) {
+        this.performanceIndex = performanceIndex;
+    }    
+
+    public double getOffensiveIndex() {
+        return offensiveIndex;
+    }
+
+    public void setOffensiveIndex(double offensiveIndex) {
+        this.offensiveIndex = offensiveIndex;
+    }
+
+    public double getDefensiveIndex() {
+        return defensiveIndex;
+    }
+
+    public void setDefensiveIndex(double defensiveIndex) {
+        this.defensiveIndex = defensiveIndex;
+    }
+
+    public double getEfficiencyIndex() {
+        return efficiencyIndex;
+    }
+
+    public void setEfficiencyIndex(double efficiencyIndex) {
+        this.efficiencyIndex = efficiencyIndex;
+    }
+    
     /**
      * JavaFX properties necessary to allow observable lists to work properly in the game scene
      */
@@ -2551,6 +2623,7 @@ public class InGamePlayer {
     public StringProperty stringFreeThrowsProperty() {
         return stringFreeThrows;
     }
+    
     private final StringProperty stringThreePointers = new SimpleStringProperty();
 
     public String getStringThreePointers() {
@@ -2564,6 +2637,7 @@ public class InGamePlayer {
     public StringProperty stringThreePointersProperty() {
         return stringThreePointers;
     }
+    
     private final StringProperty stringDefensiveRebounds = new SimpleStringProperty();
 
     public String getStringDefensiveRebounds() {
@@ -2577,6 +2651,7 @@ public class InGamePlayer {
     public StringProperty stringDefensiveReboundsProperty() {
         return stringDefensiveRebounds;
     }
+    
     private final StringProperty stringOffensiveRebounds = new SimpleStringProperty();
 
     public String getStringOffensiveRebounds() {
@@ -2590,6 +2665,7 @@ public class InGamePlayer {
     public StringProperty stringOffensiveReboundsProperty() {
         return stringOffensiveRebounds;
     }
+    
     private final StringProperty stringTotalRebounds = new SimpleStringProperty();
 
     public String getStringTotalRebounds() {
@@ -2603,6 +2679,7 @@ public class InGamePlayer {
     public StringProperty stringTotalReboundsProperty() {
         return stringTotalRebounds;
     }
+    
     private final StringProperty stringAssists = new SimpleStringProperty();
 
     public String getStringAssists() {
@@ -2616,6 +2693,7 @@ public class InGamePlayer {
     public StringProperty stringAssistsProperty() {
         return stringAssists;
     }
+    
     private final StringProperty stringSteals = new SimpleStringProperty();
 
     public String getStringSteals() {
@@ -2629,6 +2707,7 @@ public class InGamePlayer {
     public StringProperty stringStealsProperty() {
         return stringSteals;
     }
+    
     private final StringProperty stringBlocks = new SimpleStringProperty();
 
     public String getStringBlocks() {
@@ -2642,6 +2721,7 @@ public class InGamePlayer {
     public StringProperty stringBlocksProperty() {
         return stringBlocks;
     }
+    
     private final StringProperty stringTurnovers = new SimpleStringProperty();
 
     public String getStringTurnovers() {
@@ -2655,6 +2735,7 @@ public class InGamePlayer {
     public StringProperty stringTurnoversProperty() {
         return stringTurnovers;
     }
+    
     private final StringProperty stringPersonalFouls = new SimpleStringProperty();
 
     public String getStringPersonalFouls() {
@@ -2668,6 +2749,7 @@ public class InGamePlayer {
     public StringProperty stringPersonalFoulsProperty() {
         return stringPersonalFouls;
     }
+    
     private final StringProperty stringStamina = new SimpleStringProperty();
 
     public String getStringStamina() {
@@ -2681,6 +2763,7 @@ public class InGamePlayer {
     public StringProperty stringStaminaProperty() {
         return stringStamina;
     }
+    
     private final StringProperty stringPlayer = new SimpleStringProperty();
 
     public String getStringPlayer() {
@@ -2694,6 +2777,7 @@ public class InGamePlayer {
     public StringProperty stringPlayerProperty() {
         return stringPlayer;
     }
+    
     private final StringProperty stringJersey = new SimpleStringProperty();
 
     public String getStringJersey() {
@@ -2707,11 +2791,95 @@ public class InGamePlayer {
     public StringProperty stringJerseyProperty() {
         return stringJersey;
     }
+    
+    private final StringProperty stringPerformanceIndex = new SimpleStringProperty();
 
+    public String getStringPerformanceIndex() {
+        return stringPerformanceIndex.get();
+    }
+
+    public void setStringPerformanceIndex(String value) {
+        stringPerformanceIndex.set(value);
+    }
+
+    public StringProperty stringPerformanceIndexProperty() {
+        return stringPerformanceIndex;
+    }
+    
+    private final StringProperty stringOffensiveIndex = new SimpleStringProperty();
+
+    public String getStringOffensiveIndex() {
+        return stringOffensiveIndex.get();
+    }
+
+    public void setStringOffensiveIndex(String value) {
+        stringOffensiveIndex.set(value);
+    }
+
+    public StringProperty stringOffensiveIndexProperty() {
+        return stringOffensiveIndex;
+    }
+    
+    private final StringProperty stringDefensiveIndex = new SimpleStringProperty();
+
+    public String getStringDefensiveIndex() {
+        return stringDefensiveIndex.get();
+    }
+
+    public void setStringDefensiveIndex(String value) {
+        stringDefensiveIndex.set(value);
+    }
+
+    public StringProperty stringDefensiveIndexProperty() {
+        return stringDefensiveIndex;
+    }
+    
+    private final StringProperty stringEfficiencyIndex = new SimpleStringProperty();
+
+    public String getStringEfficiencyIndex() {
+        return stringEfficiencyIndex.get();
+    }
+
+    public void setStringEfficiencyIndex(String value) {
+        stringEfficiencyIndex.set(value);
+    }
+
+    public StringProperty stringEfficiencyIndexProperty() {
+        return stringEfficiencyIndex;
+    }    
+    
+    private final StringProperty stringOffensiveMomentum = new SimpleStringProperty();
+
+    public String getStringOffensiveMomentum() {
+        return stringOffensiveMomentum.get();
+    }
+
+    public void setStringOffensiveMomentum(String value) {
+        stringOffensiveMomentum.set(value);
+    }
+
+    public StringProperty stringOffensiveMomentumProperty() {
+        return stringOffensiveMomentum;
+    }
+    
+    private final StringProperty stringDefensiveMomentum = new SimpleStringProperty();
+
+    public String getStringDefensiveMomentum() {
+        return stringDefensiveMomentum.get();
+    }
+
+    public void setStringDefensiveMomentum(String value) {
+        stringDefensiveMomentum.set(value);
+    }
+
+    public StringProperty stringDefensiveMomentumProperty() {
+        return stringDefensiveMomentum;
+    }
+    
     public void printMovementLog() {
         for (int i = 0; i < this.movementLog.size(); i++) {
             System.out.println(this.movementLog.get(i).toString());
         }
-
     }
+    
 } // end class InGamePlayer

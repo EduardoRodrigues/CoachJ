@@ -49,12 +49,22 @@ public class Team {
     private short currentRun = 0;
     private short longestRun = 0;
     private short currentLead = 0;
-    private short largestLead = 0;
+    private short biggestLead = 0;
+    private short scoringDrought = 0;
+    private short pointsInThePaint = 0;
+    private short benchPoints = 0;
+    private short secondChancePoints = 0;
+    private short fastbreakPoints = 0;
+    private boolean secondChance = false;
+    private boolean fastbreak = false;
     private ArrayList<InGamePlayer> players = new ArrayList<>();
     DatabaseDirectConnection connection;
 
     /**
      * Constructor
+     *
+     * @param id Team's id
+     * @param connection Database connection used to retrieve data
      */
     public Team(short id, DatabaseDirectConnection connection) {
         this.id = id;
@@ -232,7 +242,7 @@ public class Team {
                 /**
                  * if he plays at the point, get him and leave the loop
                  */
-                if (currentPlayer.getBaseAttributes().getPosition().equals("PG")) {                    
+                if (currentPlayer.getBaseAttributes().getPosition().equals("PG")) {
                     bestPlaymaker = currentPlayer;
                     break;
                 } else {
@@ -325,6 +335,31 @@ public class Team {
         }
 
         return bestDunker;
+    }
+
+    /**
+     * Returns the best performer in the match
+     *
+     * @return
+     */
+    public InGamePlayer getBestPerformer() {
+
+        InGamePlayer bestPerformer = null;
+        double bestPlayerRate = -50;
+
+        /**
+         * Iterating through the array list to find the best performer
+         */
+        for (int i = 0; i < players.size(); i++) {
+            InGamePlayer currentPlayer = players.get(i);
+
+            if (currentPlayer.getPerformanceIndex() > bestPlayerRate) {
+                bestPlayerRate = currentPlayer.getPerformanceIndex();
+                bestPerformer = currentPlayer;
+            }
+        }
+
+        return bestPerformer;
     }
 
     /**
@@ -696,16 +731,36 @@ public class Team {
         }
     }
 
-    public void updateLeads(int basketPoints) {
-        if (basketPoints > 0) {
-            this.currentLead += basketPoints;
+    public void updateLeads(int lead) {
+        if (lead > 0) {
+            this.currentLead = (short) lead;
 
-            if (this.currentLead > this.largestLead) {
-                this.largestLead = this.currentLead;
+            if (this.currentLead > this.biggestLead) {
+                this.biggestLead = this.currentLead;
             }
         } else {
             this.currentLead = 0;
         }
+    }
+
+    public void updateScoringDrought(short elapsedTime) {
+        this.scoringDrought += elapsedTime;
+    }
+
+    public void updatePointsInThePaint(short points) {
+        this.pointsInThePaint += points;
+    }
+
+    public void updateBenchPoints(short points) {
+        this.benchPoints += points;
+    }
+
+    public void updateSecondChancePoints(short points) {
+        this.secondChancePoints += points;
+    }
+
+    public void updateFastbreakPoints(short points) {
+        this.fastbreakPoints += points;
     }
 
     /* getters and setters */
@@ -885,12 +940,12 @@ public class Team {
         this.currentLead = currentLead;
     }
 
-    public short getLargestLead() {
-        return largestLead;
+    public short getBiggestLead() {
+        return biggestLead;
     }
 
-    public void setLargestLead(short largestLead) {
-        this.largestLead = largestLead;
+    public void setBiggestLead(short biggestLead) {
+        this.biggestLead = biggestLead;
     }
 
     public ArrayList<InGamePlayer> getPlayers() {
@@ -956,4 +1011,61 @@ public class Team {
     public void setTotalPersonalFouls(short totalPersonalFouls) {
         this.totalPersonalFouls = totalPersonalFouls;
     }
+
+    public short getScoringDrought() {
+        return scoringDrought;
+    }
+
+    public void setScoringDrought(short scoringDrought) {
+        this.scoringDrought = scoringDrought;
+    }
+
+    public short getPointsInThePaint() {
+        return pointsInThePaint;
+    }
+
+    public void setPointsInThePaint(short pointsInThePaint) {
+        this.pointsInThePaint = pointsInThePaint;
+    }
+
+    public short getBenchPoints() {
+        return benchPoints;
+    }
+
+    public void setBenchPoints(short benchPoints) {
+        this.benchPoints = benchPoints;
+    }
+
+    public short getSecondChancePoints() {
+        return secondChancePoints;
+    }
+
+    public void setSecondChancePoints(short secondChancePoints) {
+        this.secondChancePoints = secondChancePoints;
+    }
+
+    public short getFastbreakPoints() {
+        return fastbreakPoints;
+    }
+
+    public void setFastbreakPoints(short fastbreakPoints) {
+        this.fastbreakPoints = fastbreakPoints;
+    }
+
+    public boolean isSecondChance() {
+        return secondChance;
+    }
+
+    public void setSecondChance(boolean secondChance) {
+        this.secondChance = secondChance;
+    }
+
+    public boolean isFastbreak() {
+        return fastbreak;
+    }
+
+    public void setFastbreak(boolean fastbreak) {
+        this.fastbreak = fastbreak;
+    }
+
 } // end class Team

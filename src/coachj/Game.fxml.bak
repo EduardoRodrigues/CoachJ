@@ -327,20 +327,20 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab fx:id="topPerformersStatsTab" text="%ch_melhores_performances">
+        <Tab text="%ch_melhores_performances">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
                 <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                   <children>
-                    <Label id="scoringTabAwayTeamLabel" fx:id="topPerformersTabAwayTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                    <Label id="scoringTabHomeTeamLabel" fx:id="topPerformersTabHomeTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                    <Label id="scoringTabAwayTeamFieldGoalsLabel" fx:id="topPerformersTabAwayTeamTopPerformerLabel" styleClass="h3" text="---" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                    <Label id="scoringTabAwayTeamThreePointersLabel" fx:id="topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                    <Label id="scoringTabAwayTeamFreeThrowsLabel" fx:id="topPerformersTabAwayTeamTopPerformerStatsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                    <Label id="scoringTabHomeTeamFieldGoalsLabel" fx:id="topPerformersTabHomeTeamTopPerformerLabel" styleClass="h3" text="---" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                    <Label id="scoringTabHomeTeamThreePointersLabel" fx:id="topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                    <Label id="scoringTabHomeTeamFreeThrowsLabel" fx:id="topPerformersTabHomeTeamTopPerformerStatsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                    <Label id="scoringTabAwayTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label id="scoringTabHomeTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <Label id="scoringTabAwayTeamFieldGoalsLabel" styleClass="h3" text="---" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label id="scoringTabAwayTeamThreePointersLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label id="scoringTabAwayTeamFreeThrowsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label id="scoringTabHomeTeamFieldGoalsLabel" styleClass="h3" text="---" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                    <Label id="scoringTabHomeTeamThreePointersLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                    <Label id="scoringTabHomeTeamFreeThrowsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                     <ImageView fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                     <ImageView fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                     <Label styleClass="boldLabel" text="%ch_performance_indice" GridPane.columnIndex="1" GridPane.rowIndex="3" />
