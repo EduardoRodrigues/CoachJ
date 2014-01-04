@@ -11,7 +11,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="mainContent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="coachj.GameController">
   <children>
-    <Button id="returnButton" fx:id="goBackButton" mnemonicParsing="false" onMouseClicked="#goBack" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <Button id="returnButton" fx:id="goBackButton" mnemonicParsing="false" onMouseClicked="#goBack" prefWidth="129.0" text="%ch_retornar" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
     <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <Label fx:id="scoreboardPeriodLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scoreboardShot" text="1" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
@@ -69,12 +69,6 @@
                     <Label fx:id="arenaLabel" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                     <Label fx:id="attendanceLabel" minHeight="13.0" prefHeight="13.0" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                     <Label fx:id="refereeLabel" minHeight="13.0" prefHeight="13.0" styleClass="numberLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                    <CheckBox fx:id="fastModeCheckBox" mnemonicParsing="false" onMouseClicked="#toggleFastMode" selected="true" styleClass="boldLabel" text="%ch_modo_rapido" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                      <tooltip>
-                        <Tooltip text="%ch_modo_rapido_tip" />
-                      </tooltip>
-                    </CheckBox>
-                    <Button fx:id="playGameButton" mnemonicParsing="false" onMouseClicked="#startGame" text="%ch_iniciar_partida" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                     <Label styleClass="h2" text="%ch_informacoes_jogo" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="0" />
                   </children>
                   <columnConstraints>
@@ -341,8 +335,16 @@
                     <Label id="scoringTabHomeTeamFieldGoalsLabel" fx:id="topPerformersTabHomeTeamTopPerformerLabel" styleClass="h3" text="---" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                     <Label id="scoringTabHomeTeamThreePointersLabel" fx:id="topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                     <Label id="scoringTabHomeTeamFreeThrowsLabel" fx:id="topPerformersTabHomeTeamTopPerformerStatsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                    <ImageView fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                    <ImageView fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                    <ImageView id="topPerformersTabAwayTeamTopPerformerImage" fx:id="topPerformersTabAwayTeamTopPerformerImageView" fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                      <image>
+                        <Image url="@img/blank_portrait.png" />
+                      </image>
+                    </ImageView>
+                    <ImageView id="topPerformersTabHomeTeamTopPerformerImage" fx:id="topPerformersTabHomeTeamTopPerformerImageView" fitHeight="200.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                      <image>
+                        <Image url="@img/blank_portrait.png" />
+                      </image>
+                    </ImageView>
                     <Label styleClass="boldLabel" text="%ch_performance_indice" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     <Label styleClass="boldLabel" text="%ch_estatísticas" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   </children>
@@ -363,15 +365,101 @@
             </AnchorPane>
           </content>
         </Tab>
+        <Tab fx:id="quarterByQuarterTab" text="%ch_pontuacao_quarto_quarto">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label id="scoringTabAwayTeamLabel" fx:id="quarterByQuarterAwayTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label id="scoringTabHomeTeamLabel" fx:id="quarterByQuarterHomeTeamLabel" styleClass="h2" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <Label styleClass="boldLabel" text="%ch_quarto_1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label styleClass="boldLabel" text="%ch_quarto_2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label styleClass="boldLabel" text="%ch_quarto_3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label styleClass="boldLabel" text="%ch_quarto_4" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label id="scoringTabAwayTeamFieldGoalsLabel" fx:id="quarterByQuarterAwayTeamFirstQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label id="scoringTabAwayTeamThreePointersLabel" fx:id="quarterByQuarterAwayTeamSecondQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label id="scoringTabAwayTeamFreeThrowsLabel" fx:id="quarterByQuarterAwayTeamThirdQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label id="scoringTabAwayTeamPointsInThePaintLabel" fx:id="quarterByQuarterAwayTeamFourthQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label id="scoringTabHomeTeamFieldGoalsLabel" fx:id="quarterByQuarterHomeTeamFirstQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <Label id="scoringTabHomeTeamThreePointersLabel" fx:id="quarterByQuarterHomeTeamSecondQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                    <Label id="scoringTabHomeTeamFreeThrowsLabel" fx:id="quarterByQuarterHomeTeamThirdQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                    <Label id="scoringTabHomeTeamPointsInThePaintLabel" fx:id="quarterByQuarterHomeTeamFourthQuarterPointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                    <Label styleClass="boldLabel" text="%ch_prorrogacao" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label styleClass="boldLabel" text="%ch_total" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label id="scoringTabAwayTeamPointsInThePaintLabel" fx:id="quarterByQuarterAwayTeamOvertimePointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label id="scoringTabAwayTeamPointsInThePaintLabel" fx:id="quarterByQuarterAwayTeamTotalPointsLabel" styleClass="h3" text="---" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <Label id="scoringTabHomeTeamPointsInThePaintLabel" fx:id="quarterByQuarterHomeTeamOvertimePointsLabel" styleClass="numberLabel" text="---" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                    <Label id="scoringTabHomeTeamPointsInThePaintLabel" fx:id="quarterByQuarterHomeTeamTotalPointsLabel" styleClass="h3" text="---" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab fx:id="shootingChartTab" text="%ch_mapa_arremessos">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane maxHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <ImageView fx:id="shootingChartTabCourtImageView" fitHeight="305.5691833496094" fitWidth="574.2824456554154" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                      <image>
+                        <Image url="@img/court.jpg" />
+                      </image>
+                    </ImageView>
+                    <TextArea fx:id="shootingChartTabPlayByPlayTextArea" editable="false" prefWidth="200.0" text="rwarw&#10;" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                      <GridPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                      </GridPane.margin>
+                    </TextArea>
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="640.0" minWidth="640.0" prefWidth="640.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
       </tabs>
     </TabPane>
     <Button fx:id="pauseGameButton" disable="true" mnemonicParsing="false" onMouseClicked="#pauseGame" text="%ch_pausar_partida" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="118.0" />
     <Label styleClass="h3" text="%ch_ultima_jogada_pontuacao" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0" />
-    <Label fx:id="lastScoringPlayScoreLabel" styleClass="boldLabel" text="-----" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="20.0" />
-    <Label fx:id="lastScoringPlayLabel" text="-----" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" />
-    <Label fx:id="lastScorerStatsLineLabel" text="-----" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" />
+    <Label fx:id="lastScoringPlayScoreLabel" styleClass="boldLabel" text="-----" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="80.0" />
+    <Label fx:id="lastScoringPlayLabel" text="-----" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="80.0" />
+    <Label fx:id="lastScorerStatsLineLabel" text="-----" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="80.0" />
     <Label fx:id="savingInformationLabel" styleClass="boldLabel" text="%ch_salvando_jogo" visible="false" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="10.0" />
     <Button fx:id="saveGameButton" mnemonicParsing="false" onMouseClicked="#saveGame" text="%ch_salvar_partida" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="14.0" />
+    <Button fx:id="playGameButton" mnemonicParsing="false" onMouseClicked="#startGame" text="%ch_iniciar_partida" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="150.0" />
+    <CheckBox fx:id="fastModeCheckBox" mnemonicParsing="false" onMouseClicked="#toggleFastMode" selected="true" styleClass="boldLabel" text="%ch_modo_rapido" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="300.0">
+      <tooltip>
+        <Tooltip text="%ch_modo_rapido_tip" />
+      </tooltip>
+    </CheckBox>
+    <ImageView id="lastScoringPlayScorerImage" fx:id="lastScoringPlayScorerImageView" fitHeight="60.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0">
+      <image>
+        <Image url="@img/blank_portrait.png" />
+      </image>
+    </ImageView>
   </children>
   <stylesheets>
     <URL value="@css/styles.css" />

@@ -72,6 +72,7 @@ public class PlayGame {
     private String currentEvent;
     private String lastEvent;
     private String shotDescription;
+    private String passDescription;
     private boolean openLook = false;
     private int tipOffWinner;
     private int ballPossession;
@@ -95,6 +96,7 @@ public class PlayGame {
             .observableArrayList();
     private ObservableList<Play> scoringPlays = FXCollections
             .observableArrayList();
+    private ArrayList<String> stringPlays = new ArrayList<>();
     private ArrayList<CourtSpot> courtSpots = new ArrayList<>();
     private Map<String, GameNarration> narration = new HashMap<>();
     /**
@@ -361,6 +363,24 @@ public class PlayGame {
         teams.get(HOME_TEAM).setLastTimeoutCall(periodLength);
 
         /**
+         * Showing team stats
+         */
+        if (period > 1) {
+            createTeamsComparisonStatsLinePlay("teams comparison: field-goals");
+            createTeamsComparisonStatsLinePlay("teams comparison: free-throws");
+            createTeamsComparisonStatsLinePlay("teams comparison: three-pointers");
+            createTeamsComparisonStatsLinePlay("teams comparison: bench points");
+            createTeamsComparisonStatsLinePlay("teams comparison: second chance points");
+            createTeamsComparisonStatsLinePlay("teams comparison: fastbreak points");
+            createTeamsComparisonStatsLinePlay("teams comparison: assists");
+            createTeamsComparisonStatsLinePlay("teams comparison: defensive rebounds");
+            createTeamsComparisonStatsLinePlay("teams comparison: offensive rebounds");
+            createTeamsComparisonStatsLinePlay("teams comparison: turnovers");
+            this.currentEvent = "start of period";
+            createPlay();
+        }
+
+        /**
          * Setting up which team has the ball possession at the start of the quarter, the team which
          * won the initial tip-off starts in the fourth, the team which lost starts the second and
          * third
@@ -451,6 +471,7 @@ public class PlayGame {
                 } else if (this.currentEvent.equalsIgnoreCase("ball to offensive court")) {
                     processBallToOffensiveCourt();
                 } else if (this.currentEvent.equalsIgnoreCase("pass")) {
+                    this.setPassDescription("pass");
                     processPass(-1, null);
                 } else if (this.currentEvent.equalsIgnoreCase("carry ball")) {
                     processCarryBall();
@@ -516,6 +537,22 @@ public class PlayGame {
                     processShot();
                 } else if (this.currentEvent.equalsIgnoreCase("quick three-pointer")) {
                     processQuickThreePointer();
+                } else if (this.currentEvent.equalsIgnoreCase("interception")) {
+                    processInterception();
+                } else if (this.currentEvent.equalsIgnoreCase("behind-the-back pass")) {
+                    processBehindTheBackPass();
+                } else if (this.currentEvent.equalsIgnoreCase("no-look pass")) {
+                    processNoLookPass();
+                } else if (this.currentEvent.equalsIgnoreCase("no-look pass to dunker")) {
+                    processNoLookPassToDunker();
+                } else if (this.currentEvent.equalsIgnoreCase("no-look pass to jump shooter")) {
+                    processNoLookPassToJumpShooter();
+                } else if (this.currentEvent.equalsIgnoreCase("no-look pass to outside shooter")) {
+                    processNoLookPassToOutsideShooter();
+                } else if (this.currentEvent.equalsIgnoreCase("bounce pass to dunker")) {
+                    processBouncePassToDunker();
+                } else if (this.currentEvent.equalsIgnoreCase("alley-oop pass to dunker")) {
+                    processAlleyOopPassToDunker();
                 } else if (this.currentEvent.equalsIgnoreCase("end of period")) {
                     processEndOfPeriod();
                 } else {
@@ -614,6 +651,11 @@ public class PlayGame {
          * Driving
          */
         this.currentEvent = "drive";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -655,6 +697,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -705,6 +752,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -757,10 +809,15 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
-     * Processes pass events
+     * Processes normal pass events
      *
      * @param passDestinationZone Zone to where the pass is headed, if it's -1, a random one is
      * picked
@@ -826,10 +883,18 @@ public class PlayGame {
          * Bad pass turnover
          */
         if (offensiveEffort < MathUtils.generateRandomInt(1, (int) distance * 2)
-                || activeOffensivePlayer.getBaseAttributes().getPass() < MathUtils.generateRandomInt(0, 50)) {
+                || activeOffensivePlayer.getBaseAttributes().getPass() 
+                < MathUtils.generateRandomInt(-100, activeDefensivePlayer.getBaseAttributes().getOneOnOneDefense())) {
             this.lastEvent = this.currentEvent;
             this.currentEvent = "bad pass turnover";
+            return;
         } else if (defensiveEffort > offensiveEffort * 1.5) {
+            /**
+             * stolen pass
+             */
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "interception" + " " + this.getPassDescription();
+        } else if (defensiveEffort > offensiveEffort * 1.25) {
             /**
              * deflected pass
              */
@@ -847,8 +912,8 @@ public class PlayGame {
              * player
              */
             if (passDestinationPlayer == null) {
-                activeOffensivePlayer = getPlayerInCourtZone(destinationZone, lastActiveOffensivePlayer.getRosterPosition(),
-                        ballPossession);
+                activeOffensivePlayer = getPlayerInCourtZone(destinationZone,
+                        lastActiveOffensivePlayer.getRosterPosition(), ballPossession);
             } else {
                 activeOffensivePlayer = passDestinationPlayer;
             }
@@ -886,11 +951,23 @@ public class PlayGame {
      */
     private void processCompletedPass() {
         /**
+         * Checking the source of the pass to see if it has generated an open look
+         */
+        if (lastActiveOffensivePlayer.getBaseAttributes().getCourtVision() > this.courtVisionAverage
+                && activeDefensivePlayer.getBaseAttributes().getHelpDefense() < MathUtils.generateRandomInt(0,
+                        lastActiveOffensivePlayer.getBaseAttributes().getCreativity())) {
+            this.setOpenLook(true);
+        }
+
+        if (this.getPassDescription().equalsIgnoreCase("behind-the-back pass")) {
+            this.setOpenLook(true);
+        }
+
+        /**
          * The pass is completed and the decision is handed back to the player
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
-
     }
 
     /**
@@ -937,6 +1014,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1006,6 +1088,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after turnover inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1070,6 +1157,11 @@ public class PlayGame {
         } else {
             this.currentEvent = "after turnover inbound pass";
         }
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1133,6 +1225,11 @@ public class PlayGame {
         } else {
             this.currentEvent = "after foul inbound pass";
         }
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1197,6 +1294,11 @@ public class PlayGame {
          * Checking for substitutions
          */
         checkForSubstitutions(2);
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1231,6 +1333,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after turnover inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1255,6 +1362,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1279,6 +1391,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1303,6 +1420,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1384,6 +1506,10 @@ public class PlayGame {
             this.ballCurrentLocation = MathUtils.generateRandomInt(211, 420);
         }
 
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1424,6 +1550,11 @@ public class PlayGame {
             this.lastEvent = this.currentEvent;
             this.currentEvent = "loose-ball";
         }
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1462,6 +1593,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after turnover inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1516,6 +1652,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after turnover inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1554,6 +1695,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after turnover inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1570,15 +1716,15 @@ public class PlayGame {
         teams.get(3 - ballPossession).updateSteals();
 
         /**
-         * Switching possession
-         */
-        switchBallPossession();
-
-        /**
          * Creating play log and adding it to the observable list
          */
         createPlay();
         createPlayerStatsLinePlay(ballPossession, activeDefensivePlayer);
+
+        /**
+         * Switching possession
+         */
+        switchBallPossession();
 
         /**
          * Displaying stats if the defensive team has reached a certain number of steals
@@ -1618,6 +1764,82 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
+    }
+
+    /**
+     * Processes interception events
+     */
+    private void processInterception() {
+        /**
+         * Register a turnover for the last active player and for the offensive team, add a steal
+         * for the last active defender and the defensive team, then switch the possession to the
+         * other team
+         */
+        lastActiveOffensivePlayer.updateTurnovers();
+        teams.get(ballPossession).updateTurnovers();
+        lastActiveDefensivePlayer.updateSteals();
+        teams.get(3 - ballPossession).updateSteals();
+
+        /**
+         * Creating play log and adding it to the observable list
+         */
+        this.currentEvent = "intercepted " + this.getPassDescription();
+        createPlay();
+        createPlayerStatsLinePlay(ballPossession, lastActiveDefensivePlayer);
+
+        /**
+         * Switching possession
+         */
+        switchBallPossession();
+
+        /**
+         * Displaying stats if the defensive team has reached a certain number of steals
+         */
+        if (this.teams.get(ballPossession).getSteals() > this.period * 2) {
+            createTeamsComparisonStatsLinePlay("teams comparison: steals");
+        }
+        sleep(MathUtils.generateRandomInt(1, 4) * 1000);
+
+        /**
+         * Switching active players
+         */
+        this.activeOffensivePlayer = lastActiveDefensivePlayer;
+        this.lastActiveOffensivePlayer = getRandomPlayer(activeOffensivePlayer
+                .getRosterPosition(), ballPossession);
+        this.activeDefensivePlayer = getRandomPlayer(0, 3 - ballPossession);
+        this.lastActiveDefensivePlayer = getRandomPlayer(activeDefensivePlayer
+                .getRosterPosition(), 3 - ballPossession);
+
+        /**
+         * Resetting shotclock, setting new ball location and player's current zone location
+         * (defensive halfcourt)
+         */
+        resetShotClock();
+        this.ballCurrentLocation = MathUtils.generateRandomInt(211, 420);
+        this.activeDefensivePlayer.setCurrentZoneLocation(CourtZones.DEFENSIVE_HALFCOURT
+                .getCourtZone());
+        this.activeOffensivePlayer.setCurrentZoneLocation(CourtZones.DEFENSIVE_HALFCOURT
+                .getCourtZone());
+        this.lastActiveDefensivePlayer.setCurrentZoneLocation(CourtZones.DEFENSIVE_HALFCOURT
+                .getCourtZone());
+        this.lastActiveOffensivePlayer.setCurrentZoneLocation(CourtZones.DEFENSIVE_HALFCOURT
+                .getCourtZone());
+
+        /**
+         * Updating events
+         */
+        this.lastEvent = this.currentEvent;
+        this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1643,6 +1865,11 @@ public class PlayGame {
          */
         int passDestinationZone = CourtUtils.getRandomSectionedZone(threePointerZone);
         lastActiveOffensivePlayer = outsideShooter;
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
 
         /**
          * Processing pass
@@ -1677,8 +1904,9 @@ public class PlayGame {
             CourtSpot newCourtSpot = courtSpots.get(newSpot);
             double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
                     newCourtSpot);
-            lastActiveOffensivePlayer = quickShooter;
-            lastActiveOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = quickShooter;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
             updateBallLocation(ballLastLocation, newSpot);
 
             /**
@@ -1688,24 +1916,621 @@ public class PlayGame {
             doPlay(elapsedTime);
 
             /**
-             * Updating events
+             * Checking if there's an open look
              */
-            this.lastEvent = this.currentEvent;
-            this.currentEvent = "completed pass";
+            this.setOpenLook(isOpenLookPass(lastActiveOffensivePlayer.getBaseAttributes().getPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
 
             /**
-             * Creating play log and adding it to the observable list
+             * If there isn't an open look, check whether the defender intercepted the pass
              */
-            createPlay();
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveOffensivePlayer.getBaseAttributes().getPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.shotDescription = "quick pass";
+                    this.currentEvent = "interception";
 
-            /**
-             * Making player shoot
-             */
-            this.lastEvent = this.currentEvent;
-            this.currentEvent = "shoot";
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "quick pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
         }
     }
 
+    /**
+     * Processes behind-the-back pass events
+     */
+    private void processBehindTheBackPass() {
+        /**
+         * Passing the ball by behind the back
+         */
+        int originalSpot = ballCurrentLocation;
+        int destinationZone = CourtUtils.getRandomSectionedZone(jumpShotZone);
+        int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+        CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+        CourtSpot newCourtSpot = courtSpots.get(newSpot);
+        double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                newCourtSpot);
+        updateBallLocation(ballLastLocation, newSpot);
+
+        /**
+         * Picking the destination player
+         */
+        lastActiveOffensivePlayer = activeOffensivePlayer;
+        activeOffensivePlayer = getPlayerInCourtZone(destinationZone,
+                lastActiveOffensivePlayer.getRosterPosition(), ballPossession);
+
+        /**
+         * Setting up the pass description
+         */
+        this.passDescription = "behind-the-back pass";
+
+        /**
+         * Elapsing time
+         */
+        this.elapsedTime = (int) Math.max(distance / 8, 1);
+        doPlay(elapsedTime);
+
+        /**
+         * Checking if there's an open look
+         */
+        this.setOpenLook(isOpenLookPass(lastActiveOffensivePlayer.getBaseAttributes().getBehindTheBackPass(),
+                lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+        /**
+         * If there isn't an open look, check whether the defender intercepted the pass
+         */
+        if (!this.isOpenLook()) {
+            if (hasDefenderInterceptedPass(lastActiveOffensivePlayer.getBaseAttributes().getBehindTheBackPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+
+                /**
+                 * Updating events
+                 */
+                this.lastEvent = this.currentEvent;
+                this.currentEvent = "interception";
+
+                /**
+                 * Creating play log and adding it to the observable list
+                 */
+                createPlay();
+            } else {
+                /**
+                 * Updating events
+                 */
+                this.lastEvent = this.currentEvent;
+                this.currentEvent = "behind-the-back pass";
+
+                /**
+                 * Creating play log and adding it to the observable list
+                 */
+                createPlay();
+
+                /**
+                 * Passing the decision to the player who received the pass
+                 */
+                this.lastEvent = "completed pass";
+                this.currentEvent = "player decision";
+            }
+        }
+    }
+
+    /**
+     * Processes no-look pass events
+     */
+    private void processNoLookPass() {
+        /**
+         * Passing the ball by behind the back
+         */
+        int originalSpot = ballCurrentLocation;
+        int destinationZone = CourtUtils.getRandomSectionedZone(jumpShotZone);
+        int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+        CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+        CourtSpot newCourtSpot = courtSpots.get(newSpot);
+        double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                newCourtSpot);
+        updateBallLocation(ballLastLocation, newSpot);
+
+        /**
+         * Picking the destination player
+         */
+        lastActiveOffensivePlayer = activeOffensivePlayer;
+        activeOffensivePlayer = getPlayerInCourtZone(destinationZone,
+                lastActiveOffensivePlayer.getRosterPosition(), ballPossession);
+
+        /**
+         * Setting up the pass description
+         */
+        this.passDescription = "no-look pass";
+
+        /**
+         * Elapsing time
+         */
+        this.elapsedTime = (int) Math.max(distance / 8, 1);
+        doPlay(elapsedTime);
+
+        /**
+         * Checking if there's an open look
+         */
+        this.setOpenLook(isOpenLookPass(lastActiveOffensivePlayer.getBaseAttributes().getNoLookPass(),
+                lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+        /**
+         * If there isn't an open look, check whether the defender intercepted the pass
+         */
+        if (!this.isOpenLook()) {
+            if (hasDefenderInterceptedPass(lastActiveOffensivePlayer.getBaseAttributes().getNoLookPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+
+                /**
+                 * Updating events
+                 */
+                this.lastEvent = this.currentEvent;
+                this.currentEvent = "interception";
+
+                /**
+                 * Creating play log and adding it to the observable list
+                 */
+                createPlay();
+            } else {
+                /**
+                 * Updating events
+                 */
+                this.lastEvent = this.currentEvent;
+                this.currentEvent = "no-look pass";
+
+                /**
+                 * Creating play log and adding it to the observable list
+                 */
+                createPlay();
+
+                /**
+                 * Passing the decision to the player who received the pass
+                 */
+                this.lastEvent = "completed pass";
+                this.currentEvent = "player decision";
+            }
+        }
+    }
+
+    /**
+     * Processes no-look pass to dunker events
+     */
+    private void processNoLookPassToDunker() {
+        /**
+         * Finding the best dunker, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer dunker = teams.get(this.ballPossession).getBestDunker();
+
+        if (activeOffensivePlayer.equals(dunker)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "player decision";
+        } else {
+
+            /**
+             * If the dunker is another player, move him to inside the lane, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(dunkingZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = dunker;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Checking if there's an open look
+             */
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+            /**
+             * If there isn't an open look, check whether the defender intercepted the pass
+             */
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "no-look pass";
+                    this.currentEvent = "interception";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "no-look pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
+        }
+    }
+    
+    /**
+     * Processes bounce pass to dunker events
+     */
+    private void processBouncePassToDunker() {
+        /**
+         * Finding the best dunker, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer dunker = teams.get(this.ballPossession).getBestDunker();
+
+        if (activeOffensivePlayer.equals(dunker)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "player decision";
+        } else {
+
+            /**
+             * If the dunker is another player, move him to inside the lane, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(dunkingZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = dunker;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Checking if there's an open look
+             */
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getBouncePass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+            /**
+             * If there isn't an open look, check whether the defender intercepted the pass
+             */
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getBouncePass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "bounce pass";
+                    this.currentEvent = "interception";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "bounce pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
+        }
+    }
+    
+    /**
+     * Processes alley-oop pass to dunker events
+     */
+    private void processAlleyOopPassToDunker() {
+        /**
+         * Finding the best dunker, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer dunker = teams.get(this.ballPossession).getBestDunker();
+
+        if (activeOffensivePlayer.equals(dunker)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "player decision";
+        } else {
+
+            /**
+             * If the dunker is another player, move him to inside the lane, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(dunkingZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = dunker;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Checking if there's an open look
+             */
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getAlleyOopPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+            /**
+             * If there isn't an open look, check whether the defender intercepted the pass
+             */
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getAlleyOopPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "alley-oop pass";
+                    this.currentEvent = "interception";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "alley-oop pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
+        }
+    }    
+    
+    /**
+     * Processes no-look pass to jump-shooter events
+     */
+    private void processNoLookPassToJumpShooter() {
+        /**
+         * Finding the best jump shooter, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer jumpShooter = teams.get(this.ballPossession).getBestJumpShooter();
+
+        if (activeOffensivePlayer.equals(jumpShooter)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "player decision";
+        } else {
+
+            /**
+             * If the jumpshooter is another player, move him to jump shot, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(jumpShotZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = jumpShooter;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Checking if there's an open look
+             */
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+            /**
+             * If there isn't an open look, check whether the defender intercepted the pass
+             */
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "no-look pass";
+                    this.currentEvent = "interception";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "no-look pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
+        }
+    }
+    
+    /**
+     * Processes no-look pass to outside shooter events
+     */
+    private void processNoLookPassToOutsideShooter() {
+        /**
+         * Finding the best outside shooter, if he's the player who already has the ball, another
+         * player decision event is generated
+         *
+         */
+        InGamePlayer outsideShooter = teams.get(this.ballPossession).getBestOutsideShooter();
+
+        if (activeOffensivePlayer.equals(outsideShooter)) {
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "player decision";
+        } else {
+
+            /**
+             * If the outside shooter is another player, move him to perimeter, give him
+             * the ball and make him shoot
+             */
+            int originalSpot = ballCurrentLocation;
+            int destinationZone = CourtUtils.getRandomSectionedZone(threePointerZone);
+            int newSpot = CourtUtils.getRandomCourtZoneSpot(destinationZone, connection);
+            CourtSpot originalCourtSpot = courtSpots.get(originalSpot);
+            CourtSpot newCourtSpot = courtSpots.get(newSpot);
+            double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
+                    newCourtSpot);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = outsideShooter;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            updateBallLocation(ballLastLocation, newSpot);
+
+            /**
+             * Elapsing time
+             */
+            this.elapsedTime = (int) Math.max(distance / 8, 1);
+            doPlay(elapsedTime);
+
+            /**
+             * Checking if there's an open look
+             */
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
+
+            /**
+             * If there isn't an open look, check whether the defender intercepted the pass
+             */
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getNoLookPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "no-look pass";
+                    this.currentEvent = "interception";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "no-look pass";
+
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
+        }
+    }
+    
     /**
      * Processes quick three-pointer events
      */
@@ -1733,8 +2558,9 @@ public class PlayGame {
             CourtSpot newCourtSpot = courtSpots.get(newSpot);
             double distance = CourtUtils.distanceBetweenCourtSpots(originalCourtSpot,
                     newCourtSpot);
-            lastActiveOffensivePlayer = outsideShooter;
-            lastActiveOffensivePlayer.setCurrentZoneLocation(destinationZone);
+            lastActiveOffensivePlayer = activeOffensivePlayer;
+            activeOffensivePlayer = outsideShooter;
+            activeOffensivePlayer.setCurrentZoneLocation(destinationZone);
             updateBallLocation(ballLastLocation, newSpot);
 
             /**
@@ -1744,21 +2570,42 @@ public class PlayGame {
             doPlay(elapsedTime);
 
             /**
-             * Updating events
+             * Checking if there's an open look
              */
-            this.lastEvent = this.currentEvent;
-            this.currentEvent = "completed pass";
+            this.setOpenLook(isOpenLookPass(lastActiveDefensivePlayer.getBaseAttributes().getPass(),
+                    lastActiveOffensivePlayer, lastActiveDefensivePlayer));
 
             /**
-             * Creating play log and adding it to the observable list
+             * If there isn't an open look, check whether the defender intercepted the pass
              */
-            createPlay();
+            if (!this.isOpenLook()) {
+                if (hasDefenderInterceptedPass(lastActiveDefensivePlayer.getBaseAttributes().getPass(),
+                        lastActiveOffensivePlayer, lastActiveDefensivePlayer)) {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.passDescription = "quick three-pointer pass";
+                    this.currentEvent = "interception";                    
+                } else {
+                    /**
+                     * Updating events
+                     */
+                    this.lastEvent = this.currentEvent;
+                    this.currentEvent = "quick three-pointer pass";
 
-            /**
-             * Making player shoot
-             */
-            this.lastEvent = this.currentEvent;
-            this.currentEvent = "shoot";
+                    /**
+                     * Creating play log and adding it to the observable list
+                     */
+                    createPlay();
+
+                    /**
+                     * Making player shoot
+                     */
+                    this.lastEvent = "completed pass";
+                    this.currentEvent = "shoot";
+                }
+            }
         }
     }
 
@@ -1786,6 +2633,11 @@ public class PlayGame {
          */
         int passDestinationZone = CourtUtils.getRandomSectionedZone(lowPostZone);
         lastActiveOffensivePlayer = lowPostShooterr;
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
 
         /**
          * Processing pass
@@ -1818,6 +2670,11 @@ public class PlayGame {
         lastActiveOffensivePlayer = jumpShooter;
 
         /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
+
+        /**
          * Processing pass
          */
         processPass(passDestinationZone, lastActiveOffensivePlayer);
@@ -1845,6 +2702,11 @@ public class PlayGame {
          */
         int passDestinationZone = -1;
         lastActiveOffensivePlayer = hottestShooter;
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
 
         /**
          * Processing pass
@@ -1897,7 +2759,12 @@ public class PlayGame {
          * Updating events
          */
         this.lastEvent = this.currentEvent;
-        this.currentEvent = "player decision";
+        this.currentEvent = "completed pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -1961,8 +2828,8 @@ public class PlayGame {
          * If the offensive effort is 1 to 5% smaller than the defensive one, the active player
          * loses control of the ball
          */
-        if (this.offensiveEffort < this.defensiveEffort
-                || activeOffensivePlayer.getBaseAttributes().getDrive() < MathUtils.generateRandomInt(0, 50)) {
+        if (activeOffensivePlayer.getBaseAttributes().getDrive() < MathUtils.generateRandomInt(-100,
+                activeDefensivePlayer.getBaseAttributes().getOneOnOneDefense())) {
             /**
              * Updating events
              */
@@ -1974,7 +2841,7 @@ public class PlayGame {
         /**
          * Checking for traveling violation
          */
-        if (this.offensiveEffort < MathUtils.generateRandomInt(0, 100)) {
+        if (this.offensiveEffort < MathUtils.generateRandomInt(0, 75)) {
             /**
              * Updating events
              */
@@ -2046,6 +2913,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -2097,10 +2969,10 @@ public class PlayGame {
         }
 
         /**
-         * If the offensive effort is 1 to 10% smaller than the defensive one, the active player
-         * loses control of the ball
+         * Checking if the offensive player has lost control of the ball
          */
-        if (this.offensiveEffort < (this.defensiveEffort)) {
+        if (activeOffensivePlayer.getBaseAttributes().getBallHandling() < MathUtils.generateRandomInt(-100,
+                activeDefensivePlayer.getBaseAttributes().getOneOnOneDefense())) {
             /**
              * Updating events
              */
@@ -2112,7 +2984,7 @@ public class PlayGame {
         /**
          * Checking for traveling violation
          */
-        if (this.offensiveEffort < MathUtils.generateRandomInt(0, 5)) {
+        if (activeOffensivePlayer.getBaseAttributes().getDribble() < MathUtils.generateRandomInt(0, 75)) {
             /**
              * Updating events
              */
@@ -2153,6 +3025,14 @@ public class PlayGame {
         lastActiveDefensivePlayer = activeDefensivePlayer;
         activeDefensivePlayer = getRandomPlayer(lastActiveDefensivePlayer.getRosterPosition(),
                 3 - ballPossession);
+
+        /**
+         * If the new active defense player isn't too good at helping, the offensive player has an
+         * open look
+         */
+        if (activeDefensivePlayer.getBaseAttributes().getHelpDefense() < MathUtils.generateRandomInt(0, 100)) {
+            this.setOpenLook(true);
+        }
 
         /**
          * Updating events
@@ -2275,7 +3155,7 @@ public class PlayGame {
         this.currentEvent = "official timeout";
         this.setOfficialTimeoutCalled(true);
         restPlayers(1);
-        zeroMomenta();
+        easeMomenta();
         checkForSubstitutions(3);
 
         /**
@@ -2283,6 +3163,11 @@ public class PlayGame {
          */
         createPlay();
         sleep(MathUtils.generateRandomInt(12, 20) * 1000);
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
 
         /**
          * Restoring the previous current event
@@ -2303,7 +3188,7 @@ public class PlayGame {
         this.teams.get(caller).updateTimeouts();
         this.teams.get(caller).setLastTimeoutCall(this.timeLeft);
         restPlayers(1);
-        zeroMomenta();
+        easeMomenta();
         checkForSubstitutions(3);
 
         /**
@@ -2317,6 +3202,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = previousEvent;
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -2378,6 +3268,17 @@ public class PlayGame {
                 && possessionTeam.getLastTimeoutCall() > this.timeLeft + 120) {
             processTimeout(ballPossession);
         }
+
+        /**
+         * If the game is in the first three quarters and the remaining time is less than a
+         * possession
+         */
+        if (this.period < 4 && this.timeLeft <= GameParameters.SHOTCLOCK.getParameterValue()
+                && this.ballPossession == this.leadingTeam
+                && possessionTeam.getTimeoutsLeft() > 0) {
+            processTimeout(ballPossession);
+        }
+
     }
 
     /**
@@ -2757,6 +3658,11 @@ public class PlayGame {
      */
     private void processLowPostLayup(double shotDistance) {
         /**
+         * Moving the ball to the paint, to record possible points
+         */
+        this.ballCurrentLocation = 8;
+
+        /**
          * Calculating offensive and defensive efforts, then passing the flow to the evaluate shot
          * method
          */
@@ -2972,6 +3878,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -3025,6 +3936,11 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -3191,6 +4107,10 @@ public class PlayGame {
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "rebound";
+
+        /**
+         * Unsetting a probable open look situation
+         */
         this.setOpenLook(false);
     }
 
@@ -3204,13 +4124,6 @@ public class PlayGame {
         int basketPoints = courtSpots.get(ballCurrentLocation).getBasketPoints();
         int lead;
         this.playScore = basketPoints;
-
-        /**
-         * Checking if the basket was in the paint
-         */
-        if (courtSpots.get(ballCurrentLocation).getCourtZone() == CourtZones.PAINT.getCourtZone()) {
-            this.teams.get(ballPossession).updatePointsInThePaint((short) 2);
-        }
 
         System.out.println("Last Event: " + this.lastEvent); // delete
         /**
@@ -3240,7 +4153,30 @@ public class PlayGame {
         }
 
         teams.get(ballPossession).updateScore(basketPoints);
+        teams.get(ballPossession).updateQuarterPoints(period, (short) basketPoints);
         teams.get(ballPossession).updateRuns(basketPoints);
+
+        /**
+         * Updating current event
+         */
+        if (isOpenLook()) {
+            this.currentEvent = "hit open " + this.shotDescription;
+        } else {
+            this.currentEvent = "hit " + this.shotDescription;
+        }
+
+        /**
+         * Creating play log, adding it to the observable list, resetting the openlook to false and
+         * the shotclock
+         */
+        createPlay();
+        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
+
+        /**
+         * Updating scoring strings and resetting scoring drought
+         */
+        updateScoringStrings();
+        this.teams.get(ballPossession).setScoringDrought((short) 0);
 
         /**
          * Checking whether the lead was increased or the game was tied
@@ -3256,6 +4192,55 @@ public class PlayGame {
         teams.get(3 - ballPossession).updateRuns(0);
         teams.get(3 - ballPossession).updateLeads(0);
 
+        /**
+         * Checking if there was an assist to update assistant's stats and offensive momentum
+         */
+        if (this.lastEvent.equalsIgnoreCase("completed pass")
+                || this.lastEvent.equalsIgnoreCase("inbound pass")
+                || this.lastEvent.equalsIgnoreCase("after turnover inbound pass")
+                || this.lastEvent.equalsIgnoreCase("after basket inbound pass")
+                || this.lastEvent.equalsIgnoreCase("ball to playmaker")) {
+            lastActiveOffensivePlayer.updateAssists();
+            lastActiveOffensivePlayer.updateOffensiveMomentum(1);
+            teams.get(ballPossession).updateAssists();
+
+            /**
+             * Updating events
+             */
+            this.lastEvent = this.currentEvent;
+            this.currentEvent = "assist";
+
+            /**
+             * Creating play log and adding it to the observable list
+             */
+            createPlay();
+            createPlayerStatsLinePlay(ballPossession, lastActiveOffensivePlayer);
+
+            /**
+             * Displaying stats if the offensive team has reached a certain number of assists
+             */
+            if (this.teams.get(ballPossession).getAssists() > this.period * 3) {
+                createTeamsComparisonStatsLinePlay("teams comparison: assists");
+            }
+
+            sleep(MathUtils.generateRandomInt(1, 4) * 1000);
+        }
+
+        /**
+         * Checking whether the basket was in the paint
+         */
+        if (courtSpots.get(ballCurrentLocation).getCourtZone() == CourtZones.PAINT.getCourtZone()) {
+            this.teams.get(ballPossession).updatePointsInThePaint((short) 2);
+            
+            /**
+             * Displaying stats if the offensive team has reached a certain number of points in the 
+             * paint
+             */
+            if (this.teams.get(ballPossession).getPointsInThePaint() > this.period * 5) {
+                createTeamsComparisonStatsLinePlay("teams comparison: points in the paint");
+            }
+        }
+        
         /**
          * Checking whether the points came from a second chance attempt
          */
@@ -3300,28 +4285,6 @@ public class PlayGame {
             }
         }
 
-        /**
-         * Updating current event
-         */
-        if (isOpenLook()) {
-            this.currentEvent = "hit open " + this.shotDescription;
-        } else {
-            this.currentEvent = "hit " + this.shotDescription;
-        }
-
-        /**
-         * Updating scoring strings and resetting scoring drought
-         */
-        updateScoringStrings();
-        this.teams.get(ballPossession).setScoringDrought((short) 0);
-
-        /**
-         * Creating play log, adding it to the observable list, resetting the openlook to false and
-         * the shotclock
-         */
-        createPlay();
-        createPlayerStatsLinePlay(ballPossession, activeOffensivePlayer);
-
         if (basketPoints == 3) {
             /**
              * Displaying stats if the offensive team has reached a certain number of three-pointers
@@ -3346,43 +4309,8 @@ public class PlayGame {
             createTeamsComparisonStatsLinePlay("team run");
         }
 
-        setOpenLook(false);
         resetShotClock();
         sleep(MathUtils.generateRandomInt(1, 4) * 1000);
-
-        /**
-         * Checking if there was an assist to update assistant's stats and offensive momentum
-         */
-        if (this.lastEvent.equalsIgnoreCase("completed pass")
-                || this.lastEvent.equalsIgnoreCase("inbound pass")
-                || this.lastEvent.equalsIgnoreCase("after turnover inbound pass")
-                || this.lastEvent.equalsIgnoreCase("after basket inbound pass")
-                || this.lastEvent.equalsIgnoreCase("ball to playmaker")) {
-            lastActiveOffensivePlayer.updateAssists();
-            lastActiveOffensivePlayer.updateOffensiveMomentum(1);
-            teams.get(ballPossession).updateAssists();
-
-            /**
-             * Updating events
-             */
-            this.lastEvent = this.currentEvent;
-            this.currentEvent = "assist";
-
-            /**
-             * Creating play log and adding it to the observable list
-             */
-            createPlay();
-            createPlayerStatsLinePlay(ballPossession, lastActiveOffensivePlayer);
-
-            /**
-             * Displaying stats if the offensive team has reached a certain number of assists
-             */
-            if (this.teams.get(ballPossession).getAssists() > this.period * 3) {
-                createTeamsComparisonStatsLinePlay("teams comparison: assists");
-            }
-
-            sleep(MathUtils.generateRandomInt(1, 4) * 1000);
-        }
 
         /**
          * If it wasn't an open look shot and the defensive effort was greater than 90% of the
@@ -3403,10 +4331,15 @@ public class PlayGame {
         }
 
         /**
-         * If there's no shooting fall, update events
+         * If there's no shooting foul, update events
          */
         this.lastEvent = this.currentEvent;
         this.currentEvent = "after basket inbound pass";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -3460,6 +4393,11 @@ public class PlayGame {
         this.lastEvent = this.currentEvent;
         this.currentEvent = "free-throw";
         resetShotClock();
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     /**
@@ -3510,6 +4448,7 @@ public class PlayGame {
             activeOffensivePlayer.updateOffensiveMomentum(1);
             teams.get(ballPossession).updateFreeThrowsMade();
             teams.get(ballPossession).updateScore(1);
+            teams.get(ballPossession).updateQuarterPoints(period, (short) 1);
             this.teams.get(ballPossession).setScoringDrought((short) 0);
             teams.get(ballPossession).updateRuns(1);
             teams.get(ballPossession).updateLeads(1);
@@ -3760,6 +4699,11 @@ public class PlayGame {
         resetShotClock();
         this.lastEvent = this.currentEvent;
         this.currentEvent = "player decision";
+
+        /**
+         * Unsetting a probable open look situation
+         */
+        this.setOpenLook(false);
     }
 
     private void processFake() {
@@ -3824,8 +4768,11 @@ public class PlayGame {
         currentPlay.setPlayDescription(parseNarration(getGameNarration(this.currentEvent)));
 
         // delete
-        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
-                + parseNarration(getGameNarration(this.currentEvent)));
+        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft)
+                + currentPlay.getPlayDescription());
+
+        // adding play to the arraylist
+        addPlayByPlay(currentPlay);
 
         try {
             this.plays.add(0, currentPlay);
@@ -3898,9 +4845,8 @@ public class PlayGame {
         currentPlay.setPlayDescription(this.teams.get(team).getAbbreviature() + " - "
                 + player.getStatsLine());
 
-        // delete
-        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
-                + parseNarration(getGameNarration(this.currentEvent)));
+        // adding play to the arraylist
+        addPlayByPlay(currentPlay);
 
         try {
             this.plays.add(0, currentPlay);
@@ -3933,9 +4879,8 @@ public class PlayGame {
         currentPlay.setPlayType(stat);
         currentPlay.setPlayDescription(parseNarration(getGameNarration(stat)));
 
-        // delete
-        System.out.println(this.period + " - " + TimeUtils.intToTime(this.timeLeft) + " - "
-                + parseNarration(getGameNarration(stat)));
+        // adding play to the arraylist
+        addPlayByPlay(currentPlay);
 
         try {
             this.plays.add(0, currentPlay);
@@ -4150,6 +5095,10 @@ public class PlayGame {
                 String.format("%01d", this.teams.get(2).getFastbreakPoints()));
         parsedNarration = parsedNarration.replace("[atfbp]",
                 String.format("%01d", this.teams.get(1).getFastbreakPoints()));
+        parsedNarration = parsedNarration.replace("[htpp]",
+                String.format("%01d", this.teams.get(2).getPointsInThePaint()));
+        parsedNarration = parsedNarration.replace("[atpp]",
+                String.format("%01d", this.teams.get(1).getPointsInThePaint()));
 
         return parsedNarration;
     }
@@ -4309,17 +5258,16 @@ public class PlayGame {
     }
 
     /**
-     * Zeroes the offensive and defensive momenta for players on both teams
+     * Eases the offensive and defensive momenta for players on both teams
      */
-    private void zeroMomenta() {
+    private void easeMomenta() {
         InGamePlayer currentPlayer;
 
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < teams.get(i).getPlayers().size(); j++) {
-
                 currentPlayer = teams.get(i).getPlayers().get(j);
-                currentPlayer.setOffensiveMomentum((short) 0);
-                currentPlayer.setDefensiveMomentum((short) 0);
+                currentPlayer.setOffensiveMomentum((short) -1);
+                currentPlayer.setDefensiveMomentum((short) -1);
             }
         }
     }
@@ -4764,7 +5712,8 @@ public class PlayGame {
                     + "threePointersAttempted, threePointersMade, assists, offensiveRebounds, "
                     + "defensiveRebounds, blocks, blockedShots, steals, turnovers, "
                     + "personalFouls, technicalFouls, longestRun, biggestLead, pointsInThePaint, benchPoints, "
-                    + "secondChancePoints, fastbreakPoints) VALUES ("
+                    + "secondChancePoints, fastbreakPoints, firstQuarterPoints, secondQuarterPoints, thirdQuarterPoints, "
+                    + "fourthQuarterPoints, overtimePoints) VALUES ("
                     + this.season + ", "
                     + this.gameId + ", "
                     + currentTeam.getId() + ", "
@@ -4794,7 +5743,12 @@ public class PlayGame {
                     + currentTeam.getPointsInThePaint() + ", "
                     + currentTeam.getBenchPoints() + ", "
                     + currentTeam.getSecondChancePoints() + ", "
-                    + currentTeam.getFastbreakPoints() + ")";
+                    + currentTeam.getFastbreakPoints() + ", "
+                    + currentTeam.getQuarterPoints(1) + ", "
+                    + currentTeam.getQuarterPoints(2) + ", "
+                    + currentTeam.getQuarterPoints(3) + ", "
+                    + currentTeam.getQuarterPoints(4) + ", "
+                    + currentTeam.getQuarterPoints(5) + ")";
 
             this.connection.executeSQL(sqlStatement);
         }
@@ -4815,6 +5769,80 @@ public class PlayGame {
             Logger.getLogger(PlayGame.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Adds play by play data to the play by play array list
+     *
+     * @param currentPlay Play object with data
+     */
+    private void addPlayByPlay(Play currentPlay) {
+
+        stringPlays.add(String.format("%n"));
+        stringPlays.add(String.format("%n%s", currentPlay.getPlayDescription()));
+        stringPlays.add(String.format("%n%1d - %s| %s %1d, %s %1d",
+                this.period, TimeUtils.intToTime(this.timeLeft), this.teams.get(1).getCompleteName(),
+                this.teams.get(1).getScore(), this.teams.get(2).getCompleteName(),
+                this.teams.get(2).getScore()));
+    }
+
+    /**
+     * Evaluates if a pass attempt generated an open look pass or not
+     *
+     * @param passer Player who passed the ball
+     * @param defender Defender who'll try to cover the pass
+     * @return
+     */
+    private boolean isOpenLookPass(int baseAttribbute, InGamePlayer passer, InGamePlayer defender) {
+        boolean openLookPass = false;
+        int passerEffort = baseAttribbute
+                + passer.getBaseAttributes().getCourtVision()
+                + passer.getBaseAttributes().getCreativity()
+                + MathUtils.generateRandomInt(-10, 10)
+                - passer.getCurrentStaminaLevel();
+        int defenderEffort = defender.getBaseAttributes().getHelpDefense()
+                + defender.getBaseAttributes().getSpeed()
+                + defender.getBaseAttributes().getCourtVision()
+                + MathUtils.generateRandomInt(-10, 20)
+                - defender.getCurrentStaminaLevel();
+
+        /**
+         * Checking whether the passer's courtvision and creativity are greater than the defender's
+         * help defense and speed so to create an open look
+         */
+        if (passerEffort > defenderEffort) {
+            openLookPass = true;
+        }
+
+        return openLookPass;
+    }
+
+    /**
+     * Evaluates if a defender succeeds in intercepting a pass
+     *
+     * @param passer Player who passed the ball
+     * @param defender Defender who'll try to cover the pass
+     * @return
+     */
+    private boolean hasDefenderInterceptedPass(int passerBaseAttribute, InGamePlayer passer,
+            InGamePlayer defender) {
+        boolean interceptedPass = false;
+        int passerEffort = passerBaseAttribute
+                + passer.getBaseAttributes().getCourtVision()
+                + passer.getBaseAttributes().getCreativity()
+                + MathUtils.generateRandomInt(-10, 30)
+                - passer.getCurrentStaminaLevel();
+        int defenderEffort = defender.getBaseAttributes().getHelpDefense()
+                + defender.getBaseAttributes().getCourtVision()
+                + defender.getBaseAttributes().getSpeed()
+                + MathUtils.generateRandomInt(-10, 10)
+                - defender.getCurrentStaminaLevel();
+
+        if (defenderEffort > passerEffort) {
+            interceptedPass = true;
+        }
+
+        return interceptedPass;
     }
 
     /* getters and setters */
@@ -5489,4 +6517,29 @@ public class PlayGame {
     public void setPaused(boolean paused) {
         this.paused = paused;
     }
+
+    public ArrayList<String> getStringPlays() {
+        return stringPlays;
+    }
+
+    public void setStringPlays(ArrayList<String> stringPlays) {
+        this.stringPlays = stringPlays;
+    }
+
+    public ArrayList<Integer> getReboundingZone() {
+        return reboundingZone;
+    }
+
+    public void setReboundingZone(ArrayList<Integer> reboundingZone) {
+        this.reboundingZone = reboundingZone;
+    }
+
+    public String getPassDescription() {
+        return passDescription;
+    }
+
+    public void setPassDescription(String passDescription) {
+        this.passDescription = passDescription;
+    }
+
 } // end PlayGame

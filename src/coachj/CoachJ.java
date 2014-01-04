@@ -64,7 +64,7 @@ public class CoachJ extends Application {
          */
         boolean databaseConnection = MySqlUtils.checkDatabaseConnection();
         boolean databaseTables = MySqlUtils.checkDatabaseTables();
-        boolean databaseIntegrity = MySqlUtils.checkDatabaseIntegrity();
+        boolean databaseIntegrity = true; //MySqlUtils.checkDatabaseIntegrity();
 
         /**
          * Storing result of operations into app setting to be used by the post

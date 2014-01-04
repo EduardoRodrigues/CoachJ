@@ -1,0 +1,14 @@
+- improve blowout behavior
+- implement fast-breaks
+- improve free-throw rebounding to get taller players
+- implement special passes:
+behind-the-back pass [ok]
+no-look  pass  to dunker [ok]
+no-look  pass  to jump shooter [ok]
+no-look  pass  to outside shooter [ok]
+bounce  pass  to dunker [ok]
+alley-oop  pass  to dunker [ok]
+ball  to  hottest shooter [ok]
+low-post play [ok]
+ball  to  jump shooter [ok]
+ball  to  outside shooter [ok]

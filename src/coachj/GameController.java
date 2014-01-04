@@ -33,7 +33,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
@@ -233,6 +236,8 @@ public class GameController implements Initializable {
     @FXML
     private Label lastScoringPlayScoreLabel;
     @FXML
+    private ImageView lastScoringPlayScorerImageView;
+    @FXML
     private Label savingInformationLabel;
     @FXML
     private Tab scoringTab;
@@ -326,20 +331,60 @@ public class GameController implements Initializable {
     private Tab topPerformersStatsTab;
     @FXML
     private Label topPerformersTabAwayTeamLabel;
-@FXML
+    @FXML
     private Label topPerformersTabAwayTeamTopPerformerLabel;
-@FXML
+    @FXML
     private Label topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel;
-@FXML
+    @FXML
     private Label topPerformersTabAwayTeamTopPerformerStatsLabel;
- @FXML
+    @FXML
+    private ImageView topPerformersTabAwayTeamTopPerformerImageView;
+    @FXML
     private Label topPerformersTabHomeTeamLabel;
-@FXML
+    @FXML
     private Label topPerformersTabHomeTeamTopPerformerLabel;
-@FXML
+    @FXML
     private Label topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel;
-@FXML
+    @FXML
     private Label topPerformersTabHomeTeamTopPerformerStatsLabel;
+    @FXML
+    private ImageView topPerformersTabHomeTeamTopPerformerImageView;
+    @FXML
+    private Tab quarterByQuarterTab;
+    @FXML
+    private Label quarterByQuarterAwayTeamLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamFirstQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamSecondQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamThirdQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamFourthQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamOvertimePointsLabel;
+    @FXML
+    private Label quarterByQuarterAwayTeamTotalPointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamFirstQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamSecondQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamThirdQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamFourthQuarterPointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamOvertimePointsLabel;
+    @FXML
+    private Label quarterByQuarterHomeTeamTotalPointsLabel;
+    @FXML
+    private Tab shootingChartTab;
+    @FXML
+    private ImageView shootingChartTabCourtImageView;
+    @FXML
+    private TextArea shootingChartTabPlayByPlayTextArea;
 
     /**
      * Keeps a reference to the application's thread
@@ -402,22 +447,28 @@ public class GameController implements Initializable {
         scoringTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
         moreStatsTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
         topPerformersTabAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
+        quarterByQuarterAwayTeamLabel.setText(game.getTeams().get(1).getCompleteName());
         scoreboardAwayTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
                 game.getTeams().get(1).getId(), connection));
+
         scoreboardHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
         scoringTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
         moreStatsTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
         topPerformersTabHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
+        quarterByQuarterHomeTeamLabel.setText(game.getTeams().get(2).getCompleteName());
         scoreboardHomeTeamRecordLabel.setText(FranchiseUtils.getFranchiseScheduleWinsLosses(
                 game.getTeams().get(2).getId(), connection));
+
         awayTeamTab.setText("Boxscore: " + game.getTeams().get(1).getCompleteName());
         homeTeamTab.setText("Boxscore: " + game.getTeams().get(2).getCompleteName());
+
         awayTeamCompleteNameLabel.setText(game.getTeams().get(1).getCompleteName() + " ("
                 + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(1)
                         .getCoachId(), connection) + ")");
         homeTeamCompleteNameLabel.setText(game.getTeams().get(2).getCompleteName() + " ("
                 + resources.getString("ch_tecnico") + ": " + CoachUtils.getCoachCompleteName(game.getTeams().get(2)
                         .getCoachId(), connection) + ")");
+
         playByPlayAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
         playByPlayHomeScoreTableColumn.setText(game.getTeams().get(2).getAbbreviature());
         scoringLogAwayScoreTableColumn.setText(game.getTeams().get(1).getAbbreviature());
@@ -528,11 +579,28 @@ public class GameController implements Initializable {
         String homeTeamFastbreakPoints = String.format("%01d", game.getTeams().get(2).getFastbreakPoints());
 
         /**
+         * Quarter by quarters stats
+         */
+        String awayTeamFirstQuarterPoints = String.format("%01d", game.getTeams().get(1).getQuarterPoints(1));
+        String awayTeamSecondQuarterPoints = String.format("%01d", game.getTeams().get(1).getQuarterPoints(2));
+        String awayTeamThirdQuarterPoints = String.format("%01d", game.getTeams().get(1).getQuarterPoints(3));
+        String awayTeamFourthQuarterPoints = String.format("%01d", game.getTeams().get(1).getQuarterPoints(4));
+        String awayTeamOvertimePoints = String.format("%01d", game.getTeams().get(1).getQuarterPoints(5));
+        String awayTeamTotalPoints = String.format("%01d", game.getTeams().get(1).getScore());
+
+        String homeTeamFirstQuarterPoints = String.format("%01d", game.getTeams().get(2).getQuarterPoints(1));
+        String homeTeamSecondQuarterPoints = String.format("%01d", game.getTeams().get(2).getQuarterPoints(2));
+        String homeTeamThirdQuarterPoints = String.format("%01d", game.getTeams().get(2).getQuarterPoints(3));
+        String homeTeamFourthQuarterPoints = String.format("%01d", game.getTeams().get(2).getQuarterPoints(4));
+        String homeTeamOvertimePoints = String.format("%01d", game.getTeams().get(2).getQuarterPoints(5));
+        String homeTeamTotalPoints = String.format("%01d", game.getTeams().get(2).getScore());
+
+        /**
          * Retrieving top performers
          */
         InGamePlayer awayTeamBestPerformer = game.getTeams().get(1).getBestPerformer();
         InGamePlayer homeTeamBestPerformer = game.getTeams().get(2).getBestPerformer();
-        
+
         /**
          * More stats tab
          */
@@ -616,7 +684,7 @@ public class GameController implements Initializable {
         moreStatsTabAwayTeamStealsLabel.setText(awayTeamSteals);
         moreStatsTabAwayTeamTurnoversLabel.setText(awayTeamTurnovers);
         moreStatsTabAwayTeamFoulsLabel.setText(awayTeamTotalFouls);
-        
+
         moreStatsTabHomeTeamDefensiveReboundsLabel.setText(homeTeamDefensiveRebounds);
         moreStatsTabHomeTeamOffensiveReboundsLabel.setText(homeTeamOffensiveRebounds);
         moreStatsTabHomeTeamTotalReboundsLabel.setText(homeTeamTotalRebounds);
@@ -625,37 +693,65 @@ public class GameController implements Initializable {
         moreStatsTabHomeTeamStealsLabel.setText(homeTeamSteals);
         moreStatsTabHomeTeamTurnoversLabel.setText(homeTeamTurnovers);
         moreStatsTabHomeTeamFoulsLabel.setText(homeTeamTotalFouls);
-        
+
+        /**
+         * Updating quarter by quarter stats
+         */
+        quarterByQuarterAwayTeamFirstQuarterPointsLabel.setText(awayTeamFirstQuarterPoints);
+        quarterByQuarterAwayTeamSecondQuarterPointsLabel.setText(awayTeamSecondQuarterPoints);
+        quarterByQuarterAwayTeamThirdQuarterPointsLabel.setText(awayTeamThirdQuarterPoints);
+        quarterByQuarterAwayTeamFourthQuarterPointsLabel.setText(awayTeamFourthQuarterPoints);
+        quarterByQuarterAwayTeamOvertimePointsLabel.setText(awayTeamOvertimePoints);
+        quarterByQuarterAwayTeamTotalPointsLabel.setText(awayTeamTotalPoints);
+
+        quarterByQuarterHomeTeamFirstQuarterPointsLabel.setText(homeTeamFirstQuarterPoints);
+        quarterByQuarterHomeTeamSecondQuarterPointsLabel.setText(homeTeamSecondQuarterPoints);
+        quarterByQuarterHomeTeamThirdQuarterPointsLabel.setText(homeTeamThirdQuarterPoints);
+        quarterByQuarterHomeTeamFourthQuarterPointsLabel.setText(homeTeamFourthQuarterPoints);
+        quarterByQuarterHomeTeamOvertimePointsLabel.setText(homeTeamOvertimePoints);
+        quarterByQuarterHomeTeamTotalPointsLabel.setText(homeTeamTotalPoints);
+
         /**
          * Updating best performers stats
          */
         topPerformersTabAwayTeamTopPerformerLabel.setText(awayTeamBestPerformer.getCompleteName());
-        topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f", 
+        topPerformersTabAwayTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f",
                 awayTeamBestPerformer.getPerformanceIndex()));
-        topPerformersTabAwayTeamTopPerformerStatsLabel.setText(String.format("%01d PTS, %01d-%01d FG, %01d-%01d FT, "
-                + "%01d-%01d TP, %01d Reb, %01d Ass", awayTeamBestPerformer.getPoints(), 
-                awayTeamBestPerformer.getFieldGoalsMade(), 
+        topPerformersTabAwayTeamTopPerformerStatsLabel.setText(String.format("%s, %01d PTS, %01d-%01d "
+                + "FG, %01d-%01d FT, %01d-%01d TP, %01d Reb, %01d Ass",
+                TimeUtils.intToTime(awayTeamBestPerformer.getPlayingTime()),
+                awayTeamBestPerformer.getPoints(),
+                awayTeamBestPerformer.getFieldGoalsMade(),
                 awayTeamBestPerformer.getFieldGoalsAttempted(),
                 awayTeamBestPerformer.getFreeThrowsMade(),
                 awayTeamBestPerformer.getFreeThrowsAttempted(),
                 awayTeamBestPerformer.getThreePointersMade(),
                 awayTeamBestPerformer.getThreePointersAttempted(),
-                (awayTeamBestPerformer.getDefensiveRebounds()+ awayTeamBestPerformer.getOffensiveRebounds()),
+                (awayTeamBestPerformer.getDefensiveRebounds() + awayTeamBestPerformer.getOffensiveRebounds()),
                 awayTeamBestPerformer.getAssists()));
-        
+
         topPerformersTabHomeTeamTopPerformerLabel.setText(homeTeamBestPerformer.getCompleteName());
-        topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f", 
+        topPerformersTabHomeTeamTopPerformerPerformanceIndexLabel.setText(String.format("%01.2f",
                 homeTeamBestPerformer.getPerformanceIndex()));
-        topPerformersTabHomeTeamTopPerformerStatsLabel.setText(String.format("%01d PTS, %01d-%01d FG, %01d-%01d FT, "
-                + "%01d-%01d TP, %01d Reb, %01d Ass", homeTeamBestPerformer.getPoints(), 
-                homeTeamBestPerformer.getFieldGoalsMade(), 
+        topPerformersTabHomeTeamTopPerformerStatsLabel.setText(String.format("%s, %01d PTS, %01d-%01d "
+                + "FG, %01d-%01d FT, %01d-%01d TP, %01d Reb, %01d Ass",
+                TimeUtils.intToTime(homeTeamBestPerformer.getPlayingTime()),
+                homeTeamBestPerformer.getPoints(),
+                homeTeamBestPerformer.getFieldGoalsMade(),
                 homeTeamBestPerformer.getFieldGoalsAttempted(),
                 homeTeamBestPerformer.getFreeThrowsMade(),
                 homeTeamBestPerformer.getFreeThrowsAttempted(),
                 homeTeamBestPerformer.getThreePointersMade(),
                 homeTeamBestPerformer.getThreePointersAttempted(),
-                (homeTeamBestPerformer.getDefensiveRebounds()+ homeTeamBestPerformer.getOffensiveRebounds()),
-                homeTeamBestPerformer.getAssists()));        
+                (homeTeamBestPerformer.getDefensiveRebounds() + homeTeamBestPerformer.getOffensiveRebounds()),
+                homeTeamBestPerformer.getAssists()));
+
+        /**
+         * Updating play by play text area, only if the game isn't in the fast mode
+         */
+        if (!fastModeCheckBox.isSelected()) {
+            updatePlayByPlayTextArea();
+        }
     }
 
     /**
@@ -1051,7 +1147,8 @@ public class GameController implements Initializable {
                     System.out.println("Task: " + game.getCurrentEvent()); // delete
 
                     /**
-                     * To avoid exception caused by the updating of the observable lists, they are refreshed later
+                     * To avoid exception caused by the updating of the observable lists, they are
+                     * refreshed later
                      */
                     Platform.runLater(new Runnable() {
                         @Override
@@ -1124,5 +1221,19 @@ public class GameController implements Initializable {
     @FXML
     private void toggleFastMode() {
         this.game.setFastMode(fastModeCheckBox.isSelected());
+    }
+
+    /**
+     * Updates the play by play textarea by retrieving data from the PlayGame's arraylist with play
+     * by play data
+     */
+    private void updatePlayByPlayTextArea() {
+        int textAreaItems = shootingChartTabPlayByPlayTextArea.getParagraphs().size();
+
+        for (int i = textAreaItems; i < game.getStringPlays().size(); i++) {
+            String currentItem = game.getStringPlays().get(i);
+            shootingChartTabPlayByPlayTextArea.setText(currentItem
+                    + shootingChartTabPlayByPlayTextArea.getText());
+        }
     }
 }

@@ -543,14 +543,14 @@ public class CoachUtils {
             resultSet = connection.getResultSet(sqlStatement);
             resultSet.first();
             attributesMap.put(resultSet.getShort("rebound"),
-                    "(seasonMomentum + offensiveRebound + defensiveRebound - injuryImpact)");
+                    "playable DESC, (seasonMomentum + offensiveRebound + defensiveRebound - injuryImpact)");
             attributesMap.put(resultSet.getShort("technique"),
-                    "(seasonMomentum + technique - injuryImpact)");
+                    "playable DESC, (seasonMomentum + technique - injuryImpact)");
             attributesMap.put(resultSet.getShort("pass"), "(seasonMomentum + pass - injuryImpact)");
             attributesMap.put(resultSet.getShort("shoot"),
-                    "(seasonMomentum + fieldGoals + threePointers - injuryImpact)");
+                    "playable DESC, (seasonMomentum + fieldGoals + threePointers - injuryImpact)");
             attributesMap.put(resultSet.getShort("defense"),
-                    "(seasonMomentum + contest + oneOnOneDefense + helpDefense - injuryImpact)");
+                    "playable DESC, (seasonMomentum + contest + oneOnOneDefense + helpDefense - injuryImpact)");
         } catch (SQLException ex) {
             Logger.getLogger(GeneralManagerUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -580,7 +580,6 @@ public class CoachUtils {
             } else {
                 coachRosterOrderingString += ", " + item + " DESC";
             }
-
         }
 
         return coachRosterOrderingString;

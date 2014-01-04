@@ -234,7 +234,7 @@ public class TeamCentralController implements Initializable {
      */
     private short franchiseId = Short.parseShort(SettingsUtils.getSetting("userFranchise",
             "1"));
-    private short season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
+    private final short season = Short.parseShort(SettingsUtils.getSetting("currentSeason",
             String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
     /**
